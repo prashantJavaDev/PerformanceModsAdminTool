@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.1.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+    
+    <context:component-scan base-package="com.aspirant.performanceModsAdminTool.service" />
+    <context:component-scan base-package="com.aspirant.performanceModsAdminTool.dao" />
+    <context:annotation-config />  
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url.data}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean> 
+    
+    <bean id="javaMailSender" class ="org.springframework.mail.javamail.JavaMailSenderImpl" >
+        <!--<property name="host" value="gains.tivplserver.com" />-->
+        <property name="username" value="ritesh.performanceModsnet@gmail.com" />
+        <property name="password" value="performanceMods@123" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.host">smtp.gmail.com</prop>
+                <!--                <prop key="mail.smtp.port">25</prop>-->
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <!--<prop key="mail.debug">true</prop>-->
+            </props>
+        </property>
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+          
+    <bean id="badCredentialsEvent" class="com.aspirant.performanceModsAdminTool.applicationlistener.BadCredentialsEvent"/>
+    <bean id="successEvent" class="com.aspirant.performanceModsAdminTool.applicationlistener.SuccessEvent"/>
+    
+    <bean id="encryptorConfig" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+        <property name="algorithm" value="PBEWithMD5AndDES" />
+        <property name="passwordEnvName" value="PASSWORD_ENV_VARIABLE" />
+    </bean>
+ 
+    <bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="config" ref="encryptorConfig" />
+        <property name="password" value="ASPIRANT"/>
+    </bean>
+    <bean id="propertyConfigurer" class="org.jasypt.spring31.properties.EncryptablePropertyPlaceholderConfigurer">
+        <constructor-arg ref="encryptor" />
+        <property name="locations">
+            <list>
+                <value>WEB-INF/jdbc.properties</value>
+            </list>
+        </property>
+    </bean>    
+</beans>

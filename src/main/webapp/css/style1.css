@@ -1,0 +1,134 @@
+body, nav, ul, li, a  {margin: 0; padding: 0;}
+body {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+a {text-decoration: none;}
+.container {
+    width: 100%;
+    position: fixed;
+    left: 0px;
+    top:78px;
+    z-index: 1000;
+    padding: 0px;
+}
+.toggleMenu {
+    display:  none;
+    background: #666;
+    padding: 10px 15px;
+    color: #fff;
+    
+}
+.nav {
+    list-style: none;
+     *zoom: 1;
+     background-image:url('../images/menu-bg.jpg')
+         
+}
+.nav:before,
+.nav:after {
+    content: " "; 
+    display: table;
+    
+}
+.nav:after {
+    clear: both;
+    
+}
+.nav ul {
+    list-style: none;
+    width: 9em;
+    
+}
+.nav a {
+    padding: 10px 15px;
+    color:#FDD7E4;
+    
+}
+.nav li {
+    position: relative;
+    
+}
+.nav > li {
+    float: left;
+    border-top: 1px solid #104336;
+}
+.nav > li > .parent {
+    background-image: url("../images/downArrow.png");
+    background-repeat: no-repeat;
+    background-position: right;
+   
+}
+.nav > li > a {
+    display: block;
+     
+}
+.nav li  ul {
+    position: absolute;
+    left: -9999px;
+    width: 200px;
+}
+.nav > li.hover > ul {
+    left: 0;
+}
+.nav li li.hover ul {
+    left: 100%;
+    top: 0;
+}
+.nav li li a {
+    display: block;
+    background: #7F462C;
+    position: relative;
+    z-index:100;
+    border-top: 1px solid #fff;
+    
+}
+.nav li li li a {
+    background:#B87333;
+    z-index:200;
+    border-top: 1px solid #fff;
+}
+
+@media screen and (max-width: 750px) {
+.container {
+    position: inherit;
+    margin-top: 78px; 
+}
+    .active {
+        display: block;
+    }
+    .nav > li {
+        float: none;
+    }
+    .nav > li > .parent {
+        background-position: 95% 50%;
+        padding-left: 46px;
+    }
+    .nav li li .parent {
+        background-image: url("../images/downArrow.png");
+        background-repeat: no-repeat;
+        background-position: 95% 50%;
+        padding-left: 46px;
+    }
+    .nav ul {
+        display: block;
+        width: 100%;
+       
+    }
+   .nav > li.hover > ul , .nav li li.hover ul {
+        position: static;
+    }
+    .nav li li a {
+    padding-left: 46px;
+    width: 139%;
+    }
+    
+    .nav li li li a {
+    padding-left: 46px;
+    width: 115%;
+    }
+    
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #7F462C;
+/*    padding-left: 46px;*/
+}

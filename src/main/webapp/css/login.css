@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+/*=================================================== 
+start css for login page 
+=====================================================*/
+
+body { background:#fff; border-top:3px solid cornflowerblue; margin:0; padding:0; outline:none; }
+
+a, a:hover { border: none; outline: none;}
+
+/******  wrapper ******/
+#wrapper { width:100%; height:100%; margin:0; height:0;  }
+
+
+/****** body ******/
+
+#page_01 { width:960px; height:100%; margin:0 auto; padding:0; }
+
+/****** login form ******/
+
+.login_logo_top { width:960px; height:54px; margin:44px 0 0; padding:12px 0 11px 0; background:url(../images/login/logo_divider.jpg) 255px 0 no-repeat;  }
+
+.aspirant_logo { width:132px; height:54px; margin:0 57px 0 97px; padding:0;  float:left; position:relative; }
+
+.client_logo { width:171px; height:54px; margin:-20px 57px 0 0; padding:0; float:left; position:relative; }
+
+.loginbox { width:442px; height:309px; margin:44px 0 0 29px; padding:0; position: relative; background:url(../images/login/login_bg.jpg) 0 0 no-repeat;}
+
+.loginbox fieldset { width:352px; height:218px; border:none; margin:89px 0 0 45px; padding:0; position:absolute; background:none; }
+
+.loginbox fieldset p { margin:0; padding:0; text-align:left; }
+
+.loginbox p.password { margin:38px 0 10px 0; }
+
+.loginbox fieldset p label { width:100%; height:18px; margin:16px 0 0 0; padding:0; text-align:left; font:bold 12px/12px Arial, Helvetica, sans-serif; color:#868585; letter-spacing:1px; word-spacing:1px; text-transform:uppercase; display: block; }
+
+input#j_username { width:353px; height:29px; margin:0; padding:0 0 0 50px;  background:url(../images/login/login_input_user.jpg) 0 0 no-repeat; border:none; outline:none; color:#666666;  }
+
+input#j_password { width:353px; height:29px; margin:0; padding:0 0 0 50px;  background:url(../images/login/login_input_pass.jpg) 0 0 no-repeat; border:none; outline:none; color:#666666; }
+
+input#submit { cursor: pointer; border: none; outline: none; }
+
+input#submit { width:82px; height:32px; overflow:hidden; border:none; outline:none; display:block; margin:15px 15px 0 0; background:url(../images/login/button_submit.jpg) left top no-repeat; text-indent:0; float:right; position:relative; }
+
+input#submit:hover  { background-position:left bottom; border: none; outline: none;  }
+
+.designby { width:380px; height:19px; position: absolute; bottom: 0px; margin-left: 30px; font:normal 9px Arial, Helvetica, sans-serif; color:#666; display:inline-block; }
+
+/****** login footer ******/
+
+
+
+.browser_error_wrapper { width:442px; height:auto; margin-left: 50px; padding:0; display:block; clear:both; }
+.error {font-family: Verdana;font-size: 13px;color: red; margin-top: 10px;display: inline-block;}
+.browser { width:100%; height:31px; margin-top: 20px;  text-align:left; font:normal 11px Arial, Helvetica, sans-serif; color:#868585 ;}
+.firefox, .chrome, .safari { width:100px; height:auto; float:left; position:relative; padding:10px 0;}
+.firefox { background: url(../images/login/logo_firefox.gif) 45px top no-repeat; margin:0 0 0 10px}
+.chrome { background: url(../images/login/logo_chrome.gif) 45px top no-repeat; margin:0 0 0 -10px;}
+.safari { background: url(../images/login/logo_safari.gif) 45px top no-repeat; margin:0 0 0 -10px;}
+

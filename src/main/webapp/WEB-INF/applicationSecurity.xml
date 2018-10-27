@@ -1,0 +1,98 @@
+
+<beans:beans
+    xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <context:component-scan base-package="com.aspirant.performanceModsAdminTool.security" />
+    <context:annotation-config />
+    <http auto-config="true" use-expressions="true" access-denied-page="/errors/accessDenied.htm">
+        <form-login
+            login-page="/home/login.htm"
+            default-target-url="/home/home.htm"
+            authentication-failure-url="/home/login.htm?login_error=true"
+            
+        />
+        <logout invalidate-session="true" />
+
+        <intercept-url pattern="/js/**" access="permitAll" />
+        <intercept-url pattern="/images/**" access="permitAll" />
+        <intercept-url pattern="/img/**" access="permitAll" />
+        <intercept-url pattern="/css/**" access="permitAll" />
+        <intercept-url pattern="/favicon.ico*" access="permitAll" />
+        <intercept-url pattern="/ajax/**" access="hasRole('ROLE_BF_SHOW_HOME')"/>
+        <intercept-url pattern="/errors/accessDenied.htm*" access="isFullyAuthenticated()"/>
+        <intercept-url pattern="/home/login.htm*" access="permitAll" />
+        <intercept-url pattern="/home/home.htm*" access="hasRole('ROLE_BF_SHOW_HOME')" />
+        <intercept-url pattern="/home/changePassword.htm*" access="hasRole('ROLE_BF_SHOW_HOME')" />
+        
+        <intercept-url pattern="/admin/userFailedAttemptsReset.htm*" access="hasRole('ROLE_BF_EDIT_USER')" />
+        <intercept-url pattern="/admin/showEditUser.htm*" access="hasRole('ROLE_BF_EDIT_USER')" />
+        <intercept-url pattern="/admin/updateExpiredPassword.htm*" access="hasRole('ROLE_BF_PASSWORD_EXPIRED')" />
+        <intercept-url pattern="/admin/userPasswordReset.htm*" access="hasRole('ROLE_BF_EDIT_USER')" />
+        <intercept-url pattern="/admin/reloadApplicationLayer.htm*" access="hasRole('ROLE_BF_RELOAD_APPLICATION')" />
+        <intercept-url pattern="/admin/adduser.htm*" access="hasRole('ROLE_BF_CREATE_USER')" />
+        <intercept-url pattern="/admin/userList.htm*" access="hasRole('ROLE_BF_LIST_USER')" />
+        <intercept-url pattern="/admin/editUser.htm*" access="hasRole('ROLE_BF_EDIT_USER')" />
+        <intercept-url pattern="/admin/addCategory.htm*" access="hasRole('ROLE_BF_CREATE_CATEGORY')" />
+        <intercept-url pattern="/admin/addCompany.htm*" access="hasRole('ROLE_BF_ADD_COMPANY')" />
+        <intercept-url pattern="/admin/addManufacturer.htm*" access="hasRole('ROLE_BF_ADD_MANUFACTURER')" />
+        <intercept-url pattern="/admin/addMarketplace.htm*" access="hasRole('ROLE_BF_ADD_MARKETPLACE')" />
+        <intercept-url pattern="/admin/addNewListing.htm*" access="hasRole('ROLE_BF_CREATE_NEW_LISTINGS')" />
+        <intercept-url pattern="/admin/addNewWarehouse.htm*" access="hasRole('ROLE_BF_ADD_WAREHOUSE')" />
+        <intercept-url pattern="/admin/companyList.htm*" access="hasRole('ROLE_BF_LIST_COMPANY')" />
+        <intercept-url pattern="/admin/editCompany.htm*" access="hasRole('ROLE_BF_EDIT_COMPANY')" />
+        <intercept-url pattern="/admin/editMarketplace.htm*" access="hasRole('ROLE_BF_EDIT_MARKETPLACE')" />
+        <intercept-url pattern="/admin/editWarehouse.htm*" access="hasRole('ROLE_BF_EDIT_WAREHOUSE')" />
+        <intercept-url pattern="/admin/listMarketplace.htm*" access="hasRole('ROLE_BF_LIST_MARKETPLACE')" />
+        <intercept-url pattern="/admin/mapManufacturer.htm*" access="hasRole('ROLE_BF_MAP_MANUFACTURER')" />
+        <intercept-url pattern="/admin/warehouseList.htm*" access="hasRole('ROLE_BF_LIST_WAREHOUSE')" />
+        
+        <intercept-url pattern="/listing/exportMarketplaceListing.htm*" access="hasRole('ROLE_BF_EXPORT_LISTINGS')" />
+        <intercept-url pattern="/listing/listingExcel.htm*" access="hasRole('ROLE_BF_EXPORT_LISTINGS')" />
+        <intercept-url pattern="/listing/marketplaceFeesUpload.htm*" access="hasRole('ROLE_BF_UPLOAD_MARKETPLACE_FEE')" />
+        <intercept-url pattern="/listing/marketplaceListing.htm*" access="hasRole('ROLE_BF_PROCESS_LISTINGS')" />
+        <intercept-url pattern="/listing/selectMarketplace.htm*" access="hasRole('ROLE_BF_PROCESS_LISTINGS')" />
+        
+        <intercept-url pattern="/product/addProduct.htm*" access="hasRole('ROLE_BF_CREATE_PRODUCT')" />
+        <intercept-url pattern="/product/listProduct.htm*" access="hasRole('ROLE_BF_LIST_PRODUCT')" />
+        <intercept-url pattern="/product/productListExcel.htm*" access="hasRole('ROLE_BF_LIST_PRODUCT')" />
+        <intercept-url pattern="/product/editProduct.htm*" access="hasRole('ROLE_BF_EDIT_PRODUCT')" />
+        <intercept-url pattern="/product/viewProduct.htm*" access="hasRole('ROLE_BF_VIEW_PRODUCT')" />
+        <!--<intercept-url pattern="/product/exportProductData.htm*" access="hasRole('ROLE_BF_EXPORT_PRODUCT_DATA')" />-->
+        <intercept-url pattern="/warehouse/uploadFeed.htm*" access="hasRole('ROLE_BF_UPLOAD_FEEDS')" />
+        <intercept-url pattern="/warehouse/saveFeed.htm*" access="hasRole('ROLE_BF_UPLOAD_FEEDS')" />
+        <intercept-url pattern="/warehouse/badProductExcel.htm*" access="hasRole('ROLE_BF_UPLOAD_FEEDS')" />
+
+        <intercept-url pattern="/report/reportAccessLog.htm*" access="hasRole('ROLE_BF_REPORT_ACCESS_LOG')" />
+        <intercept-url pattern="/report/reportAccessLogExcel.htm*" access="hasRole('ROLE_BF_REPORT_ACCESS_LOG')" />
+        
+        <intercept-url pattern="/tickets/createTicket.htm*" access="hasRole('ROLE_BF_CREATE_TICKET')" />
+        <intercept-url pattern="/tickets/editTicket.htm*" access="hasRole('ROLE_BF_EDIT_TICKET')" />
+        <intercept-url pattern="/tickets/listAllTickets.htm*" access="hasRole('ROLE_BF_LIST_ALL_TICKETS')" />
+        <intercept-url pattern="/tickets/allTicketListExcel.htm*" access="hasRole('ROLE_BF_LIST_ALL_TICKETS')" />
+        <intercept-url pattern="/tickets/listOpenTickets.htm*" access="hasRole('ROLE_BF_LIST_OPEN_TICKETS')" />
+
+        <intercept-url pattern="/**" access="hasRole('ROLE_BF_SHOW_HOME')" />
+        <session-management>
+            <concurrency-control max-sessions="1" />
+        </session-management>
+    </http>
+
+    <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="customUserDetailsService">
+            <password-encoder ref="encoder"/>
+        </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>

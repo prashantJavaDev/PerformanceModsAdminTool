@@ -1,0 +1,127 @@
+/* 
+    Document   : responsive_header
+    Created on : 17 Nov, 2015, 12:45:20 PM
+    Author     : gaurao
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+@media only screen and (min-width: 500px) {
+    #img1 {
+        background-image: url('../images/logo_client-small.png'); 
+        display: none;
+    }
+    #img4 {
+        background-image: url('../images/aspirant_logo_s.png'); 
+        display: none;
+    }
+}
+
+/* For width 400px and larger: */
+@media only screen and (min-width: 500px) {
+    #img2 { 
+        background-image: url('../images/logo_client.png'); 
+        display: block;
+    }
+    #img3 { 
+        background-image: url('../images/aspirant_logo_s.png'); 
+        display: block;
+    }
+}
+
+@media (min-width: 310px) and (max-width: 480px){
+    #img2 { 
+        background-image: url('../images/logo_client.png'); 
+        display: none;
+    }
+    #img1 {
+        background-image: url('../images/logo_client-small.png'); 
+        display: block;
+
+    }
+}
+@media (min-width: 310px) and (max-width: 480px){
+
+
+
+    #img3 {
+        background-image: url('../images/aspirant_logo_s.png'); 
+        display: none;
+    } 
+    #img4 {
+        background-image: url('../images/aspirant_logo_s.png'); 
+        display: block;
+
+    } 
+    #main_header 
+    .brand_section1{
+        left: 130px;
+        top: 27px;
+    }
+    #main_header 
+    .brand_section{
+        top: 5px;
+    }
+
+    .row-start {
+        margin-top: -143px;
+    }
+    .toggleMenu{
+
+        position: fixed;
+        z-index: 12;
+    }
+
+    .container-fluid{
+        padding-right: 0px;
+    }
+
+    .in_02
+    {
+        margin: -20px 0px 0px 0px;
+        margin-top: -114px
+    }
+    #access{
+        margin: -27px 0px 0px;
+    }
+    #column{
+        margin: 20px 0px 0px;
+        
+    }
+    #_cancel
+    {
+        float: right;
+        margin-top: -46px;
+        margin-right: 70px;
+    }
+    #_submit
+    {
+        margin-left: 40px;
+    }
+}
+@media (min-width: 768px) and (max-width: 1024px){
+
+    #main_wrapper{
+        top:190px;
+    }
+
+    #_cancel
+    {
+        float: right;
+        margin-top: -46px;
+        margin-right: 70px;
+    }
+    #_submit
+    {
+        margin-left: 40px;
+    }
+    .in_02
+    {margin-top: -57px}
+
+}
+
+
+
+
+

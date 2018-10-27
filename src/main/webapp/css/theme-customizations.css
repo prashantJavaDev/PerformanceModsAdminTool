@@ -1,0 +1,76 @@
+.text-builtBy {
+    color: #888;
+}
+
+.xn-logoImage {
+    background: url("../img/logo.png") top center no-repeat;
+    width: 100%;
+    height: 50px;
+}
+
+.xn-titleText {
+    font-size: 22px;
+    color: beige;
+    margin-top: 10px;
+    margin-left: 17px;
+}
+
+.clickableRow:hover {
+    background-color:#F6FAF6;
+    cursor: pointer;
+}
+
+.btn-filter {
+    margin-top: 20px;
+}
+
+.row-filter {
+    padding-bottom: 15px;
+}
+
+/*Added By Shruti*/
+.scrollable {
+    display: block;
+    overflow-x: auto;
+}
+.req:after{
+    content:' *';
+    color:#da4453;
+}
+#percentComplete .ui-slider-range { background: #8ae234; }
+#percentComplete .ui-slider-handle { 
+    border-color: #8ae234;
+    -ms-touch-action: none;
+    touch-action: none;
+}
+.rowColor {
+    background-color: #EDEDED;
+}
+.rowColor:hover {
+    background-color: #D5D5D5;
+    cursor: pointer;
+}
+.rowColor1 {
+    background-color: #EDEDED;
+}
+
+.rowColor2 {
+    background-color: #ffe4e1;
+}
+.rowColor2:hover {
+    background-color: #ffc0cb;
+    cursor: pointer;
+}
+.xn-liveClock {
+    font-size: 15px;
+    color: beige;
+    margin-top: 12px;
+}
+
+.clickableListing:hover {
+    background-color:#B2FFB2;
+    cursor: pointer;
+}
+.bold{
+    font-weight: bold
+}
