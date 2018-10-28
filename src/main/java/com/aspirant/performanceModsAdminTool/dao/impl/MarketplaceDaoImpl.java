@@ -10,7 +10,7 @@ import com.aspirant.performanceModsAdminTool.model.CustomUserDetails;
 import com.aspirant.performanceModsAdminTool.model.Marketplace;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.MarketplaceRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

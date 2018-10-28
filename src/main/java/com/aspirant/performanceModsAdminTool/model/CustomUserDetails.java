@@ -4,7 +4,7 @@
  */
 package com.aspirant.performanceModsAdminTool.model;
 
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;

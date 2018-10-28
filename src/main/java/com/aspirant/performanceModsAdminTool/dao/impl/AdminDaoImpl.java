@@ -16,7 +16,7 @@ import com.aspirant.performanceModsAdminTool.model.rowmapper.CompanyRowMapper;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.ShippingCriteriaRowMapper;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.ShippingDetailsRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

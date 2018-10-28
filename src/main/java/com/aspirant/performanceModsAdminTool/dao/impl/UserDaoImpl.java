@@ -14,7 +14,7 @@ import com.aspirant.performanceModsAdminTool.model.rowmapper.CustomUserDetailsRo
 import com.aspirant.performanceModsAdminTool.model.rowmapper.RoleRowMapper;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.UserRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

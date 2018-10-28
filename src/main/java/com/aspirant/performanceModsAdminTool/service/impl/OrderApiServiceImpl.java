@@ -9,7 +9,7 @@ import com.aspirant.performanceModsAdminTool.dao.OrderDao;
 import com.aspirant.performanceModsAdminTool.framework.GlobalConstants;
 import com.aspirant.performanceModsAdminTool.service.OrderApiService;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import com.amazonservices.mws.orders.amazon.AmazonWebService;
 import com.amazonservices.mws.orders.model.ListOrderItemsResponse;
 import com.amazonservices.mws.orders.model.ListOrdersResponse;

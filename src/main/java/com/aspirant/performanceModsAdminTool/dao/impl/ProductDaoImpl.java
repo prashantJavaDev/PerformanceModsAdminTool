@@ -36,7 +36,7 @@ import com.aspirant.performanceModsAdminTool.model.rowmapper.SubCategoryRowMappe
 import com.aspirant.performanceModsAdminTool.model.rowmapper.SubChildCategoryRowMapper;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.TempWebsiteUploadRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 //import com.aspirantutils.StringUtils;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;

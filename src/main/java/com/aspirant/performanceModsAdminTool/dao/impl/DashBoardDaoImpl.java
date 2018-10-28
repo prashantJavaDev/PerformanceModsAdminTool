@@ -11,7 +11,7 @@ import com.aspirant.performanceModsAdminTool.model.CustomUserDetails;
 import com.aspirant.performanceModsAdminTool.model.Ticket;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.TicketRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
-import com.aspirant.utils.DateUtils;
+import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
