@@ -65,7 +65,7 @@ public class ListingController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Fees data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Fees data validation started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.listingService.saveMultipartFileData(uploadFeed, marketplaceId);
             String msg;
@@ -340,7 +340,7 @@ public class ListingController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Listing upload data started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Listing upload data started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.listingService.saveMultipartFileData1(uploadFeed, marketplaceId);
             String msg;

@@ -115,7 +115,7 @@ public class WarehouseServiceImpl implements WarehouseService {
                 fos.flush();
                 fos.close();
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName + "-Warehouse Id :" + warehouseId, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName + "-Warehouse Id :" + warehouseId, GlobalConstants.TAG_SYSTEMLOG));
                 feedSummaryList = this.warehouseDao.loadDataLocally(path, warehouseId);
 
             } catch (FileNotFoundException ex) {
@@ -138,7 +138,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public int addWarehouse(Warehouse warehouse) {
         try {
             int warehouseId = this.warehouseDao.addWarehouse(warehouse);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Warehouse added successfully for id : " + warehouseId, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Warehouse added successfully for id : " + warehouseId, GlobalConstants.TAG_SYSTEMLOG));
             return warehouseId;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
@@ -160,7 +160,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public int updateWarehouse(Warehouse warehouse) {
         try {
             int result = this.warehouseDao.updateWarehouse(warehouse);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Warehouse Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Warehouse Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return result;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));

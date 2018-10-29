@@ -85,53 +85,53 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Manufacturer> getListOfManufacturer() {
-        String sql = "SELECT tm.* FROM tesy_manufacturer tm"
+        String sql = "SELECT tm.* FROM pm_manufacturer tm"
                 + " where tm.ACTIVE ORDER BY tm.`MANUFACTURER_NAME`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ManufacturerRowMapper());
     }
 
     @Override
     public List<MainCategory> getListOfMainCategory() {
-        String sql = "SELECT tmc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_main_category tmc"
+        String sql = "SELECT tmc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_main_category tmc"
                 + " LEFT JOIN `user` u1 ON u1.`USER_ID`=tmc.`CREATED_BY` "
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tmc.`LAST_MODIFIED_BY`"
                 + " where tmc.ACTIVE ORDER BY tmc.`MAIN_CATEGORY_DESC`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new MainCategoryRowMapper());
     }
 
     @Override
     public List<SubCategory> getListOfSubCategory() {
-        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_sub_category tsc"
+        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_sub_category tsc"
                 + " LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` "
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`"
-                + " LEFT JOIN tesy_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
+                + " LEFT JOIN pm_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
                 + " WHERE tsc.ACTIVE GROUP BY tsc.`SUB_CATEGORY_ID`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubCategoryRowMapper());
     }
 
     @Override
     public List<SubCategory> getSubCategoryListForMainCategory(int mainCategoryId) {
-        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_sub_category tsc"
+        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_sub_category tsc"
                 + " LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` "
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`"
-                + " LEFT JOIN tesy_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
+                + " LEFT JOIN pm_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
                 + " WHERE tcm.`MAIN_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`SUB_CATEGORY_DESC`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubCategoryRowMapper(), mainCategoryId);
     }
 
     @Override
     public List<Integer> getSubCategoryIdListByMainCategory(int mainCategoryId) {
-        String sql = "SELECT tcm.`SUB_CATEGORY_ID` FROM tesy_category_mapping tcm WHERE tcm.`MAIN_CATEGORY_ID`=?";
+        String sql = "SELECT tcm.`SUB_CATEGORY_ID` FROM pm_category_mapping tcm WHERE tcm.`MAIN_CATEGORY_ID`=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, mainCategoryId);
     }
 
@@ -152,12 +152,12 @@ public class ProductDaoImpl implements ProductDao {
             String sql;
 
             //Autogenerate performanceModsMPN when product created
-            sql = "SELECT UPPER(CONCAT('TEL-', tm.`MANUFACTURER_CODE`,'-',:productMpn)) FROM tesy_manufacturer tm WHERE MANUFACTURER_ID=:manufacturerId";
+            sql = "SELECT UPPER(CONCAT('TEL-', tm.`MANUFACTURER_CODE`,'-',:productMpn)) FROM pm_manufacturer tm WHERE MANUFACTURER_ID=:manufacturerId";
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("productMpn", product.getManufacturerMpn());
             params.put("manufacturerId", product.getManufacturer().getManufacturerId());
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
             String performanceModsMpn = nm.queryForObject(sql, params, String.class);
             params.clear();
 
@@ -193,7 +193,7 @@ public class ProductDaoImpl implements ProductDao {
                 }
             }
 
-            SimpleJdbcInsert productInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_product").usingGeneratedKeyColumns("PRODUCT_ID");
+            SimpleJdbcInsert productInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_product").usingGeneratedKeyColumns("PRODUCT_ID");
             params.put("PRODUCT_NAME", product.getProductName());
             params.put("MANUFACTURER_ID", product.getManufacturer().getManufacturerId());
             params.put("MANUFACTURER_MPN", product.getManufacturerMpn());
@@ -226,13 +226,13 @@ public class ProductDaoImpl implements ProductDao {
             params.put("LAST_MODIFIED_BY", curUser);
             params.put("ACTIVE", product.isActive());
             params.put("PRODUCT_STATUS_ID", product.getProductStatus().getProductStatusId());
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into tesy_product :", params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into pm_product :", params, GlobalConstants.TAG_SYSTEMLOG));
             int productId = productInsert.executeAndReturnKey(params).intValue();
             params.clear();
-            //upload large images on CDN and insert into tesy_product_image one by one for product created
+            //upload large images on CDN and insert into pm_product_image one by one for product created
             if (productId != 0) {
                 String largeImageURL = null;
-                sql = "insert into tesy_product_image"
+                sql = "insert into pm_product_image"
                         + " (PRODUCT_ID,LARGE_IMAGE_URL,ORDER_ID)"
                         + " VALUES(:productId,"
                         + " :largeImageUrl,"
@@ -261,7 +261,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 1);
 
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -287,7 +287,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 2);
 
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -313,7 +313,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 3);
 
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -338,7 +338,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("productId", productId);
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 4);
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                 }
             }
@@ -358,12 +358,12 @@ public class ProductDaoImpl implements ProductDao {
      */
     @Override
     public List<ProductStatus> getListOfProductStatus() {
-        String sql = "SELECT tps.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_product_status tps"
+        String sql = "SELECT tps.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_product_status tps"
                 + " LEFT JOIN `user` u1 ON u1.`USER_ID`=tps.`CREATED_BY` "
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tps.`LAST_MODIFIED_BY`"
                 + " WHERE tps.ACTIVE ORDER BY tps.`PRODUCT_STATUS_DESC`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ProductStatusRowMapper());
     }
 
@@ -387,11 +387,11 @@ public class ProductDaoImpl implements ProductDao {
                     + " tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,"
                     + " GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + " GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
-                    + " FROM tesy_product tp"
-                    + " LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                    + " LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`"
-                    + " LEFT JOIN tesy_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`"
-                    + " LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`"
+                    + " FROM pm_product tp"
+                    + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                    + " LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`"
+                    + " LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`"
+                    + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`"
                     + " WHERE tp.PRODUCT_ID");
 
             Map<String, Object> params = new HashMap<String, Object>();
@@ -441,7 +441,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductListRowMapper());
             return list;
         } catch (Exception e) {
@@ -465,8 +465,8 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public int getProductListCount(int productStatusId, int manufacturerId, String performanceModsMpn, String productName, String warehouseMpn, String productMpn, String startDate, String stopDate) {
 
-        StringBuilder sql = new StringBuilder("SELECT COUNT(t.productCount) FROM (SELECT COUNT(*) productCount FROM tesy_product tp \n"
-                + "LEFT JOIN tesy_warehouse_product_mpn ON tesy_warehouse_product_mpn.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
+        StringBuilder sql = new StringBuilder("SELECT COUNT(t.productCount) FROM (SELECT COUNT(*) productCount FROM pm_product tp \n"
+                + "LEFT JOIN pm_warehouse_product_mpn ON pm_warehouse_product_mpn.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
                 + "WHERE tp.`PRODUCT_ID`");
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -491,7 +491,7 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         if (warehouseMpn != null && !warehouseMpn.isEmpty()) {
-            sql.append(" AND tesy_warehouse_product_mpn.`WAREHOUSE_MPN`=:warehouseMpn");
+            sql.append(" AND pm_warehouse_product_mpn.`WAREHOUSE_MPN`=:warehouseMpn");
             params.put("warehouseMpn", warehouseMpn);
         }
 
@@ -512,7 +512,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         Integer i = nm.queryForObject(sql.toString(), params, Integer.class);
 
         if (i == null) {
@@ -541,11 +541,11 @@ public class ProductDaoImpl implements ProductDao {
                     + "tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,\n"
                     + "GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + "GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
-                    + "FROM tesy_product tp\n"
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
-                    + "LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
-                    + "LEFT JOIN tesy_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
-                    + "LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
+                    + "FROM pm_product tp\n"
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
+                    + "LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
+                    + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
+                    + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
                     + "WHERE tp.PRODUCT_ID");
 
             Map<String, Object> params = new HashMap<String, Object>();
@@ -582,7 +582,7 @@ public class ProductDaoImpl implements ProductDao {
             sql.append(" GROUP BY tp.`PRODUCT_ID` ORDER BY tp.`LAST_MODIFIED_DATE` DESC");
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductListRowMapper());
             return list;
         } catch (Exception e) {
@@ -598,22 +598,22 @@ public class ProductDaoImpl implements ProductDao {
                 + "tps.`PRODUCT_STATUS_DESC`, tpi1.`LARGE_IMAGE_URL` largeImageUrl1, tpi2.`LARGE_IMAGE_URL` largeImageUrl2,\n"
                 + "tpi3.`LARGE_IMAGE_URL` largeImageUrl3, tpi4.`LARGE_IMAGE_URL` largeImageUrl4,\n"
                 + "'' WAREHOUSE_NAME,'' WAREHOUSE_MPN\n"
-                + "FROM tesy_product tp\n"
-                + "LEFT JOIN tesy_main_category tmc ON tmc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID`\n"
-                + "LEFT JOIN tesy_sub_category tsc1 ON tsc1.`SUB_CATEGORY_ID`=tp.`SUB_CATEGORY1`\n"
-                + "LEFT JOIN tesy_sub_child_category tscc ON tscc.`CHILD_CATEGORY_ID`=tp.`SUB_CATEGORY2` \n"
-                + "LEFT JOIN tesy_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_ID`=tp.`SUB_CATEGORY3` \n"
-                + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
+                + "FROM pm_product tp\n"
+                + "LEFT JOIN pm_main_category tmc ON tmc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID`\n"
+                + "LEFT JOIN pm_sub_category tsc1 ON tsc1.`SUB_CATEGORY_ID`=tp.`SUB_CATEGORY1`\n"
+                + "LEFT JOIN pm_sub_child_category tscc ON tscc.`CHILD_CATEGORY_ID`=tp.`SUB_CATEGORY2` \n"
+                + "LEFT JOIN pm_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_ID`=tp.`SUB_CATEGORY3` \n"
+                + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
                 + "LEFT JOIN `user` u1 ON u1.`USER_ID`=tp.`CREATED_BY`\n"
                 + "LEFT JOIN `user` u2 ON u2.`USER_ID`=tp.`LAST_MODIFIED_BY`\n"
-                + "LEFT JOIN tesy_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
-                + "LEFT JOIN tesy_product_image tpi1 ON tpi1.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi1.`ORDER_ID`=1\n"
-                + "LEFT JOIN tesy_product_image tpi2 ON tpi2.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi2.`ORDER_ID`=2\n"
-                + "LEFT JOIN tesy_product_image tpi3 ON tpi3.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi3.`ORDER_ID`=3\n"
-                + "LEFT JOIN tesy_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4\n"
+                + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
+                + "LEFT JOIN pm_product_image tpi1 ON tpi1.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi1.`ORDER_ID`=1\n"
+                + "LEFT JOIN pm_product_image tpi2 ON tpi2.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi2.`ORDER_ID`=2\n"
+                + "LEFT JOIN pm_product_image tpi3 ON tpi3.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi3.`ORDER_ID`=3\n"
+                + "LEFT JOIN pm_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4\n"
                 + "WHERE tp.PRODUCT_ID=? GROUP BY tp.PRODUCT_ID";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForObject(sql, new ProductRowMapper(), productId);
     }
 
@@ -661,11 +661,11 @@ public class ProductDaoImpl implements ProductDao {
             }
 
             //delete existing large images for respective product
-            sqlString = "DELETE FROM tesy_product_image WHERE PRODUCT_ID=?";
+            sqlString = "DELETE FROM pm_product_image WHERE PRODUCT_ID=?";
             this.jdbcTemplate.update(sqlString, product.getProductId());
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
-            sqlString = "UPDATE tesy_product tp"
+            sqlString = "UPDATE pm_product tp"
                     + " SET tp.PRODUCT_NAME=:productName, tp.TITLE=:productTitle,"
                     + " tp.MAP=:productMap, tp.MSRP=:productMsrp, tp.WEIGHT=:productWeight,"
                     + " tp.`EST_SHIPPING_WT`=:estShippingWt, tp.`LENGTH`=:productLength, tp.`WIDTH`=:productWidth,"
@@ -706,12 +706,12 @@ public class ProductDaoImpl implements ProductDao {
             params.put("active", product.isActive());
             params.put("productId", product.getProductId());
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             nm.update(sqlString, params);
             params.clear();
 
             String largeImageURL = null;
-            sqlString = "insert into tesy_product_image"
+            sqlString = "insert into pm_product_image"
                     + " (PRODUCT_ID,LARGE_IMAGE_URL,ORDER_ID)"
                     + " VALUES(:productId,"
                     + " :largeImageUrl,"
@@ -741,7 +741,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 1);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 params.clear();
@@ -751,7 +751,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl1());
                 params.put("orderId", 1);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -780,7 +780,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 2);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 //if large image2 already exist then update URL of existing image
@@ -789,7 +789,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl2());
                 params.put("orderId", 2);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -818,7 +818,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 3);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 //if large image3 already exist then update URL of existing image
@@ -827,7 +827,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl3());
                 params.put("orderId", 3);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -854,7 +854,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("productId", product.getProductId());
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 4);
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 //if large image4 file is selected then upload image on CDN and update URL
             } else if (!product.getLargeImageUrl4().isEmpty()) {
@@ -862,7 +862,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl4());
                 params.put("orderId", 4);
 
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -878,7 +878,7 @@ public class ProductDaoImpl implements ProductDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        SimpleJdbcInsert subCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_sub_category").usingGeneratedKeyColumns("SUB_CATEGORY_ID");
+        SimpleJdbcInsert subCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_sub_category").usingGeneratedKeyColumns("SUB_CATEGORY_ID");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("SUB_CATEGORY_DESC", subCategoryDesc);
         params.put("CREATED_DATE", curDate);
@@ -887,7 +887,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into tesy_sub_category", params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subCategoryId = subCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subCategoryId;
@@ -896,18 +896,18 @@ public class ProductDaoImpl implements ProductDao {
     //For autocomplete
     @Override
     public List<String> searchMpn(String term) {
-        String sql = "SELECT performanceMods_MPN FROM tesy_product WHERE performanceMods_MPN LIKE '%" + term + "%'";
+        String sql = "SELECT performanceMods_MPN FROM pm_product WHERE performanceMods_MPN LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
 
     @Override
     public List<String> searchProductName(String term) {
-        String sql = "SELECT PRODUCT_NAME FROM tesy_product WHERE PRODUCT_NAME LIKE '%" + term + "%'";
+        String sql = "SELECT PRODUCT_NAME FROM pm_product WHERE PRODUCT_NAME LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -919,12 +919,12 @@ public class ProductDaoImpl implements ProductDao {
 
             sql.append("SELECT tw.`WAREHOUSE_ID`,tw.`WAREHOUSE_NAME`,tcwp.`WAREHOUSE_IDENTIFICATION_NO`,DATE(tcwp.`CREATED_DATE`) `CURRENT_DATE`,"
                     + " tcwp.`PRICE` CURRENT_PRICE,tcwp.`QUANTITY` CURRENT_QUANTITY, tpi.`LARGE_IMAGE_URL`"
-                    + " FROM tesy_current_warehouse_product tcwp  "
-                    + " LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=tcwp.`WAREHOUSE_ID`"
-                    + " LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
-                    + " LEFT JOIN tesy_product_image tpi ON tpi.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
+                    + " FROM pm_current_warehouse_product tcwp  "
+                    + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tcwp.`WAREHOUSE_ID`"
+                    + " LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
+                    + " LEFT JOIN pm_product_image tpi ON tpi.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
                     + " AND twpm.`WAREHOUSE_ID`=tcwp.`WAREHOUSE_ID`"
-                    + " LEFT JOIN tesy_product tp ON tp.`PRODUCT_ID`=tcwp.`PRODUCT_ID`\n"
+                    + " LEFT JOIN pm_product tp ON tp.`PRODUCT_ID`=tcwp.`PRODUCT_ID`\n"
                     + " WHERE tp.`performanceMods_MPN`=:performanceModsMpn "
                     + " GROUP BY tcwp.`WAREHOUSE_ID`");
 
@@ -933,7 +933,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
             List<ProductDetails> ProductDetail = nm.query(sql.toString(), params, new ProductDetailsRowMapper());
 
             return ProductDetail;
@@ -952,19 +952,19 @@ public class ProductDaoImpl implements ProductDao {
                 + "tps.`PRODUCT_STATUS_DESC`, tpi1.`LARGE_IMAGE_URL` largeImageUrl1, tpi2.`LARGE_IMAGE_URL` largeImageUrl2, "
                 + "tpi3.`LARGE_IMAGE_URL` largeImageUrl3, tpi4.`LARGE_IMAGE_URL` largeImageUrl4,"
                 + "'' WAREHOUSE_NAME,'' WAREHOUSE_MPN "
-                + "FROM tesy_product tp  "
-                + "LEFT JOIN tesy_main_category tmc ON tmc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID` "
-                + "LEFT JOIN tesy_sub_category tsc1 ON tsc1.`SUB_CATEGORY_ID`=tp.`SUB_CATEGORY1` "
-                + "LEFT JOIN tesy_sub_child_category tscc ON tscc.`CHILD_CATEGORY_ID`=tp.`SUB_CATEGORY2` "
-                + "LEFT JOIN tesy_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_ID`=tp.`SUB_CATEGORY3` \n"
-                + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID` "
+                + "FROM pm_product tp  "
+                + "LEFT JOIN pm_main_category tmc ON tmc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID` "
+                + "LEFT JOIN pm_sub_category tsc1 ON tsc1.`SUB_CATEGORY_ID`=tp.`SUB_CATEGORY1` "
+                + "LEFT JOIN pm_sub_child_category tscc ON tscc.`CHILD_CATEGORY_ID`=tp.`SUB_CATEGORY2` "
+                + "LEFT JOIN pm_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_ID`=tp.`SUB_CATEGORY3` \n"
+                + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID` "
                 + "LEFT JOIN `user` u1 ON u1.`USER_ID`=tp.`CREATED_BY` "
                 + "LEFT JOIN `user` u2 ON u2.`USER_ID`=tp.`LAST_MODIFIED_BY` "
-                + "LEFT JOIN tesy_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID` "
-                + "LEFT JOIN tesy_product_image tpi1 ON tpi1.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi1.`ORDER_ID`=1 "
-                + "LEFT JOIN tesy_product_image tpi2 ON tpi2.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi2.`ORDER_ID`=2 "
-                + "LEFT JOIN tesy_product_image tpi3 ON tpi3.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi3.`ORDER_ID`=3 "
-                + "LEFT JOIN tesy_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4 "
+                + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID` "
+                + "LEFT JOIN pm_product_image tpi1 ON tpi1.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi1.`ORDER_ID`=1 "
+                + "LEFT JOIN pm_product_image tpi2 ON tpi2.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi2.`ORDER_ID`=2 "
+                + "LEFT JOIN pm_product_image tpi3 ON tpi3.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi3.`ORDER_ID`=3 "
+                + "LEFT JOIN pm_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4 "
                 + "WHERE tp.`performanceMods_MPN`=:performanceModsMpn");
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -974,7 +974,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         try {
             return nm.queryForObject(sql.toString(), params, new ProductRowMapper());
         } catch (EmptyResultDataAccessException e) {
@@ -984,18 +984,18 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<String> searchWarehouseMpn(String term) {
-        String sql = "SELECT WAREHOUSE_MPN FROM tesy_warehouse_product_mpn WHERE WAREHOUSE_MPN LIKE '%" + term + "%'";
+        String sql = "SELECT WAREHOUSE_MPN FROM pm_warehouse_product_mpn WHERE WAREHOUSE_MPN LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
 
     @Override
     public List<String> searchProductMpn(String term) {
-        String sql = "SELECT p.`MANUFACTURER_MPN` FROM tesy_product p WHERE p.`MANUFACTURER_MPN` LIKE '%" + term + "%'";
+        String sql = "SELECT p.`MANUFACTURER_MPN` FROM pm_product p WHERE p.`MANUFACTURER_MPN` LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -1004,7 +1004,7 @@ public class ProductDaoImpl implements ProductDao {
     public String getperformanceModsMpnByManufacturerMpn(String manufacturerMpn, int manufacturerId) {
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT tp.`performanceMods_MPN` FROM tesy_product tp"
+        sql.append("SELECT tp.`performanceMods_MPN` FROM pm_product tp"
                 + " WHERE tp.`MANUFACTURER_MPN`= :manufacturerMpn "
                 + " AND tp.`MANUFACTURER_ID`=:manufacturerId");
 
@@ -1014,7 +1014,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         try {
             return nm.queryForObject(sql.toString(), params, String.class);
         } catch (EmptyResultDataAccessException e) {
@@ -1025,13 +1025,13 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<MarketplaceListingSkuDTO> getMarketplaceListingsAndSku(String performanceModsMpn) {
         String sql = "SELECT tal.`SKU`,tal.`MARKETPLACE_LISTING_ID`,tal.`CURRENT_LISTED_DATE`,tal.`CURRENT_PRICE`,"
-                + " tal.`CURRENT_QUANTITY`,tm.`MARKETPLACE_NAME`,tw.`WAREHOUSE_NAME` FROM tesy_product tp "
-                + " LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`MANUFACTURER_MPN`=tp.`MANUFACTURER_MPN`"
-                + " LEFT JOIN tesy_available_listing tal ON tal.`SKU`=tmsm.`SKU`"
-                + " LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tal.`MARKETPLACE_ID`"
-                + " LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID`"
+                + " tal.`CURRENT_QUANTITY`,tm.`MARKETPLACE_NAME`,tw.`WAREHOUSE_NAME` FROM pm_product tp "
+                + " LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`MANUFACTURER_MPN`=tp.`MANUFACTURER_MPN`"
+                + " LEFT JOIN pm_available_listing tal ON tal.`SKU`=tmsm.`SKU`"
+                + " LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tal.`MARKETPLACE_ID`"
+                + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID`"
                 + " WHERE tp.`performanceMods_MPN`=? AND tal.`SKU` IS NOT NULL";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new MarketplaceListingSkuDTORowMapper(), performanceModsMpn);
     }
 
@@ -1040,10 +1040,10 @@ public class ProductDaoImpl implements ProductDao {
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT tm.`MANUFACTURER_NAME`,tmsm.`MANUFACTURER_MPN`,tso.`MARKETPLACE_SKU` \n"
-                    + "FROM tesy_order tso\n"
-                    + "LEFT JOIN tesy_available_listing tal ON tso.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
-                    + "LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
+                    + "FROM pm_order tso\n"
+                    + "LEFT JOIN pm_available_listing tal ON tso.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
+                    + "LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
                     + "WHERE tal.`CURRENT_QUANTITY`=2");
             if (count == 1) {
                 sql.append(" LIMIT 10");
@@ -1080,10 +1080,10 @@ public class ProductDaoImpl implements ProductDao {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT tsp.`PRODUCT_ID`,tm.`MANUFACTURER_NAME`,tsp.`PRODUCT_NAME`,tsp.`MANUFACTURER_MPN`,tsp.`TITLE`,tsp.`UPC`,tmc.`MAIN_CATEGORY_DESC`,tsp.`WEIGHT`,tsp.`LENGTH`,  "
                     + "tsp.`WIDTH`,tsp.`HEIGHT`,tsp.`MAIN_CATEGORY_ID`,tsp.`SUB_CATEGORY1`,tsp.`SUB_CATEGORY2`,tsp.`SHORT_DESC`,tsp.`RESIZE_IMAGE_URL`   "
-                    + "FROM tesy_product tsp   "
-                    + "LEFT JOIN tesy_main_category tmc ON tsp.`MAIN_CATEGORY_ID`=tmc.`MAIN_CATEGORY_ID`  "
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`= tsp.`MANUFACTURER_ID`  "
-                    + "LEFT JOIN tesy_product_image ti ON ti.`PRODUCT_ID`= tsp.`PRODUCT_ID` "
+                    + "FROM pm_product tsp   "
+                    + "LEFT JOIN pm_main_category tmc ON tsp.`MAIN_CATEGORY_ID`=tmc.`MAIN_CATEGORY_ID`  "
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`= tsp.`MANUFACTURER_ID`  "
+                    + "LEFT JOIN pm_product_image ti ON ti.`PRODUCT_ID`= tsp.`PRODUCT_ID` "
                     + "WHERE TRIM(tsp.`PRODUCT_NAME`) IS NULL   "
                     + "OR TRIM(tsp.`MANUFACTURER_MPN`) IS NULL  "
                     + "OR TRIM(tsp.`TITLE`) IS NULL  "
@@ -1141,9 +1141,9 @@ public class ProductDaoImpl implements ProductDao {
     public int getMissingProductDataListCount() {
 
         String sql = "SELECT COUNT(*)\n"
-                + "FROM tesy_product tsp \n"
-                + "LEFT JOIN tesy_main_category tmc ON tsp.`MAIN_CATEGORY_ID`=tmc.`MAIN_CATEGORY_ID`\n"
-                + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`= tsp.`MANUFACTURER_ID` \n"
+                + "FROM pm_product tsp \n"
+                + "LEFT JOIN pm_main_category tmc ON tsp.`MAIN_CATEGORY_ID`=tmc.`MAIN_CATEGORY_ID`\n"
+                + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`= tsp.`MANUFACTURER_ID` \n"
                 + "WHERE TRIM(tsp.`PRODUCT_NAME`) IS NULL \n"
                 + "OR TRIM(tsp.`MANUFACTURER_MPN`) IS NULL\n"
                 + "OR TRIM(tsp.`TITLE`) IS NULL\n"
@@ -1166,11 +1166,11 @@ public class ProductDaoImpl implements ProductDao {
                     + "tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,\n"
                     + "GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + "GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
-                    + "FROM tesy_product tp\n"
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
-                    + "LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
-                    + "LEFT JOIN tesy_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
-                    + "LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
+                    + "FROM pm_product tp\n"
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
+                    + "LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
+                    + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
+                    + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
                     + "WHERE tp.performanceMods_MPN=?";
             Object[] param = {performanceModsMpn};
 
@@ -1187,15 +1187,15 @@ public class ProductDaoImpl implements ProductDao {
     public int deleteProductByProductID(int productId) {
 
         String sql;
-        sql = "DELETE FROM tesy_current_warehouse_product WHERE PRODUCT_ID = ? ";
+        sql = "DELETE FROM pm_current_warehouse_product WHERE PRODUCT_ID = ? ";
         this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM tesy_product_image WHERE PRODUCT_ID =? ";
+        sql = "DELETE FROM pm_product_image WHERE PRODUCT_ID =? ";
         this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM tesy_warehouse_feed_data  WHERE PRODUCT_ID=?";
+        sql = "DELETE FROM pm_warehouse_feed_data  WHERE PRODUCT_ID=?";
         this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM tesy_warehouse_product_mpn  WHERE PRODUCT_ID=?";
+        sql = "DELETE FROM pm_warehouse_product_mpn  WHERE PRODUCT_ID=?";
         this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM tesy_product WHERE PRODUCT_ID=?";
+        sql = "DELETE FROM pm_product WHERE PRODUCT_ID=?";
         this.jdbcTemplate.update(sql, productId);
         return 1;
     }
@@ -1203,26 +1203,26 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<ChildOfSubCategory> getListOfChildCategory() {
 
-        String sql = "SELECT tsc.* , u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_sub_child_category tsc\n"
+        String sql = "SELECT tsc.* , u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_sub_child_category tsc\n"
                 + "LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` \n"
                 + "LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`\n"
-                + "LEFT JOIN tesy_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
+                + "LEFT JOIN pm_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
                 + "WHERE tsc.ACTIVE GROUP BY tsc.`CHILD_CATEGORY_ID`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ChildCategoryRowMapper());
     }
 
     @Override
     public List<ChildOfSubCategory> getChildCategoryListForSubCategory(int subCategoryId) {
         String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy \n"
-                + "FROM tesy_sub_child_category tsc\n"
+                + "FROM pm_sub_child_category tsc\n"
                 + "LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` \n"
                 + "LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`\n"
-                + "LEFT JOIN tesy_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
+                + "LEFT JOIN pm_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
                 + "WHERE tcm.`SUB_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`CHILD_CATEGORY_DESC`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ChildCategoryRowMapper(), subCategoryId);
 
     }
@@ -1230,13 +1230,13 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<ChildOfChildCategory> getsubChildCategoryListForSubCategory(int childCategoryId) {
         String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy \n"
-                + "FROM tesy_child_subset_category tsc\n"
+                + "FROM pm_child_subset_category tsc\n"
                 + "LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` \n"
                 + "LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`\n"
-                + "LEFT JOIN tesy_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`\n"
+                + "LEFT JOIN pm_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`\n"
                 + "WHERE tcm.`CHILD_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`CHILD_SUB_CATEGORY_DESC`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubChildCategoryRowMapper(), childCategoryId);
 
     }
@@ -1246,7 +1246,7 @@ public class ProductDaoImpl implements ProductDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        SimpleJdbcInsert subCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_sub_child_category").usingGeneratedKeyColumns("CHILD_CATEGORY_ID");
+        SimpleJdbcInsert subCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_sub_child_category").usingGeneratedKeyColumns("CHILD_CATEGORY_ID");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("CHILD_CATEGORY_DESC", childCategoryDesc);
         params.put("CREATED_DATE", curDate);
@@ -1255,7 +1255,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into tesy_sub_child_category", params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_child_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subCategoryId = subCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subCategoryId;
@@ -1263,9 +1263,9 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Integer> getChildCategoryIdListBySubCategory(int subCategoryId) {
-        String sql = "SELECT tcm.`SUB_CHILD_CATEGORY_ID` FROM tesy_sub_child_category_mapping tcm WHERE tcm.`SUB_CATEGORY_ID`=?";
+        String sql = "SELECT tcm.`SUB_CHILD_CATEGORY_ID` FROM pm_sub_child_category_mapping tcm WHERE tcm.`SUB_CATEGORY_ID`=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, subCategoryId);
     }
 
@@ -1276,12 +1276,12 @@ public class ProductDaoImpl implements ProductDao {
             sql.append(" SELECT tp.`PRODUCT_NAME`,tm.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`WEIGHT`,  "
                     + "tc.`MAIN_CATEGORY_DESC`,tcc.`CHILD_CATEGORY_ID`,ts.`SUB_CATEGORY_ID`,tc.`MAIN_CATEGORY_ID`,ts.`SUB_CATEGORY_DESC`,tcc.`CHILD_CATEGORY_DESC`,tp.`SHORT_DESC`, "
                     + "tp.`LONG_DESC`,tp.`RESIZE_IMAGE_URL`,ti.`LARGE_IMAGE_URL`  "
-                    + "FROM tesy_product tp  "
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`= tp.`MANUFACTURER_ID`  "
-                    + "LEFT JOIN tesy_main_category tc ON tc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID` "
-                    + "LEFT JOIN tesy_sub_category ts ON ts.`SUB_CATEGORY_ID`= tp.`SUB_CATEGORY1` "
-                    + "LEFT JOIN tesy_sub_child_category tcc ON tcc.`CHILD_CATEGORY_ID` = tp.`SUB_CATEGORY2`  "
-                    + "LEFT JOIN tesy_product_image ti ON ti.`PRODUCT_ID`= tp.`PRODUCT_ID` "
+                    + "FROM pm_product tp  "
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`= tp.`MANUFACTURER_ID`  "
+                    + "LEFT JOIN pm_main_category tc ON tc.`MAIN_CATEGORY_ID`=tp.`MAIN_CATEGORY_ID` "
+                    + "LEFT JOIN pm_sub_category ts ON ts.`SUB_CATEGORY_ID`= tp.`SUB_CATEGORY1` "
+                    + "LEFT JOIN pm_sub_child_category tcc ON tcc.`CHILD_CATEGORY_ID` = tp.`SUB_CATEGORY2`  "
+                    + "LEFT JOIN pm_product_image ti ON ti.`PRODUCT_ID`= tp.`PRODUCT_ID` "
                     + "WHERE tp.`PRODUCT_ID` ");
 
             Map<String, Object> params = new HashMap<String, Object>();
@@ -1321,7 +1321,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductDownloadListRowMapper());
             return list;
         } catch (Exception e) {
@@ -1337,7 +1337,7 @@ public class ProductDaoImpl implements ProductDao {
         StringBuilder sql = new StringBuilder();
         try {
             sql.append("SELECT COUNT(tp.`PRODUCT_ID`)  "
-                    + "FROM tesy_product tp  "
+                    + "FROM pm_product tp  "
                     + "WHERE tp.`PRODUCT_ID` ");
 
             Map<String, Object> params = new HashMap<String, Object>();
@@ -1371,7 +1371,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             Integer i = nm.queryForObject(sql.toString(), params, Integer.class);
 
             if (i == null) {
@@ -1391,7 +1391,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<SubCategory> getAllSubCategoryList() {
         try {
 
-            String sql = "SELECT tm.`SUB_CATEGORY_ID`,tm.`SUB_CATEGORY_DESC` FROM tesy_sub_category tm";
+            String sql = "SELECT tm.`SUB_CATEGORY_ID`,tm.`SUB_CATEGORY_DESC` FROM pm_sub_category tm";
             return this.jdbcTemplate.query(sql, new RowMapper<SubCategory>() {
                 @Override
                 public SubCategory mapRow(ResultSet rs, int i) throws SQLException {
@@ -1414,7 +1414,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<ChildOfSubCategory> getAllChildCategoryList() {
         try {
 
-            String sql = "SELECT ts.`CHILD_CATEGORY_ID`,ts.`CHILD_CATEGORY_DESC` FROM tesy_sub_child_category ts";
+            String sql = "SELECT ts.`CHILD_CATEGORY_ID`,ts.`CHILD_CATEGORY_DESC` FROM pm_sub_child_category ts";
             return this.jdbcTemplate.query(sql, new RowMapper<ChildOfSubCategory>() {
                 @Override
                 public ChildOfSubCategory mapRow(ResultSet rs, int i) throws SQLException {
@@ -1434,22 +1434,22 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<ChildOfChildCategory> getListOfSubChildCategory() {
-        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM tesy_child_subset_category tsc"
+        String sql = "SELECT tsc.* ,  u1.`username` AS createdBy,u2.`username` AS lastModifiedBy FROM pm_child_subset_category tsc"
                 + " LEFT JOIN `user` u1 ON u1.`USER_ID`=tsc.`CREATED_BY` "
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tsc.`LAST_MODIFIED_BY`"
-                + " LEFT JOIN tesy_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`"
+                + " LEFT JOIN pm_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`"
                 + " WHERE tsc.ACTIVE GROUP BY tsc.`CHILD_SUB_CATEGORY_ID`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubChildCategoryRowMapper());
     }
 
     @Override
     public List<Integer> getSubChildCategoryIdListByChildCategory(int childCategoryId) {
 
-        String sql = "SELECT tcm.`CHILD_OF_CHILD_CATEGORY_ID` FROM tesy_child_childsubset_category_mapping tcm WHERE tcm.`CHILD_CATEGORY_ID`=?";
+        String sql = "SELECT tcm.`CHILD_OF_CHILD_CATEGORY_ID` FROM pm_child_childsubset_category_mapping tcm WHERE tcm.`CHILD_CATEGORY_ID`=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, childCategoryId);
     }
 
@@ -1458,7 +1458,7 @@ public class ProductDaoImpl implements ProductDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        SimpleJdbcInsert subChildCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_child_subset_category").usingGeneratedKeyColumns("CHILD_SUB_CATEGORY_ID");
+        SimpleJdbcInsert subChildCategoryInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_child_subset_category").usingGeneratedKeyColumns("CHILD_SUB_CATEGORY_ID");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("CHILD_SUB_CATEGORY_DESC", subChildCategoryDesc);
         params.put("CREATED_DATE", curDate);
@@ -1467,7 +1467,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into tesy_child_subset_category", params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_child_subset_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subChildCategoryId = subChildCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subChildCategoryId;
@@ -1481,12 +1481,12 @@ public class ProductDaoImpl implements ProductDao {
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_website_upload`";
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_website_upload done.", GlobalConstants.TAG_SYSTEMLOG));
-        //query load data from bulk order tracking csv file into tesy_temp_bulk_tracking
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_website_upload done.", GlobalConstants.TAG_SYSTEMLOG));
+        //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
         //sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES  (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
         this.jdbcTemplate.execute(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
         try {
 
@@ -1502,43 +1502,43 @@ public class ProductDaoImpl implements ProductDao {
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm\n"
-                    + "LEFT JOIN tesy_manufacturer ttm ON ttm.`MANUFACTURER_NAME`=tm.`MANUFACTURER_NAME`\n"
+                    + "LEFT JOIN pm_manufacturer ttm ON ttm.`MANUFACTURER_NAME`=tm.`MANUFACTURER_NAME`\n"
                     + "SET tm.`MANUFACTURER_ID`=ttm.`MANUFACTURER_ID` WHERE ttm.`MANUFACTURER_NAME`=tm.`MANUFACTURER_NAME`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_ID`= tm.`MANUFACTURER_ID`\n"
+                    + "LEFT JOIN pm_product tp ON tp.`MANUFACTURER_ID`= tm.`MANUFACTURER_ID`\n"
                     + "SET tm.`performanceMods_MPN`= tp.`performanceMods_MPN`\n"
                     + "WHERE tm.`MANUFACTURER_ID`= tp.`MANUFACTURER_ID` \n"
                     + "AND tm.`MANUFACTURER_MPN`=tp.`MANUFACTURER_MPN`";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_product tp ON tp.`performanceMods_MPN`= tm.`performanceMods_MPN`\n"
+                    + "LEFT JOIN pm_product tp ON tp.`performanceMods_MPN`= tm.`performanceMods_MPN`\n"
                     + "SET tm.`PRODUCT_ID`=tp.`PRODUCT_ID` WHERE tp.`performanceMods_MPN`= tm.`performanceMods_MPN`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_main_category tc ON tc.`MAIN_CATEGORY_DESC`=tm.`MAIN_CATEGORY_DESC`\n"
+                    + "LEFT JOIN pm_main_category tc ON tc.`MAIN_CATEGORY_DESC`=tm.`MAIN_CATEGORY_DESC`\n"
                     + "SET tm.`MAIN_CATEGORY_ID`=tc.`MAIN_CATEGORY_ID` WHERE tc.`MAIN_CATEGORY_DESC`=tm.`MAIN_CATEGORY_DESC`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_sub_category ts ON ts.`SUB_CATEGORY_DESC`=tm.`SUB_CATEGORY_DESC`\n"
+                    + "LEFT JOIN pm_sub_category ts ON ts.`SUB_CATEGORY_DESC`=tm.`SUB_CATEGORY_DESC`\n"
                     + "SET tm.`SUB_CATEGORY_ID` = ts.`SUB_CATEGORY_ID` WHERE ts.`SUB_CATEGORY_DESC`=tm.`SUB_CATEGORY_DESC`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_sub_child_category tsc ON tsc.`CHILD_CATEGORY_DESC`=tm.`CHILD_CATEGORY_DESC`\n"
+                    + "LEFT JOIN pm_sub_child_category tsc ON tsc.`CHILD_CATEGORY_DESC`=tm.`CHILD_CATEGORY_DESC`\n"
                     + "SET tm.`CHILD_CATEGORY_ID` = tsc.`CHILD_CATEGORY_ID` WHERE tsc.`CHILD_CATEGORY_DESC`=tm.`CHILD_CATEGORY_DESC`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN tesy_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_DESC`=tm.`CHILD_SUB_CATEGORY_DESC`\n"
+                    + "LEFT JOIN pm_child_subset_category tcsc ON tcsc.`CHILD_SUB_CATEGORY_DESC`=tm.`CHILD_SUB_CATEGORY_DESC`\n"
                     + "SET tm.`CHILD_SUB_CATEGORY_ID` = tcsc.`CHILD_SUB_CATEGORY_ID` WHERE tcsc.`CHILD_SUB_CATEGORY_DESC`=tm.`CHILD_SUB_CATEGORY_DESC`";
             jdbcTemplate.update(sql);
 
-            sql = "UPDATE tesy_product tp\n"
+            sql = "UPDATE pm_product tp\n"
                     + "LEFT JOIN temp_website_upload tw ON tw.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
                     + "SET\n"
                     + "tp.`PRODUCT_NAME`=tw.`PRODUCT_NAME`,\n"
@@ -1554,13 +1554,13 @@ public class ProductDaoImpl implements ProductDao {
 
             sql = "SELECT twu.`PRODUCT_ID`,TRIM(twu.`IMAGE_URL_1`) AS i1,TRIM(twu.`IMAGE_URL_2`) AS i2,TRIM(twu.`IMAGE_URL_3`) AS i3,TRIM(twu.`IMAGE_URL_4`)AS i4\n"
                     + "FROM temp_website_upload twu\n"
-                    + "LEFT JOIN tesy_product tp ON tp.`PRODUCT_ID` = twu.`PRODUCT_ID`\n"
+                    + "LEFT JOIN pm_product tp ON tp.`PRODUCT_ID` = twu.`PRODUCT_ID`\n"
                     + "WHERE tp.`PRODUCT_ID` = twu.`PRODUCT_ID` AND tp.`performanceMods_MPN` =twu.`performanceMods_MPN`";
 
             List<TempWebsiteUpload> list = this.jdbcTemplate.query(sql, new TempWebsiteUploadRowMapper());
 
             Map<String, Object> params = new HashMap<String, Object>();
-            String sql1 = "insert into tesy_product_image"
+            String sql1 = "insert into pm_product_image"
                     + " (PRODUCT_ID,LARGE_IMAGE_URL,ORDER_ID)"
                     + " VALUES(:productId,"
                     + " :largeImageUrl,"
@@ -1657,7 +1657,7 @@ public class ProductDaoImpl implements ProductDao {
             sql += " WHERE tc.ACTIVE";
         }
         sql += " ORDER BY tc.`LAST_MODIFIED_DATE` DESC";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new CompanyRowMapper());
     }
 

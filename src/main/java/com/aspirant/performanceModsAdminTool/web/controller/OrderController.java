@@ -33,7 +33,7 @@ public class OrderController {
     @RequestMapping(value = "order/getOrderList.htm", method = RequestMethod.GET)
     public void getOrderList() {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-        gregorianCalendar.add(GregorianCalendar.MINUTE, -15);
+        gregorianCalendar.add(GregorianCalendar.HOUR, -2);
         XMLGregorianCalendar lastUpdatedAfter = MwsUtl.getDTF().newXMLGregorianCalendar(gregorianCalendar);
         this.orderApiService.getOrderList(lastUpdatedAfter);
     }    

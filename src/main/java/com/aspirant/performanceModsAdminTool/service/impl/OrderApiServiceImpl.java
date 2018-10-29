@@ -16,6 +16,8 @@ import com.amazonservices.mws.orders.model.ListOrdersResponse;
 import com.amazonservices.mws.orders.model.Order;
 import com.amazonservices.mws.orders.model.OrderItem;
 import com.amazonservices.mws.orders.model.ResponseHeaderMetadata;
+import com.aspirant.performanceModsAdminTool.dao.ConfigDao;
+import com.aspirant.performanceModsAdminTool.model.AmazonProperties;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,16 +51,21 @@ public class OrderApiServiceImpl implements OrderApiService {
     }
     @Autowired
     private OrderDao orderDao;
+    
+    @Autowired
+    private ConfigDao configDao;
 
     @Override
     public ListOrdersResponse getOrderList(XMLGregorianCalendar lastUpdatedAfterDate) {
         ListOrdersResponse response = null;
         ListOrderItemsResponse response1 = null;
         try {
-            AmazonWebService a = new AmazonWebService("/home/altius/performanceMods/amazon/amazon.properties");
+            AmazonProperties ap = configDao.getAmazonProperties();
+//            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
+            AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
 
             if (a.isPropsLoaded()) {
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+//               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
 
                     NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
@@ -82,7 +89,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                     String sqlInsertCustomer = "INSERT IGNORE INTO customers (CUSTOMER_NAME,SHIPPING_ADDRESS_LINE1,SHIPPING_ADDRESS_LINE2,SHIPPING_ADDRESS_LINE3,CITY,STATE,ZIP_CODE,COUNTRY,PHONE_NO,EMAIL)"
                             + " VALUES(:customerName,:shippingAddressLine1,:shippingAddressLine2,:shippingAddressLine3,:city,:state,:postalCode,:country,:customerPhone,:email)";
 
-                    String sql = "INSERT IGNORE INTO tesy_order (PO_NUMBER,ORDER_ID,MARKETPLACE_ID,MARKETPLACE_ORDER_ID,MARKETPLACE_SKU,MARKETPLACE_LISTING_ID,ORDER_DATE,SHIP_BY_DATE,DELIVERY_BY_DATE,"
+                    String sql = "INSERT IGNORE INTO pm_order (PO_NUMBER,ORDER_ID,MARKETPLACE_ID,MARKETPLACE_ORDER_ID,MARKETPLACE_SKU,MARKETPLACE_LISTING_ID,ORDER_DATE,SHIP_BY_DATE,DELIVERY_BY_DATE,"
                             + " PAYMENT_DATE,LAST_UPDATED_DATE,CUSTOMER_NAME,CUSTOMER_PHONE_NO,QUANTITY_UNSHIPPED,QUANTITY_SHIPPED,ORDER_ITEM_ID,PRICE,TAX,SHIPPING,SHIP_TO_NAME,SHIPPING_ADDRESS_LINE1,SHIPPING_ADDRESS_LINE2,SHIPPING_ADDRESS_LINE3,"
                             + " CITY,STATE,POSTAL_CODE,COUNTRY,SHIPPING_PHONE_NO,FULFILLMENT_CHANNEL,ORDER_STATUS,CUSTOMER_ID,UPDATED_BY)"
                             + " VALUES (:poNumber,NULL,:marketplaceId,:marketplace_order_id,:marketplaceSku,:marketplaceListingId,:orderDate,:latestShipDate,:latestDeliveryDate,:paymentDate,:lastUpdatedDate,:customerName,"
@@ -168,7 +175,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                                 }
                             }
                             params.put("customerId", customerId);
-                            //tesy_order table insert
+                            //pm_order table insert
 
                             params.put("poNumber", null);
                             params.put("marketplaceId", "1");
@@ -273,27 +280,27 @@ public class OrderApiServiceImpl implements OrderApiService {
 
                             params.clear();
                             params2.put("marketplace_order_id", o.getAmazonOrderId());
-                            //tesy_order_trans table insert
+                            //pm_order_trans table insert
                             params.put("marketplace_order_id", o.getAmazonOrderId());
                             batchParams2[x] = new MapSqlParameterSource(params2);
 
 
-                            sqlInsert = "INSERT INTO tesy_order_trans"
+                            sqlInsert = "INSERT INTO pm_order_trans"
                                     + " SELECT tor.PO_NUMBER,tor.ORDER_ID,tor.MARKETPLACE_ID,tor.MARKETPLACE_ORDER_ID,tor.MARKETPLACE_SKU,tor.MARKETPLACE_LISTING_ID,tor.ORDER_DATE,tor.SHIP_BY_DATE,tor.DELIVERY_BY_DATE,"
                                     + " tor.PAYMENT_DATE,tor.LAST_UPDATED_DATE,tor.CUSTOMER_NAME,tor.CUSTOMER_PHONE_NO,tor.QUANTITY_UNSHIPPED,"
                                     + " tor.QUANTITY_SHIPPED,tor.ORDER_ITEM_ID,tor.PRICE,tor.TAX,tor.SHIPPING,tor.SHIP_TO_NAME,tor.SHIPPING_ADDRESS_LINE1,tor.SHIPPING_ADDRESS_LINE2,tor.SHIPPING_ADDRESS_LINE3,"
                                     + " tor.CITY,tor.STATE,tor.POSTAL_CODE,tor.COUNTRY,tor.SHIPPING_PHONE_NO,tor.FULFILLMENT_CHANNEL,tor.ORDER_STATUS,"
                                     + " tor.CUSTOMER_ID,tor.WAREHOUSE_ID,tor.PROCESSED_BY,tor.PROCESSED_DATE, tor.`TRACKING_BY`,tor.`TRACKING_CARRIER`,"
-                                    + " tor.`TRACKING_DATE`,tor.`TRACKING_ID`,tor.`UPDATED_BY` FROM tesy_order tor WHERE "
+                                    + " tor.`TRACKING_DATE`,tor.`TRACKING_ID`,tor.`UPDATED_BY` FROM pm_order tor WHERE "
                                     + " tor. MARKETPLACE_ORDER_ID=:marketplace_order_id";
                             x++;
                         }
                     }
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog("Response-RequestId:" + rhmd.getRequestId() + "Timestamp:" + rhmd.getTimestamp(), GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Response-RequestId:" + rhmd.getRequestId() + "Timestamp:" + rhmd.getTimestamp(), GlobalConstants.TAG_SYSTEMLOG));
                     params.clear();
                     int[] resultList = nm.batchUpdate(sql, batchParams1);
                     int[] batchUpdate = nm.batchUpdate(sqlInsert, batchParams2);
-                    String sqlpo = "UPDATE tesy_order tor SET tor.`PO_NUMBER`=CONCAT('TEL-',tor.`ORDER_ID`) WHERE tor.`PO_NUMBER` IS NULL";
+                    String sqlpo = "UPDATE pm_order tor SET tor.`PO_NUMBER`=CONCAT('PM-',tor.`ORDER_ID`) WHERE tor.`PO_NUMBER` IS NULL";
                     this.jdbcTemplate.update(sqlpo);
                 } catch (Exception e) {
                     e.printStackTrace();

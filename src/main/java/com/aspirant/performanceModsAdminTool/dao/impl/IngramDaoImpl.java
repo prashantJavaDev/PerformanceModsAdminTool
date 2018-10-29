@@ -39,7 +39,7 @@ public class IngramDaoImpl implements IngramDao {
     @Override
     public List<CurrentWarehouseProduct> getWarehouseIdentificationNo() {
         try {
-            String sql = "SELECT tp.`WAREHOUSE_IDENTIFICATION_NO` FROM tesy_current_warehouse_product tp \n"
+            String sql = "SELECT tp.`WAREHOUSE_IDENTIFICATION_NO` FROM pm_current_warehouse_product tp \n"
                     + "WHERE tp.`WAREHOUSE_ID` = 20 AND tp.`FEED_STATUS`=0 LIMIT 1";
 
             return this.jdbcTemplate.query(sql, new RowMapper<CurrentWarehouseProduct>() {
@@ -60,7 +60,7 @@ public class IngramDaoImpl implements IngramDao {
     @Override
     public int updateCurrentWareHouseProductForIngram(String sku, int quantity, double price) {
         try {
-            String sql = "UPDATE tesy_current_warehouse_product tp SET  tp.`QUANTITY`=? , tp.`PRICE`= ?,tp.`FEED_STATUS`=1\n"
+            String sql = "UPDATE pm_current_warehouse_product tp SET  tp.`QUANTITY`=? , tp.`PRICE`= ?,tp.`FEED_STATUS`=1\n"
                     + "WHERE tp.`WAREHOUSE_ID`=20 AND tp.`WAREHOUSE_IDENTIFICATION_NO`=?";
             return this.jdbcTemplate.update(sql, quantity, price, sku);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class IngramDaoImpl implements IngramDao {
 
     @Override
     public void flushDataForIngramPNA() {
-        String sql = "UPDATE tesy_current_warehouse_product tcwp SET tcwp.`FEED_STATUS`=0 WHERE tcwp.`WAREHOUSE_ID`=20";
+        String sql = "UPDATE pm_current_warehouse_product tcwp SET tcwp.`FEED_STATUS`=0 WHERE tcwp.`WAREHOUSE_ID`=20";
         this.jdbcTemplate.update(sql);
     }
 
@@ -80,9 +80,9 @@ public class IngramDaoImpl implements IngramDao {
         try {
             String sql = "SELECT tor.`PO_NUMBER`,tor.`SHIP_TO_NAME`,tor.`SHIPPING_ADDRESS_LINE1`,tor.`SHIPPING_ADDRESS_LINE2`,\n"
                     + "tor.`SHIPPING_ADDRESS_LINE3`,tor.`CITY`,tor.`STATE`,tor.`POSTAL_CODE`,tcwp.`PRICE`,tor.`WAREHOUSE_ID`,\n"
-                    + "tor.`QUANTITY_UNSHIPPED`,tcwp.`WAREHOUSE_IDENTIFICATION_NO` FROM tesy_order tor \n"
-                    + "LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tor.`MARKETPLACE_SKU`\n"
-                    + "LEFT JOIN tesy_current_warehouse_product tcwp ON tcwp.`MPN`=tmsm.`MANUFACTURER_MPN`\n"
+                    + "tor.`QUANTITY_UNSHIPPED`,tcwp.`WAREHOUSE_IDENTIFICATION_NO` FROM pm_order tor \n"
+                    + "LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tor.`MARKETPLACE_SKU`\n"
+                    + "LEFT JOIN pm_current_warehouse_product tcwp ON tcwp.`MPN`=tmsm.`MANUFACTURER_MPN`\n"
                     + "WHERE  tor.`WAREHOUSE_ID`=20 AND tcwp.`WAREHOUSE_ID`=20 AND tor.`PO_NUMBER`= ?";
 
             return this.jdbcTemplate.queryForObject(sql, new OrderRequestXMLRowMapper(), poNumber);
@@ -99,7 +99,7 @@ public class IngramDaoImpl implements IngramDao {
 
         try {
             // 
-            String sql = "SELECT tor.`PO_NUMBER`,tor.`WAREHOUSE_ORDER_NUMBER` FROM tesy_order tor WHERE tor.`WAREHOUSE_ID`=20 AND tor.`PO_NUMBER`=?";
+            String sql = "SELECT tor.`PO_NUMBER`,tor.`WAREHOUSE_ORDER_NUMBER` FROM pm_order tor WHERE tor.`WAREHOUSE_ID`=20 AND tor.`PO_NUMBER`=?";
             // here problem is we are getting data frm getDataForOrderDetailRequestXml, ?<-- frm where we get PO_Number
             return this.jdbcTemplate.queryForObject(sql, new RowMapper<Order>() {
                 @Override
@@ -141,7 +141,7 @@ public class IngramDaoImpl implements IngramDao {
     @Override
     public int updateWarehouseOrderStatus(String warehouseOrderStatus, String poNumber, String warehouseOrderNumber) {
         try {
-            String sql = "UPDATE tesy_order tor SET tor.`WAREHOUSE_ORDER_STATUS`=?, tor.`WAREHOUSE_ORDER_NUMBER`=? WHERE tor.`PO_NUMBER`=?";
+            String sql = "UPDATE pm_order tor SET tor.`WAREHOUSE_ORDER_STATUS`=?, tor.`WAREHOUSE_ORDER_NUMBER`=? WHERE tor.`PO_NUMBER`=?";
             return this.jdbcTemplate.update(sql, warehouseOrderStatus, warehouseOrderNumber, poNumber);
 
         } catch (Exception e) {
@@ -154,7 +154,7 @@ public class IngramDaoImpl implements IngramDao {
     public int updateTrackingCarrierAndId(String trackingCarrier, String trackingId, String poNumber) {
         try {
             String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-            String sql = "UPDATE tesy_order tor SET tor.`TRACKING_CARRIER`=?,tor.`TRACKING_ID`=?,tor.`TRACKING_BY`=52,\n"
+            String sql = "UPDATE pm_order tor SET tor.`TRACKING_CARRIER`=?,tor.`TRACKING_ID`=?,tor.`TRACKING_BY`=52,\n"
                     + "tor.`WAREHOUSE_TRACKING_STATUS`=1,tor.`TRACKING_DATE`=? WHERE tor.`PO_NUMBER`=?";
             return this.jdbcTemplate.update(sql, trackingCarrier, trackingId,curDate,poNumber);
 
@@ -167,7 +167,7 @@ public class IngramDaoImpl implements IngramDao {
     @Override
     public String getPoNumberForOrderStatus() {
         try {
-            String sql = "SELECT tr.`PO_NUMBER` FROM tesy_order tr WHERE tr.`WAREHOUSE_ID`=20 AND tr.`ORDER_STATUS`='Unshipped' AND tr.`WAREHOUSE_ORDER_STATUS` !='BILLED' LIMIT 1";
+            String sql = "SELECT tr.`PO_NUMBER` FROM pm_order tr WHERE tr.`WAREHOUSE_ID`=20 AND tr.`ORDER_STATUS`='Unshipped' AND tr.`WAREHOUSE_ORDER_STATUS` !='BILLED' LIMIT 1";
             String result = this.jdbcTemplate.queryForObject(sql, String.class);
             return result;
         } catch (Exception e) {
@@ -179,7 +179,7 @@ public class IngramDaoImpl implements IngramDao {
     @Override
     public Order getDataForOrderTrackingRequest() {
         try {
-            String sql = "SELECT tor.`PO_NUMBER`,tor.`WAREHOUSE_ORDER_NUMBER` FROM tesy_order tor WHERE tor.`WAREHOUSE_ID`=20 AND tor.`WAREHOUSE_TRACKING_STATUS`=0 AND tor.`WAREHOUSE_ORDER_STATUS` ='BILLED' OR tor.`WAREHOUSE_ORDER_STATUS` ='INVOICED' AND tor.`ORDER_STATUS`='Unshipped' LIMIT 1";
+            String sql = "SELECT tor.`PO_NUMBER`,tor.`WAREHOUSE_ORDER_NUMBER` FROM pm_order tor WHERE tor.`WAREHOUSE_ID`=20 AND tor.`WAREHOUSE_TRACKING_STATUS`=0 AND tor.`WAREHOUSE_ORDER_STATUS` ='BILLED' OR tor.`WAREHOUSE_ORDER_STATUS` ='INVOICED' AND tor.`ORDER_STATUS`='Unshipped' LIMIT 1";
             return this.jdbcTemplate.queryForObject(sql, new RowMapper<Order>() {
                 @Override
                 public Order mapRow(ResultSet rs, int i) throws SQLException {
@@ -197,13 +197,13 @@ public class IngramDaoImpl implements IngramDao {
 
     @Override
     public void flushDataForIngramOrderTracking() {
-        String sql = "UPDATE tesy_order tor SET tor.`TRACKING_STATUS`=0 WHERE tcwp.`WAREHOUSE_ID`=20";
+        String sql = "UPDATE pm_order tor SET tor.`TRACKING_STATUS`=0 WHERE tcwp.`WAREHOUSE_ID`=20";
         this.jdbcTemplate.update(sql);
     }
 
     @Override
     public int updateIngramOrderResponceData(String warehouseOrderNumber, String poNumber) {
-        String sql = "UPDATE tesy_order tor SET tor.`WAREHOUSE_ORDER_NUMBER`=? AND WAREHOUSE_ORDER_STATUS='PENDING' WHERE tor.`PO_NUMBER`= ?";
+        String sql = "UPDATE pm_order tor SET tor.`WAREHOUSE_ORDER_NUMBER`=? AND WAREHOUSE_ORDER_STATUS='PENDING' WHERE tor.`PO_NUMBER`= ?";
         return this.jdbcTemplate.update(sql, warehouseOrderNumber, poNumber);
     }
 
@@ -211,7 +211,7 @@ public class IngramDaoImpl implements IngramDao {
     public Order getDataForIngramBaseRateRequest() {
         try {
             // 
-            String sql = "SELECT tor.`WAREHOUSE_ORDER_NUMBER`,tor.`POSTAL_CODE` FROM tesy_order tor WHERE tor.`WAREHOUSE_ORDER_NUMBER` IS NOT NULL AND tor.`WAREHOUSE_ID`=20 LIMIT 1";
+            String sql = "SELECT tor.`WAREHOUSE_ORDER_NUMBER`,tor.`POSTAL_CODE` FROM pm_order tor WHERE tor.`WAREHOUSE_ORDER_NUMBER` IS NOT NULL AND tor.`WAREHOUSE_ID`=20 LIMIT 1";
             return this.jdbcTemplate.queryForObject(sql, new RowMapper<Order>() {
                 @Override
                 public Order mapRow(ResultSet rs, int i) throws SQLException {

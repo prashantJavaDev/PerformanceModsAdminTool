@@ -56,12 +56,12 @@ public class AdminDaoImpl implements AdminDao {
         MapSqlParameterSource[] batchParams = new MapSqlParameterSource[assignCategories.length];
         int x = 0;
 
-        //Delete all assigned categories from tesy_sub_category.
-        sql = "DELETE FROM tesy_category_mapping WHERE MAIN_CATEGORY_ID =? ";
+        //Delete all assigned categories from pm_sub_category.
+        sql = "DELETE FROM pm_category_mapping WHERE MAIN_CATEGORY_ID =? ";
         this.jdbcTemplate.update(sql, mainCategoryId);
 
         //Assign default categories to main categories.
-        sql = "INSERT INTO tesy_category_mapping(CATEGORY_MAPPING_ID,MAIN_CATEGORY_ID,SUB_CATEGORY_ID)"
+        sql = "INSERT INTO pm_category_mapping(CATEGORY_MAPPING_ID,MAIN_CATEGORY_ID,SUB_CATEGORY_ID)"
                 + " VALUES (:categoryMappingId,:mainCategoryId,:subCategoryId)";
         for (int assign : assignCategories) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -72,7 +72,7 @@ public class AdminDaoImpl implements AdminDao {
             x++;
         }
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         int[] resultList = nm.batchUpdate(sql, batchParams);
     }
 
@@ -81,7 +81,7 @@ public class AdminDaoImpl implements AdminDao {
     public void addNewListing(Listing listing) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "INSERT INTO tesy_available_listing(MARKETPLACE_ID,MARKETPLACE_LISTING_ID,SKU,CURRENT_COMMISSION,LAST_MODIFIED_BY,LAST_MODIFIED_DATE)"
+        String sql = "INSERT INTO pm_available_listing(MARKETPLACE_ID,MARKETPLACE_LISTING_ID,SKU,CURRENT_COMMISSION,LAST_MODIFIED_BY,LAST_MODIFIED_DATE)"
                 + " VALUES (:marketplaceId,:marketplaceListingId,:sku,:commission,:lastModifiedBy,:lastModifiedDate)";
         Map<String, Object> params = new HashMap<String, Object>();
 
@@ -94,7 +94,7 @@ public class AdminDaoImpl implements AdminDao {
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         nm.update(sql, params);
 
-        String Query = "INSERT INTO tesy_available_listing(MARKETPLACE_ID,MARKETPLACE_LISTING_ID,SKU,LAST_LISTED_PRICE,LAST_LISTED_QUANTITY,ACTIVE,PACK,LAST_MODIFIED_BY,LAST_MODIFIED_DATE)"
+        String Query = "INSERT INTO pm_available_listing(MARKETPLACE_ID,MARKETPLACE_LISTING_ID,SKU,LAST_LISTED_PRICE,LAST_LISTED_QUANTITY,ACTIVE,PACK,LAST_MODIFIED_BY,LAST_MODIFIED_DATE)"
                 + " VALUES (:marketplaceId,:marketplaceListingId,:sku,:lastListedPrice,:lastListedQuantity,:active,:pack,:lastModifiedBy,:lastModifiedDate)";
         Map<String, Object> params1 = new HashMap<String, Object>();
 
@@ -110,7 +110,7 @@ public class AdminDaoImpl implements AdminDao {
         NamedParameterJdbcTemplate nm1 = new NamedParameterJdbcTemplate(jdbcTemplate);
         nm1.update(Query, params1);
 
-        String qry = "INSERT INTO tesy_mpn_sku_mapping(MANUFACTURER_MPN,MANUFACTURER_ID,SKU,PACK)"
+        String qry = "INSERT INTO pm_mpn_sku_mapping(MANUFACTURER_MPN,MANUFACTURER_ID,SKU,PACK)"
                 + " VALUES (:productMpn,:manufacturerId,:sku,:pack)";
         Map<String, Object> params2 = new HashMap<String, Object>();
         params2.put("productMpn", listing.getProductMpn());
@@ -123,13 +123,13 @@ public class AdminDaoImpl implements AdminDao {
 
     @Override
     public List<String> getSkuList(String productMpn, int manufacturerId) {
-        String sql = "SELECT tm.`SKU` FROM tesy_mpn_sku_mapping tm WHERE tm.`MANUFACTURER_MPN`=? AND tm.`MANUFACTURER_ID`=?";
+        String sql = "SELECT tm.`SKU` FROM pm_mpn_sku_mapping tm WHERE tm.`MANUFACTURER_MPN`=? AND tm.`MANUFACTURER_ID`=?";
         return this.jdbcTemplate.queryForList(sql, String.class, productMpn, manufacturerId);
     }
 
     @Override
     public String getperformanceModsMpnByMPN(String productMpn) {
-        String sql = "SELECT tp.`performanceMods_MPN` FROM tesy_product tp WHERE tp.`MANUFACTURER_MPN`=?";
+        String sql = "SELECT tp.`performanceMods_MPN` FROM pm_product tp WHERE tp.`MANUFACTURER_MPN`=?";
         return this.jdbcTemplate.queryForObject(sql, String.class, productMpn);
     }
 
@@ -165,7 +165,7 @@ public class AdminDaoImpl implements AdminDao {
         }
         sql += " ORDER BY tc.`LAST_MODIFIED_DATE` DESC";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new CompanyRowMapper());
     }
 
@@ -174,7 +174,7 @@ public class AdminDaoImpl implements AdminDao {
         String sqlString = "SELECT tc.* FROM tkt_company tc"
                 + " WHERE tc.`COMPANY_ID`=?";
         Object params[] = new Object[]{companyId};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForObject(sqlString, params, new CompanyRowMapper());
     }
 
@@ -186,14 +186,14 @@ public class AdminDaoImpl implements AdminDao {
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         sqlString = "UPDATE tkt_company SET COMPANY_NAME=?, OWNER_NAME=?, CONTACT_NUMBER=?, COUNTRY_NAME=?, ACTIVE=?, LAST_MODIFIED_BY=?, LAST_MODIFIED_DATE=? WHERE COMPANY_ID=?";
         params = new Object[]{company.getCompanyName(), company.getOwnerName(), company.getContactNumber(), company.getCountryName(), company.isActive(), curUser, curDate, company.getCompanyId()};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.update(sqlString, params);
     }
 
     @Override
     public List<ShippingCriteria> getshippingCriteriaList() {
-        String sql = "SELECT * FROM tesy_shipping_criteria";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        String sql = "SELECT * FROM pm_shipping_criteria";
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ShippingCriteriaRowMapper());
     }
 
@@ -204,7 +204,7 @@ public class AdminDaoImpl implements AdminDao {
             int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
             //System.out.println("Criteria Id :" + criteriaId);
             String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-            SimpleJdbcInsert warehouseInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_shipping_details").usingGeneratedKeyColumns("SHIPPING_DETAILS_ID");
+            SimpleJdbcInsert warehouseInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_shipping_details").usingGeneratedKeyColumns("SHIPPING_DETAILS_ID");
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("SHIPPING_CRITERIA_ID", criteriaId);
             params.put("WAREHOUSE_ID", warehouseId);
@@ -231,10 +231,10 @@ public class AdminDaoImpl implements AdminDao {
 
     @Override
     public ShippingDetails getWarehouseShippingDetailsByDetailsId(int warehouseShippingDetailsId) {
-        String sqlString = "SELECT tsd.* FROM tesy_shipping_details tsd"
+        String sqlString = "SELECT tsd.* FROM pm_shipping_details tsd"
                 + " WHERE tsd.`SHIPPING_DETAILS_ID`=?";
         Object params[] = new Object[]{warehouseShippingDetailsId};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForObject(sqlString, params, new ShippingDetailsRowMapper());
     }
 
@@ -268,12 +268,12 @@ public class AdminDaoImpl implements AdminDao {
         MapSqlParameterSource[] batchParams = new MapSqlParameterSource[assignChildCategories.length];
         int x = 0;
 
-        //Delete all assigned categories from tesy_sub_category.
-        sql = "DELETE FROM tesy_sub_child_category_mapping WHERE SUB_CATEGORY_ID =? ";
+        //Delete all assigned categories from pm_sub_category.
+        sql = "DELETE FROM pm_sub_child_category_mapping WHERE SUB_CATEGORY_ID =? ";
         this.jdbcTemplate.update(sql, subCategoryId);
 
         //Assign default categories to main categories.
-        sql = "INSERT INTO tesy_sub_child_category_mapping(SUB_CATEGORY_MAPPING_ID,SUB_CATEGORY_ID,SUB_CHILD_CATEGORY_ID)"
+        sql = "INSERT INTO pm_sub_child_category_mapping(SUB_CATEGORY_MAPPING_ID,SUB_CATEGORY_ID,SUB_CHILD_CATEGORY_ID)"
                 + " VALUES (:categoryMappingId,:subCategoryId,:childCategoryId)";
         for (int assign : assignChildCategories) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -284,7 +284,7 @@ public class AdminDaoImpl implements AdminDao {
             x++;
         }
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         int[] resultList = nm.batchUpdate(sql, batchParams);
     }
 
@@ -295,10 +295,10 @@ public class AdminDaoImpl implements AdminDao {
         MapSqlParameterSource[] batchParams = new MapSqlParameterSource[assignSubChildCategories.length];
         int x = 0;
 
-        sql = "DELETE FROM tesy_child_childsubset_category_mapping WHERE CHILD_CATEGORY_ID =? ";
+        sql = "DELETE FROM pm_child_childsubset_category_mapping WHERE CHILD_CATEGORY_ID =? ";
         this.jdbcTemplate.update(sql, childCategoryId);
 
-        sql = "INSERT INTO  tesy_child_childsubset_category_mapping(CHILD_CATEGORY_MAPPING_ID,CHILD_CATEGORY_ID,CHILD_OF_CHILD_CATEGORY_ID)\n"
+        sql = "INSERT INTO  pm_child_childsubset_category_mapping(CHILD_CATEGORY_MAPPING_ID,CHILD_CATEGORY_ID,CHILD_OF_CHILD_CATEGORY_ID)\n"
                 + " VALUES (:categoryMappingId,:childCategoryId,:childOfChildCategoryId)";
 
         for (int assign : assignSubChildCategories) {
@@ -310,7 +310,7 @@ public class AdminDaoImpl implements AdminDao {
             x++;
         }
         
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         int[] resultList = nm.batchUpdate(sql, batchParams);
 
     }

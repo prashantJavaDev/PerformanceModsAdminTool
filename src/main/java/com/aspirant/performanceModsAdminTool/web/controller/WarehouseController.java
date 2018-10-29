@@ -63,7 +63,7 @@ public class WarehouseController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=msg.actionCancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Feed data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Feed data validation started...", GlobalConstants.TAG_SYSTEMLOG));
             int warehouseId = ServletRequestUtils.getIntParameter(request, "warehouseId", 0);
             String warehouseName = ServletRequestUtils.getStringParameter(request, "warehouseName", null);
             model.addAttribute("warehouseId", warehouseId);
@@ -82,7 +82,7 @@ public class WarehouseController {
         if (cancel != null) {
             return "redirect:../warehouse/uploadFeed.htm?msg=msg.actionCancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Feed upload started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Feed upload started...", GlobalConstants.TAG_SYSTEMLOG));
             int warehouseId = ServletRequestUtils.getIntParameter(request, "warehouseId", 0);
             int rows = this.warehouseService.saveAndUpdateFeed(warehouseId);
             String msg;

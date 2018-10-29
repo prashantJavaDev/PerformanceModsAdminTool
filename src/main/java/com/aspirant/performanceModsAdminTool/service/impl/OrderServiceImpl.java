@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
                 this.orderDao.loadBulkOrderTrackingDataLocally(path, marketplaceId);
                 return 1;
             } catch (FileNotFoundException ex) {
@@ -450,7 +450,7 @@ public class OrderServiceImpl implements OrderService {
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
                 this.orderDao.loadMarketPlaceOrderDataLocally(path, marketplaceId);
                 return 1;
             } catch (FileNotFoundException ex) {

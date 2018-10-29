@@ -18,6 +18,8 @@ import com.amazonaws.mws.model.SubmitFeedResponse;
 import com.amazonservices.mws.orders.amazon.AmazonWebService;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsAsyncClient;
 import com.amazonservices.mws.products.samples.MarketplaceWebServiceProductsSampleConfig;
+import com.aspirant.performanceModsAdminTool.dao.ConfigDao;
+import com.aspirant.performanceModsAdminTool.model.AmazonProperties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,6 +54,9 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+    
+      @Autowired
+    private ConfigDao configDao;
 
     @Override
     public SubmitFeedResponse submitFeed() {
@@ -59,9 +64,11 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         SubmitFeedResponse response = null;
         try {
             String FeedContentData = null;
-            AmazonWebService a = new AmazonWebService("/home/altius/performanceMods/amazon/amazon.properties");
+             AmazonProperties ap = configDao.getAmazonProperties();
+            AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
+//            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
             if (a.isPropsLoaded()) {
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
                     String trackId = this.orderService.createAndSaveXMLFile();
 //                    String trackId = "040985983325648";
@@ -137,9 +144,11 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         SubmitFeedResponse response = null;
         try {
             String FeedContentData = null;
-            AmazonWebService a = new AmazonWebService("/home/altius/performanceMods/amazon/amazon.properties");
+//            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
+             AmazonProperties ap = configDao.getAmazonProperties();
+            AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
             if (a.isPropsLoaded()) {
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
                     String orderId = this.orderService.amazonAcknowledgementFile();
 //                    String orderId = "112-5489929-7493868";

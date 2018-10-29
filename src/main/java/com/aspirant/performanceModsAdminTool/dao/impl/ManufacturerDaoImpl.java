@@ -40,7 +40,7 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
     public int addManufacturer(Manufacturer manufacturer) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        SimpleJdbcInsert manufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_manufacturer").usingGeneratedKeyColumns("MANUFACTURER_ID");
+        SimpleJdbcInsert manufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_manufacturer").usingGeneratedKeyColumns("MANUFACTURER_ID");
         java.util.Map<String, Object> params = new HashMap<String, Object>();
         params.put("MANUFACTURER_NAME", manufacturer.getManufacturerName());
         params.put("MANUFACTURER_CODE", manufacturer.getManufacturerCode());
@@ -51,7 +51,7 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
         params.put("ACTIVE", 1);
         int manufacturerId = manufacturerInsert.executeAndReturnKey(params).intValue();
 
-        SimpleJdbcInsert mapManufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_manufacturer_mapping");
+        SimpleJdbcInsert mapManufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_manufacturer_mapping");
         params.put("MANUFACTURER_ID", manufacturerId);
         params.put("WH_MANUFACTURER_NAME", manufacturer.getManufacturerName());
         mapManufacturerInsert.execute(params);
@@ -60,7 +60,7 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
 
     @Override
     public void mapManufacturer(Manufacturer manufacturer) {
-        SimpleJdbcInsert manufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_manufacturer_mapping");
+        SimpleJdbcInsert manufacturerInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_manufacturer_mapping");
         java.util.Map<String, Object> params = new HashMap<String, Object>();
         params.put("MANUFACTURER_ID", manufacturer.getManufacturerId());
         params.put("WH_MANUFACTURER_NAME", manufacturer.getManufacturerName());
@@ -69,15 +69,15 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
 
     @Override
     public List<String> GetListofMatchingManufacturerCode(String manufacturerCode) {
-        String sql = " SELECT c.`MANUFACTURER_CODE` FROM tesy_manufacturer c WHERE c.`MANUFACTURER_CODE`= '" + manufacturerCode + "';";
+        String sql = " SELECT c.`MANUFACTURER_CODE` FROM pm_manufacturer c WHERE c.`MANUFACTURER_CODE`= '" + manufacturerCode + "';";
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
 
     @Override
     public List<Manufacturer> mapManufacturerList(int manufacturerId) {
-        String sql = "SELECT tmm.`MANUFACTURER_ID`,tm.`MANUFACTURER_CODE`,tmm.`WH_MANUFACTURER_NAME` MANUFACTURER_NAME FROM tesy_manufacturer_mapping tmm"
-                + " LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tmm.`MANUFACTURER_ID`"
+        String sql = "SELECT tmm.`MANUFACTURER_ID`,tm.`MANUFACTURER_CODE`,tmm.`WH_MANUFACTURER_NAME` MANUFACTURER_NAME FROM pm_manufacturer_mapping tmm"
+                + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tmm.`MANUFACTURER_ID`"
                 + " WHERE tmm.`MANUFACTURER_ID`=? ORDER BY tmm.`WH_MANUFACTURER_NAME`";
         return this.jdbcTemplate.query(sql, new ManufacturerRowMapper(), manufacturerId);
     }

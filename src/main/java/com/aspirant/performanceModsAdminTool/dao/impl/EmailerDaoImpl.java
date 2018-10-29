@@ -81,7 +81,7 @@ public class EmailerDaoImpl implements EmailerDao {
             email.setSubject(subjectString);
             email.setToSend(toSend);
             email.setToSendDate(curDate);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Email build successfully for email id :" + toSend, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Email build successfully for email id :" + toSend, GlobalConstants.TAG_SYSTEMLOG));
             return email;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog("Error occured while building mail for email id :" + toSend, GlobalConstants.TAG_SYSTEMLOG));

@@ -62,7 +62,7 @@ public class ReportDaoImpl implements ReportDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         return nm.query(sql.toString(), params, new AccessLogReportDTORowMapper());
     }
 }

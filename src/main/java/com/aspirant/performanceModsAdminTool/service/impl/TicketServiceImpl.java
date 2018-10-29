@@ -73,7 +73,7 @@ public class TicketServiceImpl implements TicketService {
                 email.setEmailerId(emailerId);
                 this.emailerService.sendEmail(email);
             }
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("New ticket created successfully for id : " + tt.getTicketNo(), GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("New ticket created successfully for id : " + tt.getTicketNo(), GlobalConstants.TAG_SYSTEMLOG));
             return tt;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,7 +110,7 @@ public class TicketServiceImpl implements TicketService {
     public int reopenTicket(int ticketId, int ticketTypeId, String notes) {
         try {
             this.ticketDao.reopenTicket(ticketId, ticketTypeId, notes);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket reopened successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket reopened successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return 1;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
@@ -169,7 +169,7 @@ public class TicketServiceImpl implements TicketService {
                 this.emailerService.sendEmail(email);
             }
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket updated successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket updated successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();

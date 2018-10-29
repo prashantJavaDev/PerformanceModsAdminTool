@@ -154,7 +154,7 @@ public class TicketDaoImpl implements TicketDao {
         ticket.setTicketNo(ticketCode);
         String ticketNo = ticket.getTicketNo();
         params.put("TICKET_NO", ticketNo);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into ticket : " + params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into ticket : " + params, GlobalConstants.TAG_SYSTEMLOG));
         int ticketId = sji.executeAndReturnKey(params).intValue();
         params.clear();
 
@@ -184,7 +184,7 @@ public class TicketDaoImpl implements TicketDao {
         params.put("LAST_MODIFIED_DATE", curDate);
         params.put("LAST_MODIFIED_BY", curUser.getUserId());
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into ticketTrans : " + params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into ticketTrans : " + params, GlobalConstants.TAG_SYSTEMLOG));
         int ticketTransId = sji1.executeAndReturnKey(params).intValue();
         params.clear();
         return ticket;
@@ -204,7 +204,7 @@ public class TicketDaoImpl implements TicketDao {
     public List<String> searchCustomerName(String term) {
         String sql = "SELECT DISTINCT(t.`CUST_NAME`) FROM tkt_ticket  t WHERE t.`CUST_NAME` LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -213,7 +213,7 @@ public class TicketDaoImpl implements TicketDao {
     public List<String> searchTicketNo(String term) {
         String sql = "SELECT t.`TICKET_NO` FROM tkt_ticket  t WHERE t.`TICKET_NO` LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -225,7 +225,7 @@ public class TicketDaoImpl implements TicketDao {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT tt.*,tm.`MARKETPLACE_NAME`,ttt.`TICKET_TYPE_DESC`,tp.`PRIORITY_NAME`,\n"
                 + "tc.`COMPANY_NAME`,asn.`USERNAME`,tts.`STATUS_DESC`,crBy.`USERNAME` CREATED_BY_NAME FROM tkt_ticket tt \n"
-                + "LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
+                + "LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
                 + "LEFT JOIN tkt_ticket_type ttt ON ttt.`TICKET_TYPE_ID`=tt.`TICKET_TYPE_ID`\n"
                 + "LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=tt.`TICKET_PRIORITY_ID`\n"
                 + "LEFT JOIN tkt_company tc ON tc.`COMPANY_ID`=tt.`COMPANY_ID`\n"
@@ -300,7 +300,7 @@ public class TicketDaoImpl implements TicketDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         return nm.query(sql.toString(), params, new TicketRowMapper());
     }
 
@@ -330,7 +330,7 @@ public class TicketDaoImpl implements TicketDao {
         map.put("ticketTypeId", ticketTypeId);
         map.put("priorityId", t.getPriority().getPriorityId());
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
         int id = nm.update(sql, map);
 
         map.clear();
@@ -347,7 +347,7 @@ public class TicketDaoImpl implements TicketDao {
         map.put("ticketTypeId", ticketTypeId);
         map.put("priorityId", t.getPriority().getPriorityId());
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
         nm.update(sql, map);
     }
 
@@ -355,7 +355,7 @@ public class TicketDaoImpl implements TicketDao {
     public Ticket getTicketByTicketId(int ticketId) {
         String sql = "SELECT tt.*,tm.`MARKETPLACE_NAME`,ttt.`TICKET_TYPE_DESC`,tp.`PRIORITY_NAME`,\n"
                 + " tc.`COMPANY_NAME`,asn.`USERNAME`,tts.`STATUS_DESC`,crBy.`USERNAME` CREATED_BY_NAME, crBy.`USER_ID` FROM tkt_ticket tt \n"
-                + " LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
+                + " LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
                 + " LEFT JOIN tkt_ticket_type ttt ON ttt.`TICKET_TYPE_ID`=tt.`TICKET_TYPE_ID`\n"
                 + " LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=tt.`TICKET_PRIORITY_ID`\n"
                 + " LEFT JOIN tkt_company tc ON tc.`COMPANY_ID`=tt.`COMPANY_ID`\n"
@@ -364,7 +364,7 @@ public class TicketDaoImpl implements TicketDao {
                 + " LEFT JOIN tkt_ticket_status tts ON tts.`STATUS_ID`=tt.`TICKET_STATUS_ID`\n"
                 + " WHERE tt.`TICKET_ID`=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         Ticket ticket = this.jdbcTemplate.queryForObject(sql, new TicketRowMapper(), ticketId);
         String createdDateStr = DateUtils.convertDateToString(ticket.getCreateDate(), "yyyy/MM/dd HH:mm:ss");
         ticket.setCreatedDateStr(createdDateStr);
@@ -384,7 +384,7 @@ public class TicketDaoImpl implements TicketDao {
                 + " LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=ttt.`PRIORITY_ID`"
                 + " WHERE ttt.`TICKET_ID`=? ORDER BY ttt.TRANS_DATE DESC";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new TicketTransRowMapper(), ticketId);
     }
 
@@ -426,7 +426,7 @@ public class TicketDaoImpl implements TicketDao {
         map.put("notes", ticket.getNotes());
         map.put("ticketId", ticket.getTicketId());
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
         int id = nm.update(sql, map);
 
         //Insert into ticket_trans
@@ -459,7 +459,7 @@ public class TicketDaoImpl implements TicketDao {
         map.put("notes", ticket.getNotes());
         map.put("ticketId", ticket.getTicketId());
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, map, GlobalConstants.TAG_SYSTEMLOG));
         nm.update(sql, map);
         return ticket;
     }
@@ -468,7 +468,7 @@ public class TicketDaoImpl implements TicketDao {
     public List<String> searchOrderId(String term) {
         String sql = "SELECT DISTINCT(t.`ORDER_ID`) FROM tkt_ticket  t WHERE t.`ORDER_ID` LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -483,7 +483,7 @@ public class TicketDaoImpl implements TicketDao {
                 + "COALESCE(asn.`USERNAME`,'') USERNAME,tt.`ASSIGNED_ON`,tt.`TICKET_STATUS_ID`,tts.`STATUS_DESC`,\n"
                 + "tt.`COMPLETED_ON`,tt.`LAST_MODIFIED_BY`,tt.`CREATED_BY`,crBy.`USERNAME` CREATED_BY_NAME,tt.`CREATED_DATE`, tt.`DETAILS` \n"
                 + "FROM tkt_ticket tt \n"
-                + "LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
+                + "LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
                 + "LEFT JOIN tkt_ticket_type ttt ON ttt.`TICKET_TYPE_ID`=tt.`TICKET_TYPE_ID`\n"
                 + "LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=tt.`TICKET_PRIORITY_ID`\n"
                 + "LEFT JOIN tkt_company tc ON tc.`COMPANY_ID`=tt.`COMPANY_ID`\n"
@@ -499,7 +499,7 @@ public class TicketDaoImpl implements TicketDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         return nm.query(sql.toString(), params, new TicketRowMapper());
     }
 
@@ -513,7 +513,7 @@ public class TicketDaoImpl implements TicketDao {
                 + "COALESCE(asn.`USERNAME`,'') USERNAME,tt.`ASSIGNED_ON`,tt.`TICKET_STATUS_ID`,tts.`STATUS_DESC`,\n"
                 + "tt.`COMPLETED_ON`,tt.`LAST_MODIFIED_BY`,tt.`CREATED_BY`,crBy.`USERNAME` CREATED_BY_NAME,tt.`CREATED_DATE`, tt.`DETAILS` \n"
                 + "FROM tkt_ticket tt \n"
-                + "LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
+                + "LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
                 + "LEFT JOIN tkt_ticket_type ttt ON ttt.`TICKET_TYPE_ID`=tt.`TICKET_TYPE_ID`\n"
                 + "LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=tt.`TICKET_PRIORITY_ID`\n"
                 + "LEFT JOIN tkt_company tc ON tc.`COMPANY_ID`=tt.`COMPANY_ID`\n"
@@ -529,7 +529,7 @@ public class TicketDaoImpl implements TicketDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         return nm.query(sql.toString(), params, new TicketRowMapper());
     }
 
@@ -555,7 +555,7 @@ public class TicketDaoImpl implements TicketDao {
                     + "COALESCE(asn.`USERNAME`,'') USERNAME,tt.`ASSIGNED_ON`,tt.`TICKET_STATUS_ID`,tts.`STATUS_DESC`,\n"
                     + "tt.`COMPLETED_ON`,tt.`LAST_MODIFIED_BY`,tt.`CREATED_BY`,crBy.`USERNAME` CREATED_BY_NAME,tt.`CREATED_DATE`, tt.`DETAILS` \n"
                     + "FROM tkt_ticket tt \n"
-                    + "LEFT JOIN tesy_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
+                    + "LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tt.`MARKETPLACE_ID`\n"
                     + "LEFT JOIN tkt_ticket_type ttt ON ttt.`TICKET_TYPE_ID`=tt.`TICKET_TYPE_ID`\n"
                     + "LEFT JOIN tkt_priority tp ON tp.`PRIORITY_ID`=tt.`TICKET_PRIORITY_ID`\n"
                     + "LEFT JOIN tkt_company tc ON tc.`COMPANY_ID`=tt.`COMPANY_ID`\n"
@@ -576,7 +576,7 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public Order getOrderByPhoneNumber(String phoneNumber) {
-        String sql = "SELECT tor.* FROM tesy_order tor WHERE tor.CUSTOMER_PHONE_NO=?";
+        String sql = "SELECT tor.* FROM pm_order tor WHERE tor.CUSTOMER_PHONE_NO=?";
 
         return this.jdbcTemplate.queryForObject(sql, new RowMapper<Order>() {
             @Override

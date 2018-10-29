@@ -87,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
     public int updateCompany(Company company) {
         try {
             int result = this.adminDao.updateCompany(company);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Company Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Company Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return result;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));

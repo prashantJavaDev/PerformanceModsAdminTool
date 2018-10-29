@@ -55,7 +55,7 @@ public class WebsiteController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("upload for website data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("upload for website data validation started...", GlobalConstants.TAG_SYSTEMLOG));
             int companyId = ServletRequestUtils.getIntParameter(request, "companyId", 0);
             String companyName = ServletRequestUtils.getStringParameter(request, "companyName", null);
             model.addAttribute("companyId", companyId);
@@ -89,7 +89,7 @@ public class WebsiteController {
 //            uploadFeed = null;
 //            return "redirect:../home/home.htm?msg=Action cancelled";
 //        } else {
-//            LogUtils.systemLogger.info(LogUtils.buildStringForLog("upload for website data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+//           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("upload for website data validation started...", GlobalConstants.TAG_SYSTEMLOG));
 //            int result = this.productService.UploadImageServiceImpl(uploadFeed);
 //            String msg;
 //            if (result == 0) {

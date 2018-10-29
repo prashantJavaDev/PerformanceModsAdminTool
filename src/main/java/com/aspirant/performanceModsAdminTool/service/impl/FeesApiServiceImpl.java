@@ -24,6 +24,8 @@ import com.amazonservices.mws.products.model.GetMyFeesEstimateResponse;
 import com.amazonservices.mws.products.model.MoneyType;
 import com.amazonservices.mws.products.model.PriceToEstimateFees;
 import com.amazonservices.mws.products.samples.MarketplaceWebServiceProductsSampleConfig;
+import com.aspirant.performanceModsAdminTool.dao.ConfigDao;
+import com.aspirant.performanceModsAdminTool.model.AmazonProperties;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -48,6 +50,8 @@ public class FeesApiServiceImpl implements FeesApiService {
     private DataSource dataSource;
     @Autowired
     private OrderDao orderDao;
+    @Autowired
+    private ConfigDao configDao;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -59,9 +63,11 @@ public class FeesApiServiceImpl implements FeesApiService {
     public GetMyFeesEstimateResponse getMyFeesEstimate() {
         GetMyFeesEstimateResponse response = null;
         try {
-            AmazonWebService a = new AmazonWebService("/home/altius/performanceMods/amazon/amazon.properties");
+            AmazonProperties ap = configDao.getAmazonProperties();
+//            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
+            AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
             if (a.isPropsLoaded()) {
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
                     MarketplaceWebServiceProductsAsyncClient client = MarketplaceWebServiceProductsSampleConfig.getAsyncClient();
                     List<GetMyFeesEstimateRequest> requestList = new ArrayList<GetMyFeesEstimateRequest>();
@@ -101,7 +107,7 @@ public class FeesApiServiceImpl implements FeesApiService {
                         com.amazonservices.mws.products.model.ResponseHeaderMetadata rhmd = response.getResponseHeaderMetadata();
                         MapSqlParameterSource params = new MapSqlParameterSource();
 
-                        String sql = "UPDATE tesy_available_listing tal SET tal.`CURRENT_COMMISSION`=:estimatedFees,tal.`FEED_STATUS`=:feesStatus WHERE tal.`SKU`=:sellerSKU";
+                        String sql = "UPDATE pm_available_listing tal SET tal.`CURRENT_COMMISSION`=:estimatedFees,tal.`FEED_STATUS`=:feesStatus WHERE tal.`SKU`=:sellerSKU";
                         for (FeesEstimateResult f : response.getGetMyFeesEstimateResult().getFeesEstimateResultList().getFeesEstimateResult()) {
                             if (f.getFeesEstimate() != null) {
                                 params.addValue("estimatedFees", f.getFeesEstimate().getTotalFeesEstimate().getAmount());
@@ -109,7 +115,7 @@ public class FeesApiServiceImpl implements FeesApiService {
                                 params.addValue("feesStatus", 1);
                                 nm.update(sql, params);
                             } else {
-                                String query = "UPDATE tesy_available_listing tal SET tal.`FEED_STATUS`=? WHERE tal.`SKU`=?";
+                                String query = "UPDATE pm_available_listing tal SET tal.`FEED_STATUS`=? WHERE tal.`SKU`=?";
                                 jdbcTemplate.update(query, "No ASIN found for SKU :" + f.getFeesEstimateIdentifier().getIdValue(), f.getFeesEstimateIdentifier().getIdValue());
                             }
                         }

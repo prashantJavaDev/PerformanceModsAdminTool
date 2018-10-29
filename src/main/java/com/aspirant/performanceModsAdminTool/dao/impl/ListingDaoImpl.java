@@ -45,16 +45,16 @@ public class ListingDaoImpl implements ListingDao {
     public void loadFeesDataLocally(String path, int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`tesy_temp_fees`";
+        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`pm_temp_fees`";
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`tesy_temp_fees` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `FEES`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`pm_temp_fees` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `FEES`); ";
         this.jdbcTemplate.execute(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "UPDATE tesy_available_listing tal\n"
-                + " LEFT JOIN tesy_temp_fees ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
+        sql = "UPDATE pm_available_listing tal\n"
+                + " LEFT JOIN pm_temp_fees ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
                 + " SET tal.`CURRENT_COMMISSION`=COALESCE(ttf.`FEES`,'0'),tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
                 + " WHERE tal.`MARKETPLACE_ID`=?";
         jdbcTemplate.update(sql, curUser, curDate, marketplaceId);
@@ -82,13 +82,13 @@ public class ListingDaoImpl implements ListingDao {
                 + " tm.`MANUFACTURER_NAME`,tal.`CURRENT_SHIPPING`,tal.`CURRENT_COMMISSION`,\n"
                 + " tal.`CURRENT_PROFIT`,tal.`CURRENT_PROFIT_PERCENTAGE`,tmsm.`PACK`,\n"
                 + " tal.`CURRENT_COMMISSION_PERCENTAGE`,tcwp.`PRICE`,tcwp.`QUANTITY`\n"
-                + " FROM tesy_available_listing tal \n"
-                + " LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
-                + " LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
-                + " LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tmsm.`MANUFACTURER_MPN` \n"
+                + " FROM pm_available_listing tal \n"
+                + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
+                + " LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
+                + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tmsm.`MANUFACTURER_MPN` \n"
                 + " AND tp.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
-                + " LEFT JOIN tesy_current_warehouse_product tcwp ON tcwp.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
+                + " LEFT JOIN pm_current_warehouse_product tcwp ON tcwp.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
                 + " AND tcwp.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID`\n"
                 + " WHERE tal.`MARKETPLACE_ID`=:marketplaceId";
 
@@ -119,7 +119,7 @@ public class ListingDaoImpl implements ListingDao {
             sql += " LIMIT " + (pageNo - 1) * GlobalConstants.PAGE_SIZE + "," + GlobalConstants.PAGE_SIZE;
         }
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         return nm.query(sql, params, new ProductListingDTORowMapper());
@@ -138,9 +138,9 @@ public class ListingDaoImpl implements ListingDao {
                 }
             }
         }
-        String sql = "SELECT COUNT(*) FROM tesy_available_listing tal\n"
-                + " LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
-                + " LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
+        String sql = "SELECT COUNT(*) FROM pm_available_listing tal\n"
+                + " LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
+                + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
                 + " WHERE tal.`MARKETPLACE_ID`=:marketplaceId";
 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -164,7 +164,7 @@ public class ListingDaoImpl implements ListingDao {
             sql += " AND tal.ACTIVE ";
         }
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         Integer i = nm.queryForObject(sql, params, Integer.class);
@@ -180,14 +180,14 @@ public class ListingDaoImpl implements ListingDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        String sql1= "SELECT  tal.`CURRENT_PRICE` FROM tesy_available_listing tal WHERE tal.`SKU`=?";
+        String sql1= "SELECT  tal.`CURRENT_PRICE` FROM pm_available_listing tal WHERE tal.`SKU`=?";
         float cost = this.jdbcTemplate.queryForObject(sql1, Float.class, sku);
         if(price>cost){
         profit += price-cost;
         }else{
         profit -=cost-price;
         }
-        String sql = "UPDATE tesy_available_listing tal SET tal.`CURRENT_PRICE`=?,tal.`CURRENT_PROFIT`=?, tal.`CURRENT_QUANTITY`=?,tal.`ACTIVE`=?,tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE tal.`SKU`=?";
+        String sql = "UPDATE pm_available_listing tal SET tal.`CURRENT_PRICE`=?,tal.`CURRENT_PROFIT`=?, tal.`CURRENT_QUANTITY`=?,tal.`ACTIVE`=?,tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE tal.`SKU`=?";
         return this.jdbcTemplate.update(sql, price,profit,quantity, active, curDate, curUser, sku);
     }
 
@@ -196,7 +196,7 @@ public class ListingDaoImpl implements ListingDao {
     public void UpdateListings(int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "UPDATE tesy_available_listing tal SET tal.`LAST_LISTED_PRICE`=tal.`CURRENT_PRICE`, tal.`LAST_LISTED_QUANTITY`=tal.`CURRENT_QUANTITY`,tal.`LAST_LISTED_DATE`=NOW(),"
+        String sql = "UPDATE pm_available_listing tal SET tal.`LAST_LISTED_PRICE`=tal.`CURRENT_PRICE`, tal.`LAST_LISTED_QUANTITY`=tal.`CURRENT_QUANTITY`,tal.`LAST_LISTED_DATE`=NOW(),"
                 + " tal.`CURRENT_LISTED_DATE`=NOW(),tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE"
                 + " tal.ACTIVE AND tal.`MARKETPLACE_ID`=?";
         this.jdbcTemplate.update(sql, curDate, curUser, marketplaceId);
@@ -205,22 +205,22 @@ public class ListingDaoImpl implements ListingDao {
                 + " SELECT NULL,tal.`MARKETPLACE_ID`,tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,"
                 + " tal.`CURRENT_PRICE`,tal.`CURRENT_QUANTITY`,tal.`CURRENT_PROFIT_PERCENTAGE`,"
                 + " tal.`CURRENT_PROFIT`,tal.`CURRENT_COMMISSION`,tal.`CURRENT_COMMISSION_PERCENTAGE`,tal.`CURRENT_SHIPPING`,"
-                + " tal.`WAREHOUSE_ID`,NOW() FROM tesy_available_listing tal\n"
+                + " tal.`WAREHOUSE_ID`,NOW() FROM pm_available_listing tal\n"
                 + "WHERE tal.`ACTIVE` AND tal.`MARKETPLACE_ID`=?";
         this.jdbcTemplate.update(sqlInsert, marketplaceId);
     }
 
     @Override
     public List<Integer> getProfitPercentageList() {
-        String sql = "SELECT PROFIT_PERCENTAGE FROM tesy_profit_percentage ORDER BY PROFIT_ID";
+        String sql = "SELECT PROFIT_PERCENTAGE FROM pm_profit_percentage ORDER BY PROFIT_ID";
         return this.jdbcTemplate.queryForList(sql, Integer.class);
     }
 
     @Override
     public List<String> searchSku(String term) {
-        String sql = "SELECT t.`SKU` FROM tesy_mpn_sku_mapping  t WHERE t.`SKU` LIKE '%" + term + "%'";
+        String sql = "SELECT t.`SKU` FROM pm_mpn_sku_mapping  t WHERE t.`SKU` LIKE '%" + term + "%'";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -231,16 +231,16 @@ public class ListingDaoImpl implements ListingDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        String sql = "UPDATE tesy_available_listing tal"
-                + "  LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`"
-                + "  LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tmsm.`MANUFACTURER_MPN` AND tp.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`"
+        String sql = "UPDATE pm_available_listing tal"
+                + "  LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`"
+                + "  LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tmsm.`MANUFACTURER_MPN` AND tp.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`"
                 + "  LEFT JOIN (SELECT t.`CALCULATED_PRICE` PRICE, t.`PRODUCT_ID`,t.`WAREHOUSE_ID`,t.`QUANTITY`,t.`SHIPPING`"
-                + "  FROM tesy_current_warehouse_product t WHERE t.`QUANTITY`>8 AND t.`CALCULATED_PRICE`IN ("
-                + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM tesy_current_warehouse_product t GROUP BY t.`PRODUCT_ID`  "
+                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`>8 AND t.`CALCULATED_PRICE`IN ("
+                + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM pm_current_warehouse_product t GROUP BY t.`PRODUCT_ID`  "
                 + "  ) GROUP BY t.`PRODUCT_ID`) tc ON tc.PRODUCT_ID=tp.`PRODUCT_ID`"
                 + "  LEFT JOIN (SELECT t.`CALCULATED_PRICE` PRICE,t.`PRODUCT_ID`,t.`WAREHOUSE_ID`,t.`QUANTITY`,t.`SHIPPING`"
-                + "  FROM tesy_current_warehouse_product t WHERE t.`QUANTITY`<=8   AND t.`CALCULATED_PRICE`IN ("
-                + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM tesy_current_warehouse_product t GROUP BY t.`PRODUCT_ID`"
+                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`<=8   AND t.`CALCULATED_PRICE`IN ("
+                + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM pm_current_warehouse_product t GROUP BY t.`PRODUCT_ID`"
                 + "  ) GROUP BY t.`PRODUCT_ID`) tc1 ON tc1.PRODUCT_ID=tp.`PRODUCT_ID`"
                 + "  SET tal.`CURRENT_PRICE`=IF(tal.`ISMAP` AND (COALESCE(ROUND(((COALESCE(tc.`PRICE`,tc1.`PRICE`)+"
                 + "  tal.`CURRENT_COMMISSION`)*tmsm.`PACK`),2),0))<tp.`MAP`,tp.`MAP`,"
@@ -264,7 +264,7 @@ public class ListingDaoImpl implements ListingDao {
                 + "  tal.`CURRENT_COMMISSION`=COALESCE(tal.`CURRENT_COMMISSION`)"
                 + "  WHERE tal.`MARKETPLACE_ID`=:marketplaceId  AND tp.`ACTIVE` AND tal.`ACTIVE`";
 
-        String sql1 = "UPDATE tesy_available_listing tal"
+        String sql1 = "UPDATE pm_available_listing tal"
                 + " SET tal.`CURRENT_PRICE`=tal.`CURRENT_PRICE`+("
                 + " IF (COALESCE(tal.`CURRENT_PRICE`)>=300 AND COALESCE(tal.`CURRENT_PRICE`)<=600,3.5,"
                 + " IF (COALESCE(tal.`CURRENT_PRICE`)>=600 AND COALESCE(tal.`CURRENT_PRICE`)<=1000,7.5,"
@@ -304,7 +304,7 @@ public class ListingDaoImpl implements ListingDao {
 
     @Override
     public void flushFeesStatus() {
-        String sql = "UPDATE tesy_available_listing tal SET tal.`FEED_STATUS`=0";
+        String sql = "UPDATE pm_available_listing tal SET tal.`FEED_STATUS`=0";
         this.jdbcTemplate.update(sql);
     }
 
@@ -312,7 +312,7 @@ public class ListingDaoImpl implements ListingDao {
     public List<Listing> exportMarketplaceFees(int marketplaceId, int pageNo) {
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,tal.`CURRENT_PRICE`,tal.`CURRENT_COMMISSION` FROM tesy_available_listing tal WHERE tal.`MARKETPLACE_ID`=:marketplaceId");
+            sql.append("SELECT tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,tal.`CURRENT_PRICE`,tal.`CURRENT_COMMISSION` FROM pm_available_listing tal WHERE tal.`MARKETPLACE_ID`=:marketplaceId");
 //            if (pageNo != -1) {
 //                sql.append(" LIMIT ").append((pageNo - 1) * GlobalConstants.PAGE_SIZE).append(",").append(GlobalConstants.PAGE_SIZE);
 //            }
@@ -330,7 +330,7 @@ public class ListingDaoImpl implements ListingDao {
     @Override
     public int getExportMarketplaceFeesCount(int marketplaceId) {
 
-        String sql = "SELECT COUNT(*) FROM tesy_available_listing tal WHERE tal.`MARKETPLACE_ID`=?";
+        String sql = "SELECT COUNT(*) FROM pm_available_listing tal WHERE tal.`MARKETPLACE_ID`=?";
         Object[] param = {marketplaceId};
         return this.jdbcTemplate.queryForInt(sql, param);
     }
@@ -339,25 +339,25 @@ public class ListingDaoImpl implements ListingDao {
     public void loadFeesDataLocally1(String path, int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`tesy_temp_available_listing`";
+        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`pm_temp_available_listing`";
         String sql1;
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate tesy_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`tesy_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
         this.jdbcTemplate.execute(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
         try {
-//            sql = "UPDATE tesy_available_listing tal\n"
-//                    + " LEFT JOIN tesy_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
+//            sql = "UPDATE pm_available_listing tal\n"
+//                    + " LEFT JOIN pm_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
 //                    + " SET tal.`LAST_LISTED_PRICE`=ttf.`LAST_LISTED_PRICE`,tal.`LAST_LISTED_QUANTITY`=ttf.`LAST_LISTED_QUANTITY`,tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
 //                    + " WHERE tal.`MARKETPLACE_ID`=? AND tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`";
-            sql1 = "UPDATE tesy_temp_available_listing ttp LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN` = ttp.MPN\n"
+            sql1 = "UPDATE pm_temp_available_listing ttp LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN` = ttp.MPN\n"
                     + "SET ttp.`MANUFACTURER_ID` = tp.MANUFACTURER_ID WHERE tp.`MANUFACTURER_MPN` = ttp.MPN";
 
             jdbcTemplate.update(sql1);
 
-            sql = "INSERT IGNORE INTO tesy_available_listing (\n"
+            sql = "INSERT IGNORE INTO pm_available_listing (\n"
                     + "  `SKU`,\n"
                     + "  `MARKETPLACE_LISTING_ID`,\n"
                     + "  `LAST_LISTED_PRICE`,\n"
@@ -377,7 +377,7 @@ public class ListingDaoImpl implements ListingDao {
                     + "  ?,\n"
                     + "  ?\n"
                     + "FROM \n"
-                    + "  tesy_temp_available_listing ttl) \n"
+                    + "  pm_temp_available_listing ttl) \n"
                     + "ON DUPLICATE KEY \n"
                     + "UPDATE \n"
                     + "`MARKETPLACE_LISTING_ID`= ttl.`MARKETPLACE_LISTING_ID`,\n"
@@ -387,7 +387,7 @@ public class ListingDaoImpl implements ListingDao {
                     + "`LAST_MODIFIED_BY`=?,\n"
                     + "`LAST_MODIFIED_DATE`= ? ";
 
-            String sql2 = "INSERT IGNORE INTO tesy_mpn_sku_mapping (\n"
+            String sql2 = "INSERT IGNORE INTO pm_mpn_sku_mapping (\n"
                     + "  `MANUFACTURER_MPN`,\n"
                     + "  `MANUFACTURER_ID`,\n"
                     + "  `SKU`,\n"
@@ -399,7 +399,7 @@ public class ListingDaoImpl implements ListingDao {
                     + "  ttl.`SKU`,\n"
                     + "  ttl.`PACK` \n"
                     + "FROM\n"
-                    + "  tesy_temp_available_listing ttl) \n"
+                    + "  pm_temp_available_listing ttl) \n"
                     + "ON DUPLICATE KEY \n"
                     + "UPDATE \n"
                     + "  `MANUFACTURER_MPN` = ttl.`MPN`,\n"
@@ -426,7 +426,7 @@ public class ListingDaoImpl implements ListingDao {
 
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,tal.`CURRENT_PRICE`,tal.`CURRENT_COMMISSION` FROM tesy_available_listing tal WHERE tal.`MARKETPLACE_ID`=:marketplaceId");
+            sql.append("SELECT tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,tal.`CURRENT_PRICE`,tal.`CURRENT_COMMISSION` FROM pm_available_listing tal WHERE tal.`MARKETPLACE_ID`=:marketplaceId");
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("marketplaceId", marketplaceId);
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);

@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
     public int updateFailedAttemptsByUserId(String username) {
         try {
             String sqlQuery = "UPDATE `user` SET FAILED_ATTEMPTS=FAILED_ATTEMPTS+1 WHERE USERNAME=?";
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlQuery, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlQuery, GlobalConstants.TAG_SYSTEMLOG));
             return this.jdbcTemplate.update(sqlQuery, username);
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog("Could not update failed attempts " + e, GlobalConstants.TAG_SYSTEMLOG));
@@ -95,7 +95,7 @@ public class UserDaoImpl implements UserDao {
     public List<Role> getCanCreateRoleList(String roleId) {
         String sqlString = "SELECT role.* from can_create_roles LEFT JOIN role on can_create_roles.CAN_CREATE_ROLE=role.ROLE_ID where can_create_roles.ROLE_ID=? ORDER BY role.`ROLE_ID`";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{roleId}, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{roleId}, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sqlString, new RoleRowMapper(), roleId);
     }
 
@@ -105,7 +105,7 @@ public class UserDaoImpl implements UserDao {
 
         Object params[] = new Object[]{username};
         try {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             return this.jdbcTemplate.queryForObject(sqlString, params, new UserRowMapper());
         } catch (EmptyResultDataAccessException erda) {
             LogUtils.systemLogger.warn(LogUtils.buildStringForLog("No User found with username", GlobalConstants.TAG_SYSTEMLOG));
@@ -136,12 +136,12 @@ public class UserDaoImpl implements UserDao {
             params.put("LAST_MODIFIED_BY", curUser);
             params.put("LAST_MODIFIED_DATE", curDate);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into user : ", params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into user : ", params, GlobalConstants.TAG_SYSTEMLOG));
             int userId = userInsert.executeAndReturnKey(params).intValue();
 
             String sqlString = "INSERT INTO user_role (USER_ID, ROLE_ID) VALUES(?, ?)";
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{userId, user.getRole().getRoleId()}, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{userId, user.getRole().getRoleId()}, GlobalConstants.TAG_SYSTEMLOG));
             this.jdbcTemplate.update(sqlString, userId, user.getRole().getRoleId());
             return userId;
         } catch (Exception e) {
@@ -154,7 +154,7 @@ public class UserDaoImpl implements UserDao {
     public boolean confirmPassword(Password password) {
         String sqlString = "SELECT user.PASSWORD FROM user WHERE user.USER_ID=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{password.getUserId()}, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{password.getUserId()}, GlobalConstants.TAG_SYSTEMLOG));
         String hash = this.jdbcTemplate.queryForObject(sqlString, String.class, password.getUserId());
         PasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -174,7 +174,7 @@ public class UserDaoImpl implements UserDao {
             String hash = encoder.encode(password.getNewPassword());
             Object params[] = new Object[]{hash, offsetDate, password.getUserId()};
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             this.jdbcTemplate.update(sqlString, params);
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog("Update Password Error " + e, GlobalConstants.TAG_SYSTEMLOG));
@@ -190,7 +190,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean canCreateRoleByRoleId(String roleId, String canCreateRoleId) {
         String sqlString = "SELECT count(*) from can_create_roles where can_create_roles.ROLE_ID=? and can_create_roles.CAN_CREATE_ROLE=?";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{roleId, canCreateRoleId}, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{roleId, canCreateRoleId}, GlobalConstants.TAG_SYSTEMLOG));
         int i = this.jdbcTemplate.queryForObject(sqlString, Integer.class, roleId, canCreateRoleId).intValue();
         if (i > 0) {
             return true;
@@ -209,15 +209,15 @@ public class UserDaoImpl implements UserDao {
         try{
         sqlString = "UPDATE user SET USERNAME=?,EMAIL_ID=?, ACTIVE=?, OUTSIDE_ACCESS=?,LAST_MODIFIED_BY=?,LAST_MODIFIED_DATE=?  WHERE USER_ID=?";
         params = new Object[]{user.getUsername(),user.getEmailId(), user.isActive(), user.isOutsideAccess(), curUser, curDate, user.getUserId()};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sqlString, params);
         sqlString = "DELETE FROM user_role WHERE USER_ID=?";
         params = new Object[]{user.getUserId()};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sqlString, user.getUserId());
         sqlString = "INSERT INTO user_role (USER_ID, ROLE_ID) VALUES(?, ?)";
         params = new Object[]{user.getUserId(), user.getRole().getRoleId()};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sqlString, params);
         }
         catch(Exception e)
@@ -231,7 +231,7 @@ public class UserDaoImpl implements UserDao {
         String sqlString = "SELECT user.*, user_role.ROLE_ID, role.ROLE_NAME FROM user LEFT JOIN user_role ON user.USER_ID=user_role.USER_ID LEFT JOIN role ON user_role.ROLE_ID=role.ROLE_ID WHERE user.USER_ID=?";
         Object params[] = new Object[]{userId};
         try {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             return this.jdbcTemplate.queryForObject(sqlString, params, new UserRowMapper());
         } catch (EmptyResultDataAccessException erda) {
             LogUtils.systemLogger.warn(LogUtils.buildStringForLog("No User found with userId", GlobalConstants.TAG_SYSTEMLOG));

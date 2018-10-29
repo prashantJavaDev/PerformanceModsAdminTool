@@ -27,7 +27,7 @@ public class MarketplaceServiceImpl implements MarketplaceService {
     public int addMarketplace(Marketplace marketplace) {
         try {
             int marketplaceId = this.marketplaceDao.addMarketplace(marketplace);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Marketplace added successfully for id : " + marketplaceId, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Marketplace added successfully for id : " + marketplaceId, GlobalConstants.TAG_SYSTEMLOG));
             return marketplaceId;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
@@ -49,7 +49,7 @@ public class MarketplaceServiceImpl implements MarketplaceService {
     public int updateMarketplace(Marketplace marketplace) {
         try {
             int result = this.marketplaceDao.updateMarketplace(marketplace);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Marketplace Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Marketplace Updated Successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return result;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));

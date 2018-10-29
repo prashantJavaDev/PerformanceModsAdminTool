@@ -67,13 +67,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_invoice`";
         this.jdbcTemplate.update(sql);
-        //query load data from bulk order tracking csv file into tesy_temp_bulk_tracking
+        //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_invoice` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`PO_NUMBER`, `MPN`,`COST`); ";
         this.jdbcTemplate.execute(sql);
         sql = "UPDATE temp_invoice ti SET ti.`WAREHOUSE_ID`=?";
         this.jdbcTemplate.update(sql, warehouseId);
-        //query update data into tesy_order table  
-        sql = "UPDATE temp_invoice ti LEFT JOIN tesy_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
+        //query update data into pm_order table  
+        sql = "UPDATE temp_invoice ti LEFT JOIN pm_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
                 + "SET ti.`INVOICE_DIFF`=(ti.`COST`- (tcwp.`PRICE`+ tcwp.`SHIPPING`)) WHERE tcwp.`MPN`=ti.`MPN`";
         this.jdbcTemplate.update(sql);
 
@@ -83,9 +83,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
     public List<Invoice> invoiceDifference() {
         String sql = "SELECT ti.`PO_NUMBER`,tw.`WAREHOUSE_NAME`,ti.`MPN`,tcwp.`PRICE`,tcwp.`SHIPPING`,ti.`COST`,ti.`INVOICE_DIFF`\n"
                 + "FROM temp_invoice ti \n"
-                + "LEFT JOIN tesy_current_warehouse_product tcwp\n"
+                + "LEFT JOIN pm_current_warehouse_product tcwp\n"
                 + "ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
-                + "LEFT JOIN tesy_warehouse tw ON tw.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
+                + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
                 + "WHERE tcwp.`MPN`=ti.`MPN` AND ti.`INVOICE_DIFF`!= 0;";
 
         return this.jdbcTemplate.query(sql, new RowMapper<Invoice>() {
@@ -162,8 +162,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
         }
         sql = "UPDATE temp_invoice ti SET ti.`WAREHOUSE_ID`=?";
         this.jdbcTemplate.update(sql, warehouseId);
-        //query update data into tesy_order table  
-        sql = "UPDATE temp_invoice ti LEFT JOIN tesy_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
+        //query update data into pm_order table  
+        sql = "UPDATE temp_invoice ti LEFT JOIN pm_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
                 + "SET ti.`INVOICE_DIFF`=(ti.`COST`- (tcwp.`PRICE`+ tcwp.`SHIPPING`)) WHERE tcwp.`MPN`=ti.`MPN`";
         this.jdbcTemplate.update(sql);
 
@@ -216,8 +216,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
         }
         sql = "UPDATE temp_invoice ti SET ti.`WAREHOUSE_ID`=?";
         this.jdbcTemplate.update(sql, warehouseId);
-        //query update data into tesy_order table  
-        sql = "UPDATE temp_invoice ti LEFT JOIN tesy_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
+        //query update data into pm_order table  
+        sql = "UPDATE temp_invoice ti LEFT JOIN pm_current_warehouse_product tcwp ON tcwp.`WAREHOUSE_ID`=ti.`WAREHOUSE_ID`\n"
                 + "SET ti.`INVOICE_DIFF`=(ti.`COST`- (tcwp.`PRICE`+ tcwp.`SHIPPING`)) WHERE tcwp.`MPN`=ti.`MPN`";
         this.jdbcTemplate.update(sql);
     }

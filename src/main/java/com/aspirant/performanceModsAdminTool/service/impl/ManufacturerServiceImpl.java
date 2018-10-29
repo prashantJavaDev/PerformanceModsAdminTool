@@ -27,7 +27,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     public int addManufacturer(Manufacturer manufacturer) {
         try {
             int manufacturerId = this.manufacturerDao.addManufacturer(manufacturer);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Manufacturer added successfully for id : " + manufacturerId, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Manufacturer added successfully for id : " + manufacturerId, GlobalConstants.TAG_SYSTEMLOG));
             return manufacturerId;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
@@ -39,7 +39,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     public int mapManufacturer(Manufacturer manufacturer) {
         try {
             this.manufacturerDao.mapManufacturer(manufacturer);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Manufacturer mapped successfully.", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Manufacturer mapped successfully.", GlobalConstants.TAG_SYSTEMLOG));
             return 1;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));

@@ -78,7 +78,7 @@ public class ReportController {
             out.close();
             out.flush();
         } catch (IOException io) {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(io, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(io, GlobalConstants.TAG_SYSTEMLOG));
             throw new CouldNotBuildExcelException(io.getMessage());
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));

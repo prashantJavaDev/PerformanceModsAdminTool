@@ -26,6 +26,6 @@ public class SuccessEvent implements ApplicationListener<AuthenticationSuccessEv
     public void onApplicationEvent(AuthenticationSuccessEvent e) {
         CustomUserDetails cud = (CustomUserDetails) e.getAuthentication().getPrincipal();
         this.userService.resetFailedAttemptsByUserId(cud.getUserId());
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(((WebAuthenticationDetails) e.getAuthentication().getDetails()).getRemoteAddress(), cud.getUsername(), "Success", GlobalConstants.TAG_ACCESSLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(((WebAuthenticationDetails) e.getAuthentication().getDetails()).getRemoteAddress(), cud.getUsername(), "Success", GlobalConstants.TAG_ACCESSLOG));
     }
 }

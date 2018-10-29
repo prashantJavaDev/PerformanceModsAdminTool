@@ -73,6 +73,7 @@ public class IndexController {
         List<Map<String, Object>> last7daysUnshippedOrderData = this.dashBoardService.getLast7daysUnshippedOrderData();
         
         List<Integer> listInt = new ArrayList<Integer>();
+        if(last7daysUnshippedOrderData!=null){
         for (Map<String, Object> m : last7daysUnshippedOrderData) {
             listInt.add(Integer.parseInt(m.get("TotalCount5").toString()));
             listInt.add(Integer.parseInt(m.get("TotalCount4").toString()));
@@ -81,6 +82,7 @@ public class IndexController {
             listInt.add(Integer.parseInt(m.get("TotalCount1").toString()));
             listInt.add(Integer.parseInt(m.get("TotalCountToday").toString()));
             listInt.add(Integer.parseInt(m.get("TotalCount6").toString()));
+        }
         }
 
 

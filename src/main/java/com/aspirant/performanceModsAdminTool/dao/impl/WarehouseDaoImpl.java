@@ -46,12 +46,12 @@ public class WarehouseDaoImpl implements WarehouseDao {
 
     @Override
     public List<Warehouse> getWarehouseList(boolean active) {
-        String sql = "SELECT tw.* FROM tesy_warehouse tw";
+        String sql = "SELECT tw.* FROM pm_warehouse tw";
         if (active) {
             sql += " WHERE tw.ACTIVE";
         }
         sql += " ORDER BY tw.`LAST_MODIFIED_DATE` DESC";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new WarehouseRowMapper());
     }
 
@@ -63,26 +63,26 @@ public class WarehouseDaoImpl implements WarehouseDao {
         String curDate1 = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMD);
         String sqlString;
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
-        //Insert into tesy_warehouse_feed table 
+        //Insert into pm_warehouse_feed table 
         Map<String, Object> params = new HashMap<String, Object>();
-        SimpleJdbcInsert feedInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_warehouse_feed").usingGeneratedKeyColumns("FEED_ID");
+        SimpleJdbcInsert feedInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_warehouse_feed").usingGeneratedKeyColumns("FEED_ID");
 
         params.put("WAREHOUSE_ID", warehouseId);
         params.put("FEED_DATE", curDate1);
         params.put("CREATED_DATE", curDate);
         params.put("CREATED_BY", curUser);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into tesy_warehouse_feed :", params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_warehouse_feed :", params, GlobalConstants.TAG_SYSTEMLOG));
         int feedId = feedInsert.executeAndReturnKey(params).intValue();
         params.clear();
 
         //insert all new products into product table
-        sqlString = "INSERT INTO tesy_product"
+        sqlString = "INSERT INTO pm_product"
                 + " SELECT NULL,NULL,tt.MANUFACTURER_ID,tt.MPN,NULL,"
                 + " UPPER(CONCAT('TEL-', tm.`MANUFACTURER_CODE`,'-',tt.`MPN`)),tt.MAP,tt.MSRP,tt.WEIGHT,tt.ESTIMATED_SHIP_WEIGHT,tt.`LENGTH`,tt.`WIDTH`,tt.`HEIGHT`,tt.UPC,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"
                 + " tt.SHORT_DESC,tt.LONG_DESC,NULL,NULL,tt.RESIZE_IMAGE_URL,NULL,NULL,NULL,:createdDate,:createdBy,:lastModifiedDate,:lastModifiedBy,:active,:productStatusId"
                 + " FROM temp_table tt"
-                + " LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tt.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tt.`MANUFACTURER_ID`"
                 + " WHERE tt.`STATUS` AND tt.`PRODUCT_STATUS`=1";
 
         params.put("createdDate", curDate);
@@ -92,138 +92,138 @@ public class WarehouseDaoImpl implements WarehouseDao {
         params.put("active", 1);
         params.put("productStatusId", 2);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
         int result = nm.update(sqlString, params);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " Products inserted", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " Products inserted", GlobalConstants.TAG_SYSTEMLOG));
         params.clear();
 
-        //insert large images into tesy_product_image
-        sqlString = "INSERT INTO tesy_product_image"
+        //insert large images into pm_product_image
+        sqlString = "INSERT INTO pm_product_image"
                 + " SELECT tp.`PRODUCT_ID`,tt.LARGE_IMAGE_URL,1 FROM temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " WHERE tt.STATUS AND tt.`PRODUCT_STATUS`=1 AND tt.`LARGE_IMAGE_URL`!='' AND tt.`LARGE_IMAGE_URL`IS NOT NULL";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         int largeImages = jdbcTemplate.update(sqlString);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+largeImages + " Product images inserted", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+largeImages + " Product images inserted", GlobalConstants.TAG_SYSTEMLOG));
 
         //insert mapping for different warehouse MPN to unique performanceModsMpn for single product which is new
-        sqlString = "INSERT INTO tesy_warehouse_product_mpn"
+        sqlString = "INSERT INTO pm_warehouse_product_mpn"
                 + " SELECT ?,tp.`PRODUCT_ID`,tt.`WAREHOUSE_IDENTIFICATION_NO` FROM temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " WHERE tt.`STATUS` AND (tt.`PRODUCT_STATUS` =1 OR tt.`PRODUCT_STATUS`=2)";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{warehouseId}, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{warehouseId}, GlobalConstants.TAG_SYSTEMLOG));
         int mapping = jdbcTemplate.update(sqlString, warehouseId);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+mapping + " Product mapping inserted", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+mapping + " Product mapping inserted", GlobalConstants.TAG_SYSTEMLOG));
 
         //update product table if existing product
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`MANUFACTURER_MPN`=tt.`MPN` WHERE (tp.`MANUFACTURER_MPN`='' OR tp.`MANUFACTURER_MPN` IS NULL) "
                 + " AND tt.`MPN`!='' AND tt.`MPN` IS NOT NULL AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`MAP`=tt.`MAP`"
                 + " WHERE tp.`MAP`=0.00 AND tt.`MAP` IS NOT NULL AND tt.`MAP`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`MSRP`=tt.`MSRP`"
                 + " WHERE tp.`MSRP`=0.00 AND tt.`MSRP` IS NOT NULL AND tt.`MSRP`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`WEIGHT`=tt.`WEIGHT`"
                 + " WHERE tp.`WEIGHT`=0.00 AND tt.`WEIGHT` IS NOT NULL AND tt.`WEIGHT`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`EST_SHIPPING_WT`=tt.`ESTIMATED_SHIP_WEIGHT`"
                 + " WHERE tp.`EST_SHIPPING_WT`=0.00 AND tt.`ESTIMATED_SHIP_WEIGHT` IS NOT NULL AND tt.`ESTIMATED_SHIP_WEIGHT`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`LENGTH`=tt.`LENGTH`"
                 + " WHERE tp.`LENGTH`=0.00 AND tt.`LENGTH` IS NOT NULL AND tt.`LENGTH`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`WIDTH`=tt.`WIDTH`"
                 + " WHERE tp.`WIDTH`=0.00 AND tt.`WIDTH` IS NOT NULL AND tt.`WIDTH`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`HEIGHT`=tt.`HEIGHT`"
                 + " WHERE tp.`HEIGHT`=0.00 AND tt.`HEIGHT` IS NOT NULL AND tt.`HEIGHT`!='0.00' AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`UPC`=tt.`UPC` WHERE (tp.`UPC`='' OR tp.`UPC` IS NULL) "
                 + " AND tt.`UPC`!='' AND tt.`UPC` IS NOT NULL AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`SHORT_DESC`=tt.`SHORT_DESC` WHERE (tp.`SHORT_DESC`='' OR tp.`SHORT_DESC` IS NULL) "
                 + " AND tt.`SHORT_DESC`!='' AND tt.`SHORT_DESC` IS NOT NULL AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`LONG_DESC`=tt.`LONG_DESC` WHERE (tp.`LONG_DESC`='' OR tp.`LONG_DESC` IS NULL) "
                 + " AND tt.`LONG_DESC`!='' AND tt.`LONG_DESC` IS NOT NULL AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
         sqlString = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " SET tp.`RESIZE_IMAGE_URL`=tt.`RESIZE_IMAGE_URL` WHERE (tp.`RESIZE_IMAGE_URL`='' OR tp.`RESIZE_IMAGE_URL` IS NULL) "
                 + " AND tt.`RESIZE_IMAGE_URL`!='' AND tt.`RESIZE_IMAGE_URL` IS NOT NULL AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`STATUS`";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         jdbcTemplate.update(sqlString);
 
-        sqlString = "INSERT INTO tesy_product_image"
+        sqlString = "INSERT INTO pm_product_image"
                 + " SELECT tp.`PRODUCT_ID`,tt.LARGE_IMAGE_URL,1 FROM temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                + " WHERE tp.`PRODUCT_ID` NOT IN (SELECT tpi.`PRODUCT_ID` FROM tesy_product_image tpi)"
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " WHERE tp.`PRODUCT_ID` NOT IN (SELECT tpi.`PRODUCT_ID` FROM pm_product_image tpi)"
                 + " AND tt.STATUS AND tt.`PRODUCT_STATUS` IN (2,3) AND tt.`LARGE_IMAGE_URL`!='' AND tt.`LARGE_IMAGE_URL`IS NOT NULL";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         int images = jdbcTemplate.update(sqlString);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+images + " Product images updated", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+images + " Product images updated", GlobalConstants.TAG_SYSTEMLOG));
 
-        // Delete from tesy_current_warehouse_product
-//        sqlString = "DELETE FROM tesy_current_warehouse_product WHERE WAREHOUSE_ID=?";
-//        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{warehouseId}, GlobalConstants.TAG_SYSTEMLOG));
+        // Delete from pm_current_warehouse_product
+//        sqlString = "DELETE FROM pm_current_warehouse_product WHERE WAREHOUSE_ID=?";
+//       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, new Object[]{warehouseId}, GlobalConstants.TAG_SYSTEMLOG));
 //        this.jdbcTemplate.update(sqlString, warehouseId);
-        //insert into tesy_current_warehouse_product table only todays data
-        sqlString = "REPLACE INTO tesy_current_warehouse_product"
+        //insert into pm_current_warehouse_product table only todays data
+        sqlString = "REPLACE INTO pm_current_warehouse_product"
                 + " SELECT tp.PRODUCT_ID,:warehouseId,:feedId,tp.`MANUFACTURER_MPN`,tt.`PRICE`,tt.`QUANTITY`,COALESCE(tc.CONDITION_ID,1),"
                 + " tt.`WAREHOUSE_IDENTIFICATION_NO`,COALESCE(tt.`SHIPPING`,0),ROUND((tt.`PRICE`+COALESCE(tt.`SHIPPING`,0)),2),:createdDate,:createdBy,0,:createdDate,:createdBy"
                 + " FROM temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                + " LEFT JOIN tesy_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION) "
+                + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION) "
                 + " WHERE tt.`STATUS`";
 
         params.put("warehouseId", warehouseId);
@@ -231,20 +231,20 @@ public class WarehouseDaoImpl implements WarehouseDao {
         params.put("createdDate", curDate);
         params.put("createdBy", curUser);
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
         int result1 = nm.update(sqlString, params);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result1 + " Product inserted in current warehouses", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result1 + " Product inserted in current warehouses", GlobalConstants.TAG_SYSTEMLOG));
         params.clear();
 
         if (result1 > 0) {
-            //append data into tesy_warehouse_feed_data table daily
-            sqlString = "INSERT INTO tesy_warehouse_feed_data"
+            //append data into pm_warehouse_feed_data table daily
+            sqlString = "INSERT INTO pm_warehouse_feed_data"
                     + " SELECT NULL,:feedId,:warehouseId,tp.PRODUCT_ID,tp.`MANUFACTURER_ID`,NULL,tp.`performanceMods_MPN`,tt.MAP,tt.MSRP,"
                     + " tt.PRICE,tt.QUANTITY,COALESCE(tc.CONDITION_ID,1),tt.WAREHOUSE_IDENTIFICATION_NO,"
                     + " tt.WEIGHT,tt.`ESTIMATED_SHIP_WEIGHT`,tt.LENGTH,tt.WIDTH,tt.HEIGHT,tt.UPC,tt.`SHIPPING`,:createdDate,:createdBy"
                     + " FROM temp_table tt"
-                    + " LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                    + " LEFT JOIN tesy_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION)"
+                    + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                    + " LEFT JOIN pm_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION)"
                     + " WHERE tt.`STATUS`";
 
             params.put("feedId", feedId);
@@ -252,9 +252,9 @@ public class WarehouseDaoImpl implements WarehouseDao {
             params.put("createdDate", curDate);
             params.put("createdBy", curUser);
 
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             int result2 = nm.update(sqlString, params);
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result2 + " Product inserted in warehouse feed data", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result2 + " Product inserted in warehouse feed data", GlobalConstants.TAG_SYSTEMLOG));
         }
         return result1;
     }
@@ -266,16 +266,16 @@ public class WarehouseDaoImpl implements WarehouseDao {
     public List<BadDataDTO> loadDataLocally(String path, int warehouseId) {
         String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_table`";
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_NAME`, `MPN`, `MAP`, `MSRP`, `PRICE`, `QUANTITY`, `CONDITION`, `WAREHOUSE_IDENTIFICATION_NO`, `WEIGHT`, `ESTIMATED_SHIP_WEIGHT`, `LENGTH`, `WIDTH`, `HEIGHT`, `UPC`, `SHORT_DESC`, `LONG_DESC`, `RESIZE_IMAGE_URL`, `LARGE_IMAGE_URL`, `SHIPPING`) ";
         this.jdbcTemplate.execute(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
 //        if (extension.equals("csv")) {
 //        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_NAME`, `MPN`, `MAP`, `MSRP`, `PRICE`, `QUANTITY`, `CONDITION`, `WAREHOUSE_IDENTIFICATION_NO`, `WEIGHT`, `ESTIMATED_SHIP_WEIGHT`, `LENGTH`, `WIDTH`, `HEIGHT`, `UPC`, `SHORT_DESC`, `LONG_DESC`, `RESIZE_IMAGE_URL`, `LARGE_IMAGE_URL`, `SHIPPING`) ";
 //        this.jdbcTemplate.execute(sql);
-//        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+//       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 //        } else if (extension.equals("xlsx")) {
 //
 //            FileInputStream file = new FileInputStream(new File(path));
@@ -680,7 +680,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
                 + " tt.`LENGTH`=IF(tt.`LENGTH`='',NULL,tt.`LENGTH`),tt.`WIDTH`=IF(tt.`WIDTH`='',NULL,tt.`WIDTH`),tt.`HEIGHT`=IF(tt.`HEIGHT`='',NULL,tt.`HEIGHT`),"
                 + " tt.`SHIPPING`=IF(tt.`SHIPPING`='',NULL,tt.`SHIPPING`)";
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Removal of comma,white spaces done..", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Removal of comma,white spaces done..", GlobalConstants.TAG_SYSTEMLOG));
 
         //make default status true
         sql = "UPDATE temp_table tt SET tt.`STATUS`=1,tt.`REASON`=''";
@@ -691,7 +691,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
         this.jdbcTemplate.update(sql);
 
         //update manufacturer id 
-        sql = "UPDATE temp_table tt LEFT JOIN tesy_manufacturer_mapping tmm ON tmm.`WH_MANUFACTURER_NAME`=tt.`MANUFACTURER_NAME`"
+        sql = "UPDATE temp_table tt LEFT JOIN pm_manufacturer_mapping tmm ON tmm.`WH_MANUFACTURER_NAME`=tt.`MANUFACTURER_NAME`"
                 + " SET tt.`MANUFACTURER_ID`=tmm.`MANUFACTURER_ID`;";
         this.jdbcTemplate.update(sql);
 
@@ -856,51 +856,51 @@ public class WarehouseDaoImpl implements WarehouseDao {
                 + " (tt.`LARGE_IMAGE_URL`!='' AND tt.`LARGE_IMAGE_URL` IS NOT NULL"
                 + " AND LOWER(RIGHT(tt.`LARGE_IMAGE_URL`,4)) NOT IN ('.jpg','jpeg','.png','.gif'))";
         this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Field validations done.", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Field validations done.", GlobalConstants.TAG_SYSTEMLOG));
 
         //categorize products : new/need to map/existing/invalid
         sql = "UPDATE temp_table tt SET tt.`PRODUCT_STATUS`=4 WHERE tt.`STATUS`=1";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sql);
 
-        sql = "UPDATE temp_table tt LEFT JOIN tesy_product tp ON tp.`MANUFACTURER_ID`=tt.`MANUFACTURER_ID` AND tp.`MANUFACTURER_MPN`=tt.`MPN`"
+        sql = "UPDATE temp_table tt LEFT JOIN pm_product tp ON tp.`MANUFACTURER_ID`=tt.`MANUFACTURER_ID` AND tp.`MANUFACTURER_MPN`=tt.`MPN`"
                 + " SET tt.`PRODUCT_STATUS`=1 WHERE tp.`PRODUCT_ID` IS NULL AND tt.`STATUS`=1";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         int result = this.jdbcTemplate.update(sql);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " New products found", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " New products found", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "UPDATE temp_table tt "
-                + " LEFT JOIN tesy_product tp ON tt.`MPN`=tp.`MANUFACTURER_MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                + " LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`WAREHOUSE_MPN`=tt.`WAREHOUSE_IDENTIFICATION_NO` AND twpm.`WAREHOUSE_ID`=?"
+                + " LEFT JOIN pm_product tp ON tt.`MPN`=tp.`MANUFACTURER_MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`WAREHOUSE_MPN`=tt.`WAREHOUSE_IDENTIFICATION_NO` AND twpm.`WAREHOUSE_ID`=?"
                 + " SET tt.`PRODUCT_STATUS`=2 "
                 + " WHERE twpm.`PRODUCT_ID` IS NULL AND tt.`PRODUCT_STATUS`=4";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         result = this.jdbcTemplate.update(sql, warehouseId);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " products need to map", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " products need to map", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "UPDATE temp_table tt"
-                + " LEFT JOIN tesy_product tp ON tt.`MPN`=tp.`MANUFACTURER_MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
-                + " LEFT JOIN tesy_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID` AND twpm.`WAREHOUSE_MPN`=tt.`WAREHOUSE_IDENTIFICATION_NO` "
+                + " LEFT JOIN pm_product tp ON tt.`MPN`=tp.`MANUFACTURER_MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
+                + " LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID` AND twpm.`WAREHOUSE_MPN`=tt.`WAREHOUSE_IDENTIFICATION_NO` "
                 + " SET tt.`PRODUCT_STATUS`=3 WHERE tt.`PRODUCT_STATUS`=4 AND twpm.`WAREHOUSE_ID`=?";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         result = this.jdbcTemplate.update(sql, warehouseId);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " Existing products found.", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + " Existing products found.", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "UPDATE temp_table tt SET tt.`STATUS`=0,tt.`REASON`=CONCAT(tt.`REASON`,'Existing product with invalid warehouse MPN.') WHERE tt.`PRODUCT_STATUS`=4";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sql);
 
         sql = "UPDATE temp_table tt"
                 + " SET tt.`STATUS`=0,tt.`PRODUCT_STATUS`=4,tt.`REASON`=CONCAT(tt.`REASON`,'New product with invalid/duplicate warehouse MPN.') WHERE tt.`PRODUCT_STATUS`=1 AND tt.`STATUS`=1"
-                + " AND tt.`WAREHOUSE_IDENTIFICATION_NO` IN (SELECT twpm.`WAREHOUSE_MPN` FROM tesy_warehouse_product_mpn twpm"
+                + " AND tt.`WAREHOUSE_IDENTIFICATION_NO` IN (SELECT twpm.`WAREHOUSE_MPN` FROM pm_warehouse_product_mpn twpm"
                 + " WHERE twpm.`WAREHOUSE_ID`=?)";
 
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         this.jdbcTemplate.update(sql, warehouseId);
 
         sql = "SELECT tt.`STATUS`,COUNT(*) PRODUCT_COUNT FROM temp_table tt GROUP BY tt.`STATUS`; ";
@@ -917,7 +917,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
     public int addWarehouse(Warehouse warehouse) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        SimpleJdbcInsert warehouseInsert = new SimpleJdbcInsert(this.dataSource).withTableName("tesy_warehouse").usingGeneratedKeyColumns("WAREHOUSE_ID");
+        SimpleJdbcInsert warehouseInsert = new SimpleJdbcInsert(this.dataSource).withTableName("pm_warehouse").usingGeneratedKeyColumns("WAREHOUSE_ID");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("WAREHOUSE_NAME", warehouse.getWarehouseName());
         params.put("WAREHOUSE_ADDRESS", warehouse.getWarehouseAddress());
@@ -936,10 +936,10 @@ public class WarehouseDaoImpl implements WarehouseDao {
 
     @Override
     public Warehouse getWarehouseByWarehouseId(int warehouseId) {
-        String sqlString = "SELECT tw.* FROM tesy_warehouse tw"
+        String sqlString = "SELECT tw.* FROM pm_warehouse tw"
                 + " WHERE tw.`WAREHOUSE_ID`=?";
         Object params[] = new Object[]{warehouseId};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForObject(sqlString, params, new WarehouseRowMapper());
     }
 
@@ -949,22 +949,22 @@ public class WarehouseDaoImpl implements WarehouseDao {
         Object params[];
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        sqlString = "UPDATE tesy_warehouse SET WAREHOUSE_NAME=?, WAREHOUSE_ADDRESS=?, WAREHOUSE_PHONE=?, WAREHOUSE_REP_NAME=?, WAREHOUSE_REP_EMAIL=?, WAREHOUSE_CUST_SER_EMAIL=?, ACTIVE=?, LAST_MODIFIED_BY=?, LAST_MODIFIED_DATE=? WHERE WAREHOUSE_ID=?";
+        sqlString = "UPDATE pm_warehouse SET WAREHOUSE_NAME=?, WAREHOUSE_ADDRESS=?, WAREHOUSE_PHONE=?, WAREHOUSE_REP_NAME=?, WAREHOUSE_REP_EMAIL=?, WAREHOUSE_CUST_SER_EMAIL=?, ACTIVE=?, LAST_MODIFIED_BY=?, LAST_MODIFIED_DATE=? WHERE WAREHOUSE_ID=?";
         params = new Object[]{warehouse.getWarehouseName(), warehouse.getWarehouseAddress(), warehouse.getWarehousePhone(), warehouse.getWarehouseRepName(), warehouse.getWarehouseRepEmail(), warehouse.getWarehouseCustServiceEmail(), warehouse.isActive(), curUser, curDate, warehouse.getWarehouseId()};
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.update(sqlString, params);
     }
 
     @Override
     public List<Warehouse> getShippingWarehouseList(boolean active) {
-        String sql = "SELECT tw.* FROM tesy_warehouse tw "
-                + " LEFT JOIN tesy_shipping_details tsp ON tw.`WAREHOUSE_ID`=tsp.`WAREHOUSE_ID` "
+        String sql = "SELECT tw.* FROM pm_warehouse tw "
+                + " LEFT JOIN pm_shipping_details tsp ON tw.`WAREHOUSE_ID`=tsp.`WAREHOUSE_ID` "
                 + " WHERE tsp.`WAREHOUSE_ID` IS NULL";
         if (active) {
             sql += " AND tw.ACTIVE";
         }
         sql += " ORDER BY tw.`LAST_MODIFIED_DATE` DESC";
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new WarehouseRowMapper());
     }
 }

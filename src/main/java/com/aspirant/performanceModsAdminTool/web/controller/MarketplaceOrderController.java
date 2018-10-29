@@ -287,7 +287,7 @@ public class MarketplaceOrderController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("bulk order feed data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("bulk order feed data validation started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.orderService.saveMultipartFileData(uploadFeed, marketplaceId);
             String msg;
@@ -444,7 +444,7 @@ public class MarketplaceOrderController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("marketPlace Order data upload started...", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("marketPlace Order data upload started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.orderService.saveMultipartFileForMarketPlaceOrderUpload(uploadFeed, marketplaceId);
             String msg;

@@ -274,7 +274,7 @@ public class ProductServiceImpl implements ProductService {
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
                 this.productDao.loadWebsiteProductDataLocally(path, companyId);
                 return 1;
             } catch (FileNotFoundException ex) {

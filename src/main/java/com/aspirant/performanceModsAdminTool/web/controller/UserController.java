@@ -105,7 +105,7 @@ public class UserController {
     public String showUpdatePasswordExpiredForm(ModelMap model) {
         Password password = new Password();
         CustomUserDetails curUser = (CustomUserDetails) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("Showing form for UpdateExpiredPassword", GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Showing form for UpdateExpiredPassword", GlobalConstants.TAG_SYSTEMLOG));
         password.setUserId(curUser.getUserId());
         password.setUsername(curUser.getUsername());
         model.addAttribute("password", password);
@@ -115,7 +115,7 @@ public class UserController {
     @RequestMapping(value = "/admin/updateExpiredPassword.htm", method = RequestMethod.POST)
     public String updatePasswordExpiredOnSubmit(final @ModelAttribute("password") Password password, Errors errors) {
         if (!this.userService.confirmPassword(password)) {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Nested path=" + errors.getNestedPath(), GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Nested path=" + errors.getNestedPath(), GlobalConstants.TAG_SYSTEMLOG));
             errors.rejectValue("oldPassword", "msg.oldPasswordNotMatch");
             CustomUserDetails curUser = (CustomUserDetails) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -123,7 +123,7 @@ public class UserController {
             password.setUsername(curUser.getUsername());
             return "/admin/updateExpiredPassword";
         } else {
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Updating user password", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Updating user password", GlobalConstants.TAG_SYSTEMLOG));
             this.userService.updatePassword(password, 90);
             // all you need to do now is load the correct Authorities
             Authentication curAuthentication = SecurityContextHolder.getContext().getAuthentication();

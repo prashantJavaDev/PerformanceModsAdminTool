@@ -65,7 +65,7 @@ public class EmailerServiceImpl implements EmailerService {
     @Override
     public void sendEmail(Email email) {
         int status = email.getStatus(), attempts = email.getAttempts();
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog("EmailId =" + email.getEmailerId() + " Status =" + status + " Attempts=" + attempts, GlobalConstants.TAG_SYSTEMLOG));
+       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("EmailId =" + email.getEmailerId() + " Status =" + status + " Attempts=" + attempts, GlobalConstants.TAG_SYSTEMLOG));
         String response = null;
         try {
 
@@ -83,7 +83,7 @@ public class EmailerServiceImpl implements EmailerService {
             status = 2;
             attempts++;
             response = "Success";
-            LogUtils.systemLogger.info(LogUtils.buildStringForLog("Email sent successfully", GlobalConstants.TAG_SYSTEMLOG));
+           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Email sent successfully", GlobalConstants.TAG_SYSTEMLOG));
             this.emailerDao.updateEmail(status, attempts, email.getEmailerId(), response);
         } catch (MessagingException ex) {
             LogUtils.systemLogger.warn(LogUtils.buildStringForLog("Email failed", GlobalConstants.TAG_SYSTEMLOG));

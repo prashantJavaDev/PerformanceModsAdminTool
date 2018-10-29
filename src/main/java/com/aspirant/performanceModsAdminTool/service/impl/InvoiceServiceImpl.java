@@ -66,7 +66,7 @@ public class InvoiceServiceImpl implements InvoiceService{
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
                 
                 if(extension.equals("csv")){
                     this.invoiceDao.loadInvoiceFeedDataLocally(path, warehouseId);

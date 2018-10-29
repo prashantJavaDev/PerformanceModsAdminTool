@@ -156,7 +156,7 @@ public class DashBoardDaoImpl implements DashBoardDao {
         params.put("curUser", curUser.getUserId());
         params.put("requestedBy", curUser.getUserId());
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
-        LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+//       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
         return nm.queryForMap(sql, params);
     }
 
@@ -171,7 +171,7 @@ public class DashBoardDaoImpl implements DashBoardDao {
                     + "IFNULL(SUM(IF(t.`ORDER_DATE` BETWEEN DATE_FORMAT(NOW() - INTERVAL 2 DAY,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW()- INTERVAL 2 DAY,'%Y-%m-%d 23:59:59') AND t.`ORDER_DATE` IS NOT NULL,1,0)),0) AS 'TotalCount2', \n"
                     + "IFNULL(SUM(IF(t.`ORDER_DATE` BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 DAY,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW()- INTERVAL 1 DAY,'%Y-%m-%d 23:59:59') AND t.`ORDER_DATE` IS NOT NULL,1,0)),0) AS 'TotalCount1', \n"
                     + "IFNULL(SUM(IF(t.`ORDER_DATE` BETWEEN DATE_FORMAT(NOW() ,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59') AND t.`ORDER_DATE` IS NOT NULL,1,0)),0) AS 'TotalCountToday' \n"
-                    + "FROM `tesy_order` t \n"
+                    + "FROM `pm_order` t \n"
                     + "WHERE t.`ORDER_DATE` BETWEEN DATE_FORMAT(NOW() - INTERVAL 7 DAY,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59') AND \n"
                     + "DATEDIFF(NOW(),t.`ORDER_DATE`)>2 AND t.`ORDER_STATUS`='Unshipped'\n"
                     + "GROUP BY t.`ORDER_STATUS`\n"
@@ -190,23 +190,23 @@ public class DashBoardDaoImpl implements DashBoardDao {
             Map<String, Object> shipmentDetail = new HashMap<String, Object>();
             String sql = null;
 
-            sql = "SELECT COUNT(*) FROM tesy_order tor";
+            sql = "SELECT COUNT(*) FROM pm_order tor";
             int totalOrders = this.jdbcTemplate.queryForInt(sql);
             shipmentDetail.put("totalOrders", totalOrders);
 
-            sql = "SELECT COUNT(tor.`ORDER_STATUS`) FROM tesy_order tor WHERE tor.`ORDER_STATUS`='Shipped'";
+            sql = "SELECT COUNT(tor.`ORDER_STATUS`) FROM pm_order tor WHERE tor.`ORDER_STATUS`='Shipped'";
             int totalShippedOrders = this.jdbcTemplate.queryForInt(sql);
             shipmentDetail.put("totalShippedOrders", totalShippedOrders);
 
-            sql = "SELECT COUNT(tor.`ORDER_STATUS`) FROM tesy_order tor WHERE tor.`ORDER_STATUS`='Unshipped'";
+            sql = "SELECT COUNT(tor.`ORDER_STATUS`) FROM pm_order tor WHERE tor.`ORDER_STATUS`='Unshipped'";
             int totalUnshippedOrders = this.jdbcTemplate.queryForInt(sql);
             shipmentDetail.put("totalUnshippedOrders", totalUnshippedOrders);
 
-            sql = "SELECT COUNT(*) FROM tesy_order t WHERE DATEDIFF(NOW(),t.`ORDER_DATE`)>2 AND t.`ORDER_STATUS`='Shipped'";
+            sql = "SELECT COUNT(*) FROM pm_order t WHERE DATEDIFF(NOW(),t.`ORDER_DATE`)>2 AND t.`ORDER_STATUS`='Shipped'";
             int lateShipped = this.jdbcTemplate.queryForInt(sql);
             shipmentDetail.put("lateShipped", lateShipped);
             
-            sql = "SELECT COUNT(*) FROM tesy_order tor WHERE TRIM(tor.`WAREHOUSE_ID`) IS NULL;";
+            sql = "SELECT COUNT(*) FROM pm_order tor WHERE TRIM(tor.`WAREHOUSE_ID`) IS NULL;";
             int  orderProcessed = this.jdbcTemplate.queryForInt(sql);
             shipmentDetail.put("orderProcessed", orderProcessed);
 
@@ -224,18 +224,18 @@ public class DashBoardDaoImpl implements DashBoardDao {
             String sql = null;
             Map<String, Object> priceAndProductCount = new HashMap<String, Object>();
 
-            sql = "SELECT COUNT(*) AS underpriced FROM tesy_available_listing tal WHERE tal.`LAST_LISTED_PRICE`> tal.`CURRENT_PRICE`";
+            sql = "SELECT COUNT(*) AS underpriced FROM pm_available_listing tal WHERE tal.`LAST_LISTED_PRICE`> tal.`CURRENT_PRICE`";
             int underPriced = this.jdbcTemplate.queryForInt(sql);
             priceAndProductCount.put("underPriced", underPriced);
 
-            sql = "SELECT COUNT(*) AS overpriced FROM tesy_available_listing tal WHERE tal.`CURRENT_PRICE` > tal.`LAST_LISTED_PRICE`";
+            sql = "SELECT COUNT(*) AS overpriced FROM pm_available_listing tal WHERE tal.`CURRENT_PRICE` > tal.`LAST_LISTED_PRICE`";
             int overPriced = this.jdbcTemplate.queryForInt(sql);
             priceAndProductCount.put("overPriced", overPriced);
 
-            sql = "SELECT COUNT(*) AS lowCount FROM tesy_order tso\n"
-                    + "LEFT JOIN tesy_available_listing tal ON tso.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
-                    + "LEFT JOIN tesy_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
-                    + "LEFT JOIN tesy_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
+            sql = "SELECT COUNT(*) AS lowCount FROM pm_order tso\n"
+                    + "LEFT JOIN pm_available_listing tal ON tso.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID` \n"
+                    + "LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`\n"
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`\n"
                     + "WHERE tal.`CURRENT_QUANTITY`=2";
             int lowCount = this.jdbcTemplate.queryForInt(sql);
             priceAndProductCount.put("lowCount", lowCount);
@@ -255,7 +255,7 @@ public class DashBoardDaoImpl implements DashBoardDao {
             Map<String, Object> productDetails = new HashMap<String, Object>();
             String sql = null;
 
-            sql = "SELECT COUNT(tp.`PRODUCT_ID`) FROM tesy_product tp";
+            sql = "SELECT COUNT(tp.`PRODUCT_ID`) FROM pm_product tp";
             int totalProducts = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("totalProducts", totalProducts);
 
@@ -263,7 +263,7 @@ public class DashBoardDaoImpl implements DashBoardDao {
 //            int prodListedOnWebsite = this.jdbcTemplate.queryForInt(sql);
 //            productDetails.put("totalShippedOrders", prodListedOnWebsite);
             
-            sql = "SELECT  COUNT(*) FROM tesy_product tsp   \n"
+            sql = "SELECT  COUNT(*) FROM pm_product tsp   \n"
                     + "WHERE TRIM(tsp.`PRODUCT_NAME`) IS NULL   \n"
                     + "OR TRIM(tsp.`MANUFACTURER_MPN`) IS NULL  \n"
                     + "OR TRIM(tsp.`TITLE`) IS NULL  \n"
@@ -278,19 +278,19 @@ public class DashBoardDaoImpl implements DashBoardDao {
             int productWithMissigData = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("productWithMissigData", productWithMissigData);
 
-            sql = "SELECT COUNT(DISTINCT(tm.`MAIN_CATEGORY_ID`)) FROM tesy_main_category tm";
+            sql = "SELECT COUNT(DISTINCT(tm.`MAIN_CATEGORY_ID`)) FROM pm_main_category tm";
             int  mainCategories = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("mainCategories", mainCategories);
             
-            sql = "SELECT COUNT(DISTINCT(tm.`SUB_CATEGORY_DESC`)) FROM tesy_sub_category tm";
+            sql = "SELECT COUNT(DISTINCT(tm.`SUB_CATEGORY_DESC`)) FROM pm_sub_category tm";
             int  subCategories = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("subCategories", subCategories);
             
-            sql = "SELECT COUNT(*) FROM tesy_product tp WHERE tp.`PRODUCT_STATUS_ID`=1;";
+            sql = "SELECT COUNT(*) FROM pm_product tp WHERE tp.`PRODUCT_STATUS_ID`=1;";
             int   manuallyCreated = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("manuallyCreated", manuallyCreated);
             
-            sql = "SELECT SUM(tor.`QUANTITY_SHIPPED`) FROM tesy_order tor";
+            sql = "SELECT SUM(tor.`QUANTITY_SHIPPED`) FROM pm_order tor";
             int    productProcessed = this.jdbcTemplate.queryForInt(sql);
             productDetails.put("productProcessed", productProcessed);
 

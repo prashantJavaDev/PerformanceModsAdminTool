@@ -343,7 +343,7 @@ public class TicketController {
             ticket.setNotes(notes);
             int result = this.ticketService.updateTicket(ticket);
             if (result == 1) {
-                LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket updated successfully for ticket Id : " + ticket.getTicketId(), GlobalConstants.TAG_SYSTEMLOG));
+               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Ticket updated successfully for ticket Id : " + ticket.getTicketId(), GlobalConstants.TAG_SYSTEMLOG));
                 String message = "Ticket updated Successfully for Ticket No :" + ticket.getTicketNo();
                 if (uniqueCode == 1) {
                     return "redirect:../tickets/listAllTickets.htm?msg=" + URLEncoder.encode(message, "UTF-8");

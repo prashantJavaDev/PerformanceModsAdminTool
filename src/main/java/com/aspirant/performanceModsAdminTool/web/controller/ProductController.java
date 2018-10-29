@@ -88,7 +88,7 @@ public class ProductController {
                     return "redirect:../product/addProduct.htm?error=" + URLEncoder.encode(msg, "UTF-8");
                 } else {
                     msg = "Sorry! your data not saved.";
-                    LogUtils.systemLogger.info(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
+                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
                     return "redirect:../product/listProduct.htm?error=" + URLEncoder.encode(msg, "UTF-8");
                 }
             }
