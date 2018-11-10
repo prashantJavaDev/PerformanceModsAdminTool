@@ -15,54 +15,60 @@
         <!-- EOF CSS INCLUDE -->                                    
     </head>
     <body onload="document.getElementById('j_username').focus();">
-        <div class="login-container">
-            <div class="login-box animated fadeInDown">
-                <a href="#"><div class="login-logo"></div></a>
-
-                <div class="login-body">
-                    <div class="login-title"><strong>performanceMods Admin Tool</strong></div>
-
-                    <!-- START LOGIN FORM HERE -->
-                    <form name="form1" action="../j_spring_security_check" class="form-horizontal" method="post" >
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" placeholder="Username" id="j_username" name="j_username" value="${sessionScope[SPRING_SECURITY_LAST_USERNAME]}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <input type="password" class="form-control" placeholder="Password" id="j_password" name="j_password"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-6"></div>
-                            <div class="col-md-6">
-                                <button class="btn btn-info btn-block">Log In</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <c:if test="${param.login_error=='true'}">
-                                    <span class="text-danger">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</span>
-                                </c:if>
-                            </div>
-                        </div>
-                    </form>
+        <div class="login-container col-md-12">
+            <div class="col-md-6" style="float: left"> 
+                <div class="login-container col-md-6" style="float: left;">
+                    <h1 style="color: white; font-weight: bolder; ">Performance Mods Admin Tool</h1>
                 </div>
-                <div class="login-footer">
-                    <div class="pull-left">
-                        <p>Built by - <span class="text-builtBy"></span></p>
-                        <p><a href="#">About</a> | <a href="#">Contact Us</a></p>
-                    </div>
-                    <div class="pull-right">
-                        <p class="text-builtBy">ver ${minorVersion}</p>
-                    </div>
-                </div>
-                <!-- MESSAGE SECTION -->
-                <%@include file="../common/message.jsp"%>
-                <!-- END MESSAGE SECTION -->
+                <div style="margin-top: 150px"><img src="../images/pm.jpeg" height="250px" width="500px"/></div>
+                    
+                
             </div>
+            <div class="col-md-6" style="float: left"><div class="login-container col-md-6" style="float: left">
+                    <div class=" animated fadeInDown">
+                        <a href="#"><div></div></a>
+
+                        <div class="login-body col-md-12" style="margin-top: 20px; width: 100%">
+                            <!--<div class="login-title"><strong> Admin Tool</strong></div>-->
+
+                            <!-- START LOGIN FORM HERE -->
+                            <form name="form1" action="../j_spring_security_check" class="form-horizontal" method="post" >
+
+                                <div class="form-group col-md-6" style="float: left">
+                                    <div class="col-md-12" >
+                                        <input type="text" class="form-control" placeholder="Username" id="j_username" name="j_username" value="${sessionScope[SPRING_SECURITY_LAST_USERNAME]}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6" style="float: left">
+                                    <div class="col-md-12" >
+                                        <input type="password" class="form-control" placeholder="Password" id="j_password" name="j_password"/>
+                                    </div>
+                                </div>
+                                    <div class="form-group col-md-6" style="float: left"></div>
+                                <div class="form-group col-md-6">
+                                    <!--<div class="col-md-6"></div>-->
+                                    <div class="col-md-6 pull-right">
+                                        <button class="btn btn-info btn-block ">Log In</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <c:if test="${param.login_error=='true'}">
+                                            <span class="text-danger">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</span>
+                                        </c:if>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- MESSAGE SECTION -->
+                        <%@include file="../common/message.jsp"%>
+                        <!-- END MESSAGE SECTION -->
+                    </div>
+                </div> </div>
         </div>
+
+
+
     </body>
 </html>

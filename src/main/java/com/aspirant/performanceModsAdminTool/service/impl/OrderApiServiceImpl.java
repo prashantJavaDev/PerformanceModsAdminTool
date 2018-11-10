@@ -18,11 +18,13 @@ import com.amazonservices.mws.orders.model.OrderItem;
 import com.amazonservices.mws.orders.model.ResponseHeaderMetadata;
 import com.aspirant.performanceModsAdminTool.dao.ConfigDao;
 import com.aspirant.performanceModsAdminTool.model.AmazonProperties;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 //import java.util.Optional;
 import javax.sql.DataSource;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -51,7 +53,6 @@ public class OrderApiServiceImpl implements OrderApiService {
     }
     @Autowired
     private OrderDao orderDao;
-    
     @Autowired
     private ConfigDao configDao;
 
@@ -76,6 +77,8 @@ public class OrderApiServiceImpl implements OrderApiService {
 //                   String PONumber = "";
                     String phone = "";
 //                    String nxtPONumber = "";
+                    TimeZone zone = TimeZone.getTimeZone("US/Pacific"); // For example...
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); // Put your pattern here
                     KeyHolder keyHolder1 = new GeneratedKeyHolder();
                     response = a.getOrderList(lastUpdatedAfterDate);
                     String curDate = DateUtils.getCurrentDateString(DateUtils.PST, DateUtils.YMDHMS);
@@ -140,7 +143,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                                 params1.addValue("country", o.getShippingAddress().getCountryCode());
                                 params1.addValue("updatedBy", "Api");
                                 if (o.getShippingAddress().getPhone() != null) {
-                                     phone = o.getShippingAddress().getPhone();
+                                    phone = o.getShippingAddress().getPhone();
                                     String number = phone.replaceAll("[^,0-9]", "");
 //                                    int i=number.indexOf("X");
 //                                    String result="";
@@ -149,16 +152,16 @@ public class OrderApiServiceImpl implements OrderApiService {
 //                                    }else{
 //                                        result= number.substring(0,i);
 //                                    }
-                                    
+
 //                                    contact = result.substring(result.length() - 10);
-                                    contact =  number;
+                                    contact = number;
                                 } else {
                                     contact = "";
                                 }
 
                                 params1.addValue("shipPhoneNo", contact);
                                 params1.addValue("customerPhone", contact);
-                                
+
                             }
                             params1.addValue("email", o.getBuyerEmail());
 
@@ -182,21 +185,43 @@ public class OrderApiServiceImpl implements OrderApiService {
                             params.put("marketplace_order_id", o.getAmazonOrderId());
                             params.put("marketplaceSku", ot.getSellerSKU());
                             params.put("marketplaceListingId", ot.getASIN());
-                            params.put("orderDate", o.getPurchaseDate().toGregorianCalendar().getTime());
+                            Date now = o.getPurchaseDate().toGregorianCalendar().getTime();
+                            //params.put("orderDate", o.getPurchaseDate().toGregorianCalendar().getTime());
+
+                            format.setTimeZone(zone);
+                            String text = format.format(now);
+                            params.put("orderDate", text);
                             if (o.getLatestShipDate() != null) {
-                                params.put("latestShipDate", o.getLatestShipDate().toGregorianCalendar().getTime());
+                                Date now1 = o.getLatestShipDate().toGregorianCalendar().getTime();
+                                //params.put("orderDate", o.getPurchaseDate().toGregorianCalendar().getTime());
+                                format.setTimeZone(zone);
+                                String text1 = format.format(now1);
+                                params.put("latestShipDate", text1);
+//                                params.put("latestShipDate", );
                             } else {
                                 params.put("latestShipDate", "");
                             }
                             if (o.getLatestDeliveryDate() != null) {
 
-                                params.put("latestDeliveryDate", o.getLatestDeliveryDate().toGregorianCalendar().getTime());
+                                Date now2 = o.getLatestDeliveryDate().toGregorianCalendar().getTime();
+                                format.setTimeZone(zone);
+                                String text2 = format.format(now2);
+                                params.put("latestDeliveryDate", text2);
+                                //params.put("latestDeliveryDate", o.getLatestDeliveryDate().toGregorianCalendar().getTime());
                             } else {
 
                                 params.put("latestDeliveryDate", curDate);
                             }
-                            params.put("paymentDate", o.getPurchaseDate().toGregorianCalendar().getTime());
-                            params.put("lastUpdatedDate", o.getLastUpdateDate().toGregorianCalendar().getTime());
+                            Date now3 = o.getPurchaseDate().toGregorianCalendar().getTime();
+                            format.setTimeZone(zone);
+                            String text3 = format.format(now3);
+                            params.put("paymentDate", text3);
+//                            params.put("paymentDate", o.getPurchaseDate().toGregorianCalendar().getTime());
+                            Date now4 = o.getLastUpdateDate().toGregorianCalendar().getTime();
+                            format.setTimeZone(zone);
+                            String text4 = format.format(now4);
+                            params.put("lastUpdatedDate", text4);
+//                            params.put("lastUpdatedDate", o.getLastUpdateDate().toGregorianCalendar().getTime());
                             params.put("customerName", o.getBuyerName());
                             params.put("orderItemId", ot.getOrderItemId());
                             params.put("quantityUnshipped", o.getNumberOfItemsUnshipped());
@@ -255,7 +280,7 @@ public class OrderApiServiceImpl implements OrderApiService {
 //                                    }else{
 //                                        result= number.substring(0,i);
 //                                    }
-                                    
+
 //                                    contact = result.substring(result.length() - 10);
                                     contact = number;
 
@@ -296,7 +321,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                             x++;
                         }
                     }
-                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Response-RequestId:" + rhmd.getRequestId() + "Timestamp:" + rhmd.getTimestamp(), GlobalConstants.TAG_SYSTEMLOG));
+                    // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Response-RequestId:" + rhmd.getRequestId() + "Timestamp:" + rhmd.getTimestamp(), GlobalConstants.TAG_SYSTEMLOG));
                     params.clear();
                     int[] resultList = nm.batchUpdate(sql, batchParams1);
                     int[] batchUpdate = nm.batchUpdate(sqlInsert, batchParams2);

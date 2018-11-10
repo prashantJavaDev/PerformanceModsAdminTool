@@ -29,7 +29,9 @@
         <li class="active">
             <a href="../home/home.htm"><span class="fa fa-home"></span> <span class="xn-text">Home</span></a>
         </li>
-        <sec:authorize ifAnyGranted="ROLE_BF_RELOAD_APPLICATION,ROLE_BF_CREATE_USER,ROLE_BF_LIST_USER,ROLE_BF_CREATE_CATEGORY,ROLE_BF_ADD_WAREHOUSE,ROLE_BF_LIST_WAREHOUSE,ROLE_BF_ADD_MANUFACTURER,ROLE_BF_MAP_MANUFACTURER,ROLE_BF_ADD_MARKETPLACE,ROLE_BF_LIST_MARKETPLACE,ROLE_BF_CREATE_NEW_LISTINGS,ROLE_BF_ADD_COMPANY,ROLE_BF_LIST_COMPANY,ROLE_BF_UPLOAD_INVOICE">
+        
+        
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Admin"><span class="fa fa-user"></span><span class="xn-text">Admin</span></a>
                 <ul>
@@ -176,7 +178,7 @@
             </li>
         </sec:authorize>
 
-        <sec:authorize ifAnyGranted="ROLE_BF_MAP_performanceMods_MPN,ROLE_BF_CREATE_PRODUCT,ROLE_BF_LIST_PRODUCT,ROLE_BF_UPLOAD_FEEDS,ROLE_BF_VIEW_PRODUCT,ROLE_BF_VIEW_PRODUCT_MISSING_DATA,ROLE_BF_VIEW_DELETE_PRODUCT">
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Product"><span class="fa fa-suitcase"></span><span class="xn-text">Product</span></a>
                 <ul>
@@ -224,7 +226,7 @@
             </li>
         </sec:authorize>
 
-        <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_MARKETPLACE_FEE,ROLE_BF_PROCESS_LISTINGS,ROLE_BF_EXPORT_LISTINGS,ROLE_BF_EXPORT_MARKETPLACE_FEES">
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Listing"><span class="fa fa-list-ol"></span><span class="xn-text">Listing</span></a>
                 <ul>
@@ -268,17 +270,17 @@
                             <a href="../order/marketplaceOrderList.htm"><span class="fa fa-list-alt"></span>Order List</a>
                         </li>
                     </sec:authorize>
-                     <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_MARKETPLACE_ORDER">
+                     <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
                         <li>
                             <a href="../order/marketplaceOrderUpload.htm"><span class="fa fa-upload"></span>MarketPlace Orders Upload</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_EXPORT_ORDER_PROCESSING_SHEET">
+                    <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
                         <li>
                             <a href="../order/exportProcessingSheet.htm"><span class="fa fa-download"></span>Export Processing Sheet</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_VIEW_ORDER_TRACKING,ROLE_BF_UPLOAD_BULK_TRACKING">
+                    <sec:authorize ifAnyGranted="ROLE_BF_SUPER,ROLE_BF_SUPER">
                         <li class="xn-openable">
                             <a href=""><span class="fa fa-truck"></span>Tracking</a>
                             <ul>
@@ -294,7 +296,7 @@
                 </ul>
             </li>
         </sec:authorize>
-        <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_FOR_WEBSITE,ROLE_BF_DOWNLOAD_WEBSITE_PRODUCT">
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Website"><span class="fa fa-globe"></span><span class="xn-text">Website</span></a>
                 <ul>
@@ -311,7 +313,7 @@
                 </ul>
             </li>
         </sec:authorize>
-        <sec:authorize ifAnyGranted="ROLE_BF_CREATE_TICKET,ROLE_BF_LIST_ALL_TICKETS,ROLE_BF_LIST_OPEN_TICKETS">
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Tickets"><span class="fa fa-tasks"></span><span class="xn-text">Tickets</span></a>
                 <ul>
@@ -333,7 +335,7 @@
                 </ul>
             </li> 
         </sec:authorize>
-        <sec:authorize ifAnyGranted="ROLE_BF_REPORT_ACCESS_LOG">
+        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
             <li class="xn-openable">
                 <a href="#" title="Reports"><span class="fa fa-file-text-o"></span><span class="xn-text">Reports</span></a>
                 <ul>

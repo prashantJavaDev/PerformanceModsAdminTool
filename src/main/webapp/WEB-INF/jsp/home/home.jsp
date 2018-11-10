@@ -41,11 +41,11 @@
                                     <div class="panel panel-default tabs">                            
                                         <ul class="nav nav-tabs" role="tablist">
                                             <li><a href="#tab-first" role="tab" data-toggle="tab">Marketplace</a></li>
-                                            <li class="active"><a href="#tab-second" role="tab" data-toggle="tab">Tickets</a></li>
-                                            <li><a href="#tab-third" role="tab" data-toggle="tab">Website</a></li>
+<!--                                            <li class="active"><a href="#tab-second" role="tab" data-toggle="tab">Tickets</a></li>
+                                            <li><a href="#tab-third" role="tab" data-toggle="tab">Website</a></li>-->
                                         </ul>
                                         <div class="panel-body tab-content">
-                                            <div class="tab-pane " id="tab-first">
+                                            <div class="tab-panel active" id="tab-first">
                                                 <div class="row">
                                                     <div class="col-md-7">
 
@@ -214,7 +214,7 @@
 
 
                                             </div>
-                                            <div class="tab-pane active" id="tab-second">
+                                            <div class="tab-pane" id="tab-second">
                                                 <!-- START WIDGETS -->    
                                                 <div class="panel-body">
                                                     <div class="panel panel-default">
@@ -653,15 +653,16 @@
                                                                                     {
                                                                                         name: 'Amazon',
                                                                                         data: ${totalCount7}
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'Walmart',
-                                                                                        data: ${closed2}
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'NewEgg',
-                                                                                        data: ${canceled2}
-                                                                                    }
+                                                                                        }
+//                                                                                    },
+//                                                                                    {
+//                                                                                        name: 'Walmart',
+//                                                                                        data: ${closed2}
+//                                                                                    },
+//                                                                                    {
+//                                                                                        name: 'NewEgg',
+//                                                                                        data: ${canceled2}
+//                                                                                    }
                                                                                 ]
                                                                             });
 
