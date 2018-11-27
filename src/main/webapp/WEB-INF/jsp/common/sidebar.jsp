@@ -31,7 +31,7 @@
         </li>
         
         
-        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
+        <sec:authorize ifAnyGranted="ROLE_BF_ADMIN">
             <li class="xn-openable">
                 <a href="#" title="Admin"><span class="fa fa-user"></span><span class="xn-text">Admin</span></a>
                 <ul>
@@ -83,7 +83,7 @@
                                         <a href="../admin/warehouseList.htm"><span class="fa fa-list-alt"></span>List Warehouse</a>
                                     </li>
                                 </sec:authorize>
-                                <sec:authorize ifAnyGranted="ROLE_BF_CREATE_USER">
+                                <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
                                     <li class="xn-openable">
                                         <a href="#"><span class="fa fa-truck"></span>Warehouse Shipping</a>
                                         <ul>
@@ -121,7 +121,7 @@
                             </ul>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE,ROLE_BF_LIST_MARKETPLACE">
+<!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE,ROLE_BF_LIST_MARKETPLACE">
                         <li class="xn-openable">
                             <a href="#"><span class="fa fa-shopping-cart"></span>Marketplace</a>
                             <ul>
@@ -138,8 +138,8 @@
 
                             </ul>
                         </li>
-                    </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
+                    </sec:authorize>-->
+<!--                    <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
                         <li class="xn-openable">
                             <a href="#"><span class="fa fa-list-ol"></span>Listings</a>
                             <ul>
@@ -148,8 +148,8 @@
                                 </sec:authorize>
                             </ul>
                         </li>
-                    </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY,ROLE_BF_LIST_COMPANY">
+                    </sec:authorize>-->
+<!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY,ROLE_BF_LIST_COMPANY">
                         <li class="xn-openable">
                             <a href="#"><span class="fa fa-globe"></span>Company</a>
                             <ul>
@@ -163,8 +163,8 @@
                                 </sec:authorize>
                             </ul>
                         </li>
-                    </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
+                    </sec:authorize>-->
+<!--                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
                         <li class="xn-openable">
                             <a href="#"><span class="fa fa-money"></span>Accounting</a>
                             <ul>
@@ -173,7 +173,7 @@
                                 </sec:authorize>
                             </ul>
                         </li>
-                    </sec:authorize>
+                    </sec:authorize>-->
                 </ul>
             </li>
         </sec:authorize>
@@ -261,7 +261,7 @@
             </li>
         </sec:authorize>
 
-        <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_MARKETPLACE_ORDER,ROLE_BF_VIEW_ORDER_LIST,ROLE_BF_VIEW_ORDER_TRACKING,ROLE_BF_EXPORT_ORDER_PROCESSING_SHEET">
+        <sec:authorize ifAnyGranted="ROLE_BF_VIEW_ORDER_TRACKING,ROLE_BF_VIEW_ORDER_LIST,ROLE_BF_UPLOAD_BULK_TRACKING">
             <li class="xn-openable">
                 <a href="#" title="Orders"><span class="fa fa-shopping-cart"></span><span class="xn-text">Orders</span></a>
                 <ul>
@@ -280,7 +280,7 @@
                             <a href="../order/exportProcessingSheet.htm"><span class="fa fa-download"></span>Export Processing Sheet</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_SUPER,ROLE_BF_SUPER">
+                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_BULK_TRACKING">
                         <li class="xn-openable">
                             <a href=""><span class="fa fa-truck"></span>Tracking</a>
                             <ul>

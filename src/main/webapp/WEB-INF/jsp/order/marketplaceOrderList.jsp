@@ -146,7 +146,7 @@ Author     : Ritesh
                                                     <thead>
                                                         <tr>
                                                             <th width="50px"><spring:message code="poNumber"/></th>
-                                                            <th width="50px"><spring:message code="marketplaceName"/></th>
+                                                            <%--<th width="50px"><spring:message code="marketplaceName"/></th> --%>
                                                             <th width="100px"><spring:message code="marketplaceOrderId"/></th>
                                                             <th width="100px"><spring:message code="marketplaceSku"/></th>
                                                             <th width="100px"><spring:message code="marketplaceListingId"/></th>
@@ -182,7 +182,7 @@ Author     : Ritesh
                                                                 data-marketplaceorderid="${item.marketplaceOrderId}" class="clickableRow" title="${titleValue}" >
 
                                                                 <td><c:out value="${item.poNumber}"/></td>
-                                                                <td><c:out value="${item.marketplace.marketplaceName}"/></td>
+                                                                <%--<td><c:out value="${item.marketplace.marketplaceName}"/></td> --%>
                                                                 <td><c:out value="${item.marketplaceOrderId}"/></td>
                                                                 <td><c:out value="${item.marketplaceSku}"/></td>
                                                                 <td><c:out value="${item.marketplaceListingId}"/></td>
