@@ -28,11 +28,7 @@ public interface OrderService {
      */
     public int saveMultipartFileData(UploadFeed uploadFeed, int marketplaceId);
 
-    /**
-     * Method is used to get Order list.
-     *
-     * @return list of Order
-     */
+
     public List<Order> getOrderList(int marketplaceId, String marketplaceOrderId, String poNumber, int pageNo, String customerName, String marketplaceSku, String marketplaceListingId, String orderStatus, String fulfillmentChannel, String startDate, String stopDate);
 
     /**

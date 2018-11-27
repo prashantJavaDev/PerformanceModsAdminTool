@@ -9,7 +9,7 @@
     <!-- START X-NAVIGATION -->
     <ul class="x-navigation x-navigation-minimized">
         <li class="xn-logo">
-            <a href="../home/home.htm"><div class="xn-logoImage"></div></a>
+            <a href="../home/home.htm"><div class=""></div></a>
             <a href="#" class="x-navigation-control"></a>
         </li>
         <li class="xn-profile">

@@ -496,7 +496,7 @@ public class OrderDaoImpl implements OrderDao {
         if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(stopDate)) {
             startDate += " 00:00:00";
             stopDate += " 23:59:59";
-            sql.append(" AND teo.`ORDER_DATE` BETWEEN :startDate AND :stopDate ORDER BY teo.`ORDER_STATUS` DESC");
+            sql.append(" AND teo.`ORDER_DATE` BETWEEN :startDate AND :stopDate ORDER BY teo.`ORDER_DATE` DESC");
             params.put("startDate", startDate);
             params.put("stopDate", stopDate);
         }

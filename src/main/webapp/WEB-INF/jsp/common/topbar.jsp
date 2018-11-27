@@ -11,7 +11,7 @@
         <a href="#" class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
     </li>
     <li class="xn-titleText">
-        performanceMods Admin Tool
+        Performance Mods Admin Tool
     </li>
     <!-- SIGN OUT -->
     <li class="xn-icon-button pull-right">
