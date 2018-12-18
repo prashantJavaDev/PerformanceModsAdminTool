@@ -31,7 +31,7 @@
         </li>
         
         
-        <sec:authorize ifAnyGranted="ROLE_BF_ADMIN">
+        <sec:authorize ifAnyGranted="ROLE_BF_RELOAD_APPLICATION,ROLE_BF_CREATE_USER,ROLE_BF_LIST_USER,ROLE_BF_CREATE_CATEGORY,ROLE_BF_ADD_WAREHOUSE,ROLE_BF_LIST_WAREHOUSE,ROLE_BF_ADD_MANUFACTURER,ROLE_BF_MAP_MANUFACTURER">
             <li class="xn-openable">
                 <a href="#" title="Admin"><span class="fa fa-user"></span><span class="xn-text">Admin</span></a>
                 <ul>
@@ -178,7 +178,7 @@
             </li>
         </sec:authorize>
 
-        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
+        <sec:authorize ifAnyGranted="ROLE_BF_CREATE_PRODUCT,ROLE_BF_LIST_PRODUCT,ROLE_BF_UPLOAD_FEEDS,ROLE_BF_VIEW_PRODUCT">
             <li class="xn-openable">
                 <a href="#" title="Product"><span class="fa fa-suitcase"></span><span class="xn-text">Product</span></a>
                 <ul>
@@ -202,7 +202,7 @@
                             <a href="../product/viewProduct.htm"><span class="fa fa-eye"></span>View Product</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_VIEW_PRODUCT_MISSING_DATA">
+                    <!--<sec:authorize ifAnyGranted="ROLE_BF_VIEW_PRODUCT_MISSING_DATA">
                         <li>
                             <a href="../product/missingProductDataList.htm"><span class="fa fa-edit"></span>Product Missing Data</a>
                         </li>
@@ -217,7 +217,7 @@
                             <a href="../product/mapProduct.htm"><span class="fa fa-link"></span>Map Product</a>
                         </li>
                     </sec:authorize>
-                    <!--                    <sec:authorize ifAnyGranted="ROLE_BF_EXPORT_PRODUCT_DATA">
+                                        <sec:authorize ifAnyGranted="ROLE_BF_EXPORT_PRODUCT_DATA">
                                             <li>
                                                 <a href="../product/exportProductData.htm"><span class="glyphicon glyphicon-export"></span>Export Data</a>
                                             </li>

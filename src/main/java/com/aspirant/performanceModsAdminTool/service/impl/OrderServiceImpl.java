@@ -53,8 +53,8 @@ public class OrderServiceImpl implements OrderService {
     public static final String BULK_ORDER_TRACKING_FILE_PATH = "/home/altius/performanceMods/tracking/";
     public static final String XMLFilePath = "/home/altius/performanceMods/ingram/";
 //    public static final String XMLFilePath = "/home/altius/xmlDocs/";
-    public static final String XMLFilePathForAknowledge = "/home/altius/performanceMods/ingram/";
-//    public static final String XMLFilePathForAknowledge = "/home/altius/xmlDocs/";
+//    public static final String XMLFilePathForAknowledge = "/home/altius/performanceMods/ingram/";
+    public static final String XMLFilePathForAknowledge = "/home/altius/xmlDocs/";
     public static final String MARKETPLACE_ORDER_FILE_PATH = "/home/altius/performanceMods/marketPlaceOrder/";
 
     @Override
@@ -199,13 +199,13 @@ public class OrderServiceImpl implements OrderService {
                 Element Header = doc.createElement("Header");
                 rootElement.appendChild(Header);
 
-                //DocumentVersion 1.01,MerchantIdentifier A1PYB0QXU6SOEO 
+                //DocumentVersion 1.01,MerchantIdentifier A26YLYFFSVKSNX 
                 Element DocumentVersion = doc.createElement("DocumentVersion");
                 DocumentVersion.appendChild(doc.createTextNode("1.01"));
                 Header.appendChild(DocumentVersion);
 
                 Element MerchantIdentifier = doc.createElement("MerchantIdentifier");
-                MerchantIdentifier.appendChild(doc.createTextNode("A1PYB0QXU6SOEO"));
+                MerchantIdentifier.appendChild(doc.createTextNode("A26YLYFFSVKSNX"));
                 Header.appendChild(MerchantIdentifier);
                 //<-------------------->
 
@@ -352,13 +352,13 @@ public class OrderServiceImpl implements OrderService {
             Element Header = doc.createElement("Header");
             rootElement.appendChild(Header);
 
-            //DocumentVersion 1.01,MerchantIdentifier A1PYB0QXU6SOEO 
+            //DocumentVersion 1.01,MerchantIdentifier A26YLYFFSVKSNX 
             Element DocumentVersion = doc.createElement("DocumentVersion");
             DocumentVersion.appendChild(doc.createTextNode("1.01"));
             Header.appendChild(DocumentVersion);
 
             Element MerchantIdentifier = doc.createElement("MerchantIdentifier");
-            MerchantIdentifier.appendChild(doc.createTextNode("A1PYB0QXU6SOEO"));
+            MerchantIdentifier.appendChild(doc.createTextNode("A26YLYFFSVKSNX"));
             Header.appendChild(MerchantIdentifier);
             //<-------------------->
 

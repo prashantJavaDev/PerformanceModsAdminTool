@@ -48,7 +48,7 @@
                                     <div class="panel panel-warning">
                                         <div class="panel-body">
                                             <form method="POST" name="form1" id="form1">
-                                                <div class="col-md-2">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><spring:message code="performanceModsMpn"/></label>
                                                         <input type="text" name="performanceModsMpn" id="performanceModsMpn" value="${performanceModsMpn}" Class="form-control"/>

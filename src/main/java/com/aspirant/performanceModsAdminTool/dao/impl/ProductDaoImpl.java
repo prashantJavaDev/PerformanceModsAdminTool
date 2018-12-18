@@ -481,7 +481,7 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         if (performanceModsMpn != null && performanceModsMpn != "") {
-            sql.append(" AND tp.performanceMods_MPN=:performanceModsMpn");
+            sql.append(" AND tp.ADMIN_TOOL_MPN=:performanceModsMpn");
             params.put("performanceModsMpn", performanceModsMpn);
         }
 
@@ -560,7 +560,7 @@ public class ProductDaoImpl implements ProductDao {
             }
 
             if (performanceModsMpn != null && performanceModsMpn != "") {
-                sql.append(" AND tp.performanceMods_MPN=:performanceModsMpn ");
+                sql.append(" AND tp.ADMIN_TOOL_MPN=:performanceModsMpn ");
                 params.put("performanceModsMpn", performanceModsMpn);
             }
 
@@ -965,7 +965,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "LEFT JOIN pm_product_image tpi2 ON tpi2.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi2.`ORDER_ID`=2 "
                 + "LEFT JOIN pm_product_image tpi3 ON tpi3.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi3.`ORDER_ID`=3 "
                 + "LEFT JOIN pm_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4 "
-                + "WHERE tp.`performanceMods_MPN`=:performanceModsMpn");
+                + "WHERE tp.`ADMIN_TOOL_MPN`=:performanceModsMpn");
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("performanceModsMpn", performanceModsMpn);
@@ -1030,7 +1030,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN pm_available_listing tal ON tal.`SKU`=tmsm.`SKU`"
                 + " LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tal.`MARKETPLACE_ID`"
                 + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID`"
-                + " WHERE tp.`performanceMods_MPN`=? AND tal.`SKU` IS NOT NULL";
+                + " WHERE tp.`ADMIN_TOOL_MPN`=? AND tal.`SKU` IS NOT NULL";
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new MarketplaceListingSkuDTORowMapper(), performanceModsMpn);
     }
@@ -1171,7 +1171,7 @@ public class ProductDaoImpl implements ProductDao {
                     + "LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
                     + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
                     + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
-                    + "WHERE tp.performanceMods_MPN=?";
+                    + "WHERE tp.ADMIN_TOOL_MPN=?";
             Object[] param = {performanceModsMpn};
 
             return this.jdbcTemplate.query(sql, new ProductListRowMapper(), param);

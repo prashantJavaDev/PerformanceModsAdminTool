@@ -392,7 +392,7 @@ public class OrderDaoImpl implements OrderDao {
         return this.jdbcTemplate.queryForInt(sql, marketplaceOrderId);
     }
 
-    @Override
+    @Override   
     public void updateOrderAcknowledgementRecord(String orderId) {
         String sql = "UPDATE pm_order tor SET tor.`MARKETPLACE_AKNOWLEDGE_STATUS`=1 WHERE tor.`MARKETPLACE_ORDER_ID`=?";
         this.jdbcTemplate.update(sql, orderId);

@@ -54,8 +54,8 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    
-      @Autowired
+
+    @Autowired
     private ConfigDao configDao;
 
     @Override
@@ -64,11 +64,11 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         SubmitFeedResponse response = null;
         try {
             String FeedContentData = null;
-             AmazonProperties ap = configDao.getAmazonProperties();
+            AmazonProperties ap = configDao.getAmazonProperties();
             AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
 //            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
             if (a.isPropsLoaded()) {
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
                     String trackId = this.orderService.createAndSaveXMLFile();
 //                    String trackId = "040985983325648";
@@ -83,7 +83,7 @@ public class TrackingApiServiceImpl implements TrackingApiService {
                     SubmitFeedRequest feedRequest = new SubmitFeedRequest();
                     feedRequest.setMarketplaceIdList(marketplaces);
                     feedRequest.setFeedType("_POST_ORDER_FULFILLMENT_DATA_");
-                    feedRequest.setMerchant("A1PYB0QXU6SOEO");
+                    feedRequest.setMerchant("A26YLYFFSVKSNX");
                     FileInputStream fim = null;
                     try {
                         File f = new File("/home/altius/performanceMods/ingram/amazon_tracking.xml");
@@ -129,7 +129,7 @@ public class TrackingApiServiceImpl implements TrackingApiService {
 
         String md5Content = new String(
                 org.apache.commons.codec.binary.Base64.encodeBase64(
-                dis.getMessageDigest().digest()));
+                        dis.getMessageDigest().digest()));
 
         // Effectively resets the stream to be beginning of the file
         // via a FileChannel.
@@ -145,12 +145,13 @@ public class TrackingApiServiceImpl implements TrackingApiService {
         try {
             String FeedContentData = null;
 //            AmazonWebService a = new AmazonWebService("/home/pk/performanceMods/amazon.properties");
-             AmazonProperties ap = configDao.getAmazonProperties();
+            AmazonProperties ap = configDao.getAmazonProperties();
             AmazonWebService a = new AmazonWebService(true, ap.getAccessKey(), ap.getSecretKey(), ap.getSellerId(), ap.getMwsAuthToken(), ap.getMarketplaceId());
             if (a.isPropsLoaded()) {
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Properties file loaded, Going to do get order list", GlobalConstants.TAG_SYSTEMLOG));
                 try {
                     String orderId = this.orderService.amazonAcknowledgementFile();
+                    System.out.println("Order ID ---------------->" + orderId);
 //                    String orderId = "112-5489929-7493868";
 
                     MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();
@@ -164,27 +165,29 @@ public class TrackingApiServiceImpl implements TrackingApiService {
                     SubmitFeedRequest feedRequest = new SubmitFeedRequest();
                     feedRequest.setMarketplaceIdList(marketplaces);
                     feedRequest.setFeedType("_POST_ORDER_ACKNOWLEDGEMENT_DATA_");
-                    feedRequest.setMerchant("A1PYB0QXU6SOEO");
+                    feedRequest.setMerchant("A26YLYFFSVKSNX");
+                    feedRequest.setMWSAuthToken("amzn.mws.ccab02a3-e705-4005-2081-34e54350f847");
                     FileInputStream fim = null;
                     try {
-                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
-//                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
+//                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
+                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
                         fim = new FileInputStream(f);
                         FeedContentData = computeContentMD5Value(fim);
                     } finally {
                         fim.close();
                     }
-                    feedRequest.setFeedContent(new FileInputStream("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml"));
-//                    feedRequest.setFeedContent(new FileInputStream("/home/altius/xmlDocs/amazon_acknowledgement.xml"));
+//                    feedRequest.setFeedContent(new FileInputStream("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml"));
+                    feedRequest.setFeedContent(new FileInputStream("/home/altius/xmlDocs/amazon_acknowledgement.xml"));
                     feedRequest.setContentMD5(FeedContentData);
                     requestList.add(feedRequest);
                     response = a.invokeSubmitFeed(service, requestList);
+                    System.out.println("Rsponce Context=-------" + response);
 //                    System.out.println("Rsponce Context=-------" + response.getResponseHeaderMetadata().getResponseContext().toString());
 //                    System.out.println("Response rgetFeedSubmissionInfo: " + response.getSubmitFeedResult().getFeedSubmissionInfo());
                     if ("_SUBMITTED_".equals(response.getSubmitFeedResult().getFeedSubmissionInfo().getFeedProcessingStatus())) {
                         this.orderService.updateOrderAcknowledgementRecord(orderId);
-                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
-//                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
+//                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
+                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
                         //f.delete();
                     }
                 } catch (Exception e) {
