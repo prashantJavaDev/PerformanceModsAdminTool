@@ -226,7 +226,7 @@
             </li>
         </sec:authorize>
 
-        <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
+        <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_MARKETPLACE_FEE,ROLE_BF_PROCESS_LISTINGS,ROLE_BF_EXPORT_LISTINGS">
             <li class="xn-openable">
                 <a href="#" title="Listing"><span class="fa fa-list-ol"></span><span class="xn-text">Listing</span></a>
                 <ul>
@@ -247,7 +247,7 @@
                             <a href="../listing/exportMarketplaceListing.htm"><span class="fa fa-download"></span>Export Listings</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_EXPORT_MARKETPLACE_FEES">
+                    <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
                         <li>
                             <a href="../listing/exportMarketPlaceFees.htm"><span class="fa fa-download"></span>Export MarketPlace Fees</a>
                         </li>
