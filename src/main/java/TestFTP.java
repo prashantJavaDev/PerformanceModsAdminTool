@@ -41,25 +41,25 @@ public class TestFTP {
 
             // APPROACH #1: using retrieveFile(String, OutputStream)
 //            String remoteFile1 = "FUSION/US/AVAIL/TOTAL.ZIP";
-//            File downloadFile1 = new File("/home/altius/Desktop/TOTAL.ZIP");
+//            File downloadFile1 = new File("/home/ubuntu/Desktop/TOTAL.ZIP");
 //            OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
 //            ftpClient.retrieveFile(remoteFile1, outputStream1);
 //            outputStream1.close();
 //
 //            String remoteFile2 = "/FUSION/US/ELYK8N/PRICE.ZIP";
-//            File downloadFile2 = new File("/home/altius/Desktop/PRICE.ZIP");
+//            File downloadFile2 = new File("/home/ubuntu/Desktop/PRICE.ZIP");
 //            OutputStream outputStream2 = new BufferedOutputStream(new FileOutputStream(downloadFile2));
 //            ftpClient.retrieveFile(remoteFile2, outputStream2);
 //            outputStream2.close();
 //
-//            String zipTotalFilePath = "/home/altius/Desktop/TOTAL.ZIP";
-//            String destDir = "/home/altius/Desktop/Ingram";
+//            String zipTotalFilePath = "/home/ubuntu/Desktop/TOTAL.ZIP";
+//            String destDir = "/home/ubuntu/Desktop/Ingram";
 //            unzip(zipTotalFilePath, destDir);
 //
-//            String zipPriceFilePath = "/home/altius/Desktop/PRICE.ZIP";
+//            String zipPriceFilePath = "/home/ubuntu/Desktop/PRICE.ZIP";
 //            unzip(zipPriceFilePath, destDir);
 
-            String FILENAME = "/home/altius/Desktop/Ingram/PRICE.TXT";
+            String FILENAME = "/home/ubuntu/Desktop/Ingram/PRICE.TXT";
             String[] dataFields = new String[24];
             try {
                 BufferedReader br;

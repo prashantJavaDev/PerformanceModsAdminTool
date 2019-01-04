@@ -41,8 +41,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDao;
-    public static final String WEBSITE_PRODUCT = "/home/altius/performanceMods/website_product/";
-    public static final String WEBSITE_IMAGE = "/home/altius/performanceMods/website_image/";
+    public static final String WEBSITE_PRODUCT = "/home/ubuntu/performanceMods/website_product/";
+    public static final String WEBSITE_IMAGE = "/home/ubuntu/performanceMods/website_image/";
 
     @Override
     public List<Manufacturer> getListOfManufacturer() {

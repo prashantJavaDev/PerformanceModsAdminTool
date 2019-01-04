@@ -195,11 +195,11 @@ public class OrderDaoImpl implements OrderDao {
         try {
             int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
             String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-            String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`pm_temp_bulk_tracking`";
+            String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_bulk_tracking`";
             this.jdbcTemplate.update(sql);
            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_bulk_tracking done.", GlobalConstants.TAG_SYSTEMLOG));
             //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
-            sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`pm_temp_bulk_tracking` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`WAREHOUSE_NAME`,`ORDER_ID`, `TRACKING_ID`,`TRACKING_CARRIER`)";
+            sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_bulk_tracking` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`WAREHOUSE_NAME`,`ORDER_ID`, `TRACKING_ID`,`TRACKING_CARRIER`)";
             this.jdbcTemplate.execute(sql);
            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
             //query update data into pm_order table
@@ -425,11 +425,11 @@ public class OrderDaoImpl implements OrderDao {
         try {
             int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
             String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-            String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_marketplace_order_upload`";
+            String sql = "TRUNCATE TABLE `performance_mods`.`temp_marketplace_order_upload`";
             this.jdbcTemplate.update(sql);
            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
 
-            sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_marketplace_order_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_ORDER_ID`,`MARKETPLACE_SKU`,`MARKETPLACE_LISTING_ID`,`ORDER_DATE`,`SHIP_BY_DATE`,`DELIVERY_BY_DATE`,`CUSTOMER_NAME`,`CUSTOMER_PHONE_NO`,`QUANTITY`,`ORDER_ITEM_ID`,`PRICE`,`TAX`,`SHIPPING`,`SHIP_TO_NAME`,`SHIPPING_ADDRESS_LINE1`,`SHIPPING_ADDRESS_LINE2`,`SHIPPING_ADDRESS_LINE3`,`CITY`,`STATE`,`POSTAL_CODE`,`COUNTRY`,`SHIPPING_PHONE_NO`,`FULFILLMENT_CHANNEL`,`ORDER_STATUS`)";
+            sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_marketplace_order_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_ORDER_ID`,`MARKETPLACE_SKU`,`MARKETPLACE_LISTING_ID`,`ORDER_DATE`,`SHIP_BY_DATE`,`DELIVERY_BY_DATE`,`CUSTOMER_NAME`,`CUSTOMER_PHONE_NO`,`QUANTITY`,`ORDER_ITEM_ID`,`PRICE`,`TAX`,`SHIPPING`,`SHIP_TO_NAME`,`SHIPPING_ADDRESS_LINE1`,`SHIPPING_ADDRESS_LINE2`,`SHIPPING_ADDRESS_LINE3`,`CITY`,`STATE`,`POSTAL_CODE`,`COUNTRY`,`SHIPPING_PHONE_NO`,`FULFILLMENT_CHANNEL`,`ORDER_STATUS`)";
             this.jdbcTemplate.execute(sql);
            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 

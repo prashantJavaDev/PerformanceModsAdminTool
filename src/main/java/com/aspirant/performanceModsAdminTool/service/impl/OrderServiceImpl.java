@@ -50,12 +50,12 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
     @Autowired
     private WarehouseDao warehouseDao;
-    public static final String BULK_ORDER_TRACKING_FILE_PATH = "/home/altius/performanceMods/tracking/";
-    public static final String XMLFilePath = "/home/altius/performanceMods/ingram/";
-//    public static final String XMLFilePath = "/home/altius/xmlDocs/";
-//    public static final String XMLFilePathForAknowledge = "/home/altius/performanceMods/ingram/";
-    public static final String XMLFilePathForAknowledge = "/home/altius/xmlDocs/";
-    public static final String MARKETPLACE_ORDER_FILE_PATH = "/home/altius/performanceMods/marketPlaceOrder/";
+    public static final String BULK_ORDER_TRACKING_FILE_PATH = "/home/ubuntu/performanceMods/tracking/";
+    public static final String XMLFilePath = "/home/ubuntu/performanceMods/ingram/";
+//    public static final String XMLFilePath = "/home/ubuntu/xmlDocs/";
+//    public static final String XMLFilePathForAknowledge = "/home/ubuntu/performanceMods/ingram/";
+    public static final String XMLFilePathForAknowledge = "/home/ubuntu/xmlDocs/";
+    public static final String MARKETPLACE_ORDER_FILE_PATH = "/home/ubuntu/performanceMods/marketPlaceOrder/";
 
     @Override
     public Order getorderBymarketplaceOrderID(String marketplaceOrderId) {

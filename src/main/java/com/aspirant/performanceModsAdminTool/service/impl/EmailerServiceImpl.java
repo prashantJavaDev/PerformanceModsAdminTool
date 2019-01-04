@@ -71,7 +71,7 @@ public class EmailerServiceImpl implements EmailerService {
 
             Address addressFrom;
             MimeMessage msg = this.javaMailSend.createMimeMessage();
-            addressFrom = new InternetAddress("ritesh.b@altius.cc", "performanceMods Admin");//this can be anything
+            addressFrom = new InternetAddress("ritesh.b@ubuntu.cc", "performanceMods Admin");//this can be anything
             msg.setFrom(addressFrom);
             msg.setRecipients(MimeMessage.RecipientType.TO, email.getToSend());
             if (email.getCcToSend() != null) {

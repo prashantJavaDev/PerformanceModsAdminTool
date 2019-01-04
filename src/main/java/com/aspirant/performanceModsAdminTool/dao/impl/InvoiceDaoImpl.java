@@ -65,10 +65,10 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_invoice`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`temp_invoice`";
         this.jdbcTemplate.update(sql);
         //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_invoice` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`PO_NUMBER`, `MPN`,`COST`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_invoice` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`PO_NUMBER`, `MPN`,`COST`); ";
         this.jdbcTemplate.execute(sql);
         sql = "UPDATE temp_invoice ti SET ti.`WAREHOUSE_ID`=?";
         this.jdbcTemplate.update(sql, warehouseId);
@@ -119,7 +119,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_invoice`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`temp_invoice`";
         this.jdbcTemplate.update(sql);
         FileInputStream file = new FileInputStream(new File(path));
         XSSFWorkbook workbook;
@@ -175,7 +175,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_invoice`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`temp_invoice`";
         this.jdbcTemplate.update(sql);
         FileInputStream File = new FileInputStream(new File(path));
         HSSFWorkbook workbook = new HSSFWorkbook(File);

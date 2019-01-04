@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  *
- * @author altius
+ * @author ubuntu
  */
 public class EmailerBlock {
     

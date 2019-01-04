@@ -45,11 +45,11 @@ public class ListingDaoImpl implements ListingDao {
     public void loadFeesDataLocally(String path, int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`pm_temp_fees`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_fees`";
         this.jdbcTemplate.update(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`pm_temp_fees` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `FEES`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_fees` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `FEES`); ";
         this.jdbcTemplate.execute(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
@@ -339,12 +339,12 @@ public class ListingDaoImpl implements ListingDao {
     public void loadFeesDataLocally1(String path, int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`pm_temp_available_listing`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_available_listing`";
         String sql1;
         this.jdbcTemplate.update(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
         this.jdbcTemplate.execute(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
         try {

@@ -49,7 +49,7 @@ public class IngramServiceImpl implements IngramService {
 
     @Autowired
     private IngramDao ingramDao;
-    public static final String IMG_FILE_PATH = "/home/altius/performanceMods/feeds/";
+    public static final String IMG_FILE_PATH = "/home/ubuntu/performanceMods/feeds/";
     Date curDate = DateUtils.getCurrentDateObject(DateUtils.IST);
 
     @Override
@@ -118,8 +118,8 @@ public class IngramServiceImpl implements IngramService {
             String warehouseOrderNumber = null;
             String poNumber = null;
 
-            //File file = new File("/home/altius/Desktop/OrderResponce.xml");
-            File file = new File("/home/altius/performanceMods/ingram/OrderResponce.xml");
+            //File file = new File("/home/ubuntu/Desktop/OrderResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/ingram/OrderResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
@@ -161,12 +161,12 @@ public class IngramServiceImpl implements IngramService {
             String warehouseOrderStatus = null;
             String warehouseOrderNumber = null;
             String poNumber = "";
-//            File file = new File("/home/altius/Desktop/OrderStatusResponce.xml");
-            File file = new File("/home/altius/performanceMods/ingram/OrderStatusResponce.xml");
+//            File file = new File("/home/ubuntu/Desktop/OrderStatusResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/ingram/OrderStatusResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
-            //File inputFile = new File("/home/altius/Desktop/PNAResponce.xml");
+            //File inputFile = new File("/home/ubuntu/Desktop/PNAResponce.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(file);
@@ -219,8 +219,8 @@ public class IngramServiceImpl implements IngramService {
             String trackingCarrier = null;
             String trackingId = null;
             String poNumber = null;
-//            File file = new File("/home/altius/Desktop/OrderTrackingResponce.xml");
-            File file = new File("/home/altius/performanceMods/ingram/OrderTrackingResponce.xml");
+//            File file = new File("/home/ubuntu/Desktop/OrderTrackingResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/ingram/OrderTrackingResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
@@ -287,12 +287,12 @@ public class IngramServiceImpl implements IngramService {
 
             String remoteFile1 = "FUSION/US/AVAIL/TOTAL.ZIP";
             //Local Path
-//            File downloadTotalFile = new File("/home/altius/Desktop/TOTAL.ZIP");
-//            File downloadTotalFile1 = new File("/home/altius/Desktop/Ingram/" + curDate + "TOTAL.ZIP");
+//            File downloadTotalFile = new File("/home/ubuntu/Desktop/TOTAL.ZIP");
+//            File downloadTotalFile1 = new File("/home/ubuntu/Desktop/Ingram/" + curDate + "TOTAL.ZIP");
 
             //Live Path
-            File downloadTotalFile = new File("/home/altius/performanceMods/ingram/TOTAL.ZIP");
-            File downloadTotalFile1 = new File("/home/altius/performanceMods/feeds/ingram/" + curDate + "TOTAL.ZIP");
+            File downloadTotalFile = new File("/home/ubuntu/performanceMods/ingram/TOTAL.ZIP");
+            File downloadTotalFile1 = new File("/home/ubuntu/performanceMods/feeds/ingram/" + curDate + "TOTAL.ZIP");
 
             OutputStream totaloutputStream1 = new BufferedOutputStream(new FileOutputStream(downloadTotalFile));
             OutputStream totaloutputStream2 = new BufferedOutputStream(new FileOutputStream(downloadTotalFile1));
@@ -303,11 +303,11 @@ public class IngramServiceImpl implements IngramService {
 
             String remoteFile2 = "/FUSION/US/ELYK8N/PRICE.ZIP";
             //Local Path
-//            File downloadPriceFile = new File("/home/altius/Desktop/PRICE.ZIP");
-//            File downloadPriceFile1 = new File("/home/altius/Desktop/Ingram/" + curDate + "PRICE.ZIP");
+//            File downloadPriceFile = new File("/home/ubuntu/Desktop/PRICE.ZIP");
+//            File downloadPriceFile1 = new File("/home/ubuntu/Desktop/Ingram/" + curDate + "PRICE.ZIP");
             //Live Path
-            File downloadPriceFile = new File("/home/altius/performanceMods/ingram/PRICE.ZIP");
-            File downloadPriceFile1 = new File("/home/altius/performanceMods/feeds/ingram/" + curDate + "PRICE.ZIP");
+            File downloadPriceFile = new File("/home/ubuntu/performanceMods/ingram/PRICE.ZIP");
+            File downloadPriceFile1 = new File("/home/ubuntu/performanceMods/feeds/ingram/" + curDate + "PRICE.ZIP");
 
             OutputStream priceOutputStream1 = new BufferedOutputStream(new FileOutputStream(downloadPriceFile));
             OutputStream priceOutputStream2 = new BufferedOutputStream(new FileOutputStream(downloadPriceFile1));
@@ -316,18 +316,18 @@ public class IngramServiceImpl implements IngramService {
             priceOutputStream1.close();
             priceOutputStream2.close();
 
-            String zipTotalFilePath = "/home/altius/performanceMods/ingram/TOTAL.ZIP";
-//            String zipTotalFilePath = "/home/altius/Desktop/TOTAL.ZIP";
-            String destDir = "/home/altius/performanceMods/ingram";
-//            String destDir = "/home/altius/Desktop/Ingram";
+            String zipTotalFilePath = "/home/ubuntu/performanceMods/ingram/TOTAL.ZIP";
+//            String zipTotalFilePath = "/home/ubuntu/Desktop/TOTAL.ZIP";
+            String destDir = "/home/ubuntu/performanceMods/ingram";
+//            String destDir = "/home/ubuntu/Desktop/Ingram";
             unzip(zipTotalFilePath, destDir);
 
-            String zipPriceFilePath = "/home/altius/performanceMods/ingram/PRICE.ZIP";
-//            String zipPriceFilePath = "/home/altius/Desktop/PRICE.ZIP";
+            String zipPriceFilePath = "/home/ubuntu/performanceMods/ingram/PRICE.ZIP";
+//            String zipPriceFilePath = "/home/ubuntu/Desktop/PRICE.ZIP";
             unzip(zipPriceFilePath, destDir);
 
-            String quantityFile = "/home/altius/performanceMods/ingram/TOTAL.TXT";
-//            String quantityFile = "/home/altius/Desktop/Ingram/TOTAL.TXT";
+            String quantityFile = "/home/ubuntu/performanceMods/ingram/TOTAL.TXT";
+//            String quantityFile = "/home/ubuntu/Desktop/Ingram/TOTAL.TXT";
             String[] dataFields = new String[2];
             try {
                 BufferedReader br;
@@ -343,8 +343,8 @@ public class IngramServiceImpl implements IngramService {
                 e.printStackTrace();
             }
 
-            String priceFile = "/home/altius/performanceMods/ingram/PRICE.TXT";
-//            String priceFile = "/home/altius/Desktop/Ingram/PRICE.TXT";
+            String priceFile = "/home/ubuntu/performanceMods/ingram/PRICE.TXT";
+//            String priceFile = "/home/ubuntu/Desktop/Ingram/PRICE.TXT";
             String[] dataFields1 = new String[24];
             try {
                 BufferedReader br;

@@ -9,7 +9,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  *
- * @author altius
+ * @author ubuntu
  */
 public class POICellRangeAddress extends CellRangeAddress {
 

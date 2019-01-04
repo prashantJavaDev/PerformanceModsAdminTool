@@ -66,8 +66,8 @@ public class TicketServiceImpl implements TicketService {
                 Email email = this.emailerDao.buildEmail(emailTemplate.getEmailTemplateId(), requestedBy.getEmailId(), subjectParam, bodyParam, emailTemplate);
                 email.setToSend(requestedBy.getEmailId());
                 email.setTicket(ticket);
-                String ccList = "mohit.g@altiusbpo.in,paresh@altius.cc,rahul.d@altiusbpo.in,rohit@altius.cc";
-//                String ccList = "ritesh.b@altius.cc";
+                String ccList = "mohit.g@ubuntubpo.in,paresh@ubuntu.cc,rahul.d@ubuntubpo.in,rohit@ubuntu.cc";
+//                String ccList = "ritesh.b@ubuntu.cc";
                 email.setCcToSend(ccList);
                 int emailerId = this.emailerDao.addEmail(email);
                 email.setEmailerId(emailerId);
@@ -143,8 +143,8 @@ public class TicketServiceImpl implements TicketService {
                 Email email = this.emailerDao.buildEmail(emailTemplate.getEmailTemplateId(), requestedBy.getEmailId(), subjectParam, bodyParam, emailTemplate);
                 email.setToSend(createdBy.getEmailId());
                 email.setTicket(ticket);
-                String ccList = "mohit.g@altiusbpo.in,paresh@altius.cc,rahul.d@altiusbpo.in,rohit@altius.cc";
-//                String ccList = "ritesh.b@altius.cc";
+                String ccList = "mohit.g@ubuntubpo.in,paresh@ubuntu.cc,rahul.d@ubuntubpo.in,rohit@ubuntu.cc";
+//                String ccList = "ritesh.b@ubuntu.cc";
                 email.setCcToSend(ccList);
                 int emailerId = this.emailerDao.addEmail(email);
                 email.setEmailerId(emailerId);
@@ -161,8 +161,8 @@ public class TicketServiceImpl implements TicketService {
                 Email email = this.emailerDao.buildEmail(emailTemplate.getEmailTemplateId(), assignTo.getEmailId(), subjectParam, bodyParam, emailTemplate);
                 email.setToSend(assignTo.getEmailId());
                 email.setTicket(ticket);
-                String ccList = "mohit.g@altiusbpo.in,paresh@altius.cc,rahul.d@altiusbpo.in,rohit@altius.cc";
-                //String ccList = "ritesh.b@altius.cc";
+                String ccList = "mohit.g@ubuntubpo.in,paresh@ubuntu.cc,rahul.d@ubuntubpo.in,rohit@ubuntu.cc";
+                //String ccList = "ritesh.b@ubuntu.cc";
                 email.setCcToSend(ccList);
                 int emailerId = this.emailerDao.addEmail(email);
                 email.setEmailerId(emailerId);

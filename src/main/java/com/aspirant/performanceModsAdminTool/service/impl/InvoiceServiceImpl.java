@@ -37,7 +37,7 @@ public class InvoiceServiceImpl implements InvoiceService{
     @Autowired
     private InvoiceDao invoiceDao;
     
-    public static final String INVOICE_FEED_FILE_PATH = "/home/altius/performanceMods/invoiceFeed/";
+    public static final String INVOICE_FEED_FILE_PATH = "/home/ubuntu/performanceMods/invoiceFeed/";
 
     @Override
     public int saveMultipartFileData(UploadFeed uploadFeed,int warehouseId,String extension) {

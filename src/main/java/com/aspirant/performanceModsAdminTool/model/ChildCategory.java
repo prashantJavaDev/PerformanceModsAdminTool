@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  *
- * @author altius
+ * @author ubuntu
  */
 public class ChildCategory implements Serializable{
     private int childCategoryId;

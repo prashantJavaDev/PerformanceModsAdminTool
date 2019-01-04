@@ -4,7 +4,7 @@ package com.aspirant.utils.POI;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-//package cc.altius.web.controller;
+//package cc.ubuntu.web.controller;
 
 import com.aspirant.performanceModsAdminTool.utils.DateUtils;
 import java.io.File;
@@ -130,7 +130,7 @@ public class SamplePOIController {
 
         try {
             //Write the workbook in file system
-            FileOutputStream out = new FileOutputStream(new File("/home/altius/lifecell/howtodoinjava_demo.xlsx"));
+            FileOutputStream out = new FileOutputStream(new File("/home/ubuntu/lifecell/howtodoinjava_demo.xlsx"));
             workbook.write(out);
             out.close();
         } catch (Exception e) {

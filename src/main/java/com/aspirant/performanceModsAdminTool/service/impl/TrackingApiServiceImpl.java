@@ -86,15 +86,15 @@ public class TrackingApiServiceImpl implements TrackingApiService {
                     feedRequest.setMerchant("A26YLYFFSVKSNX");
                     FileInputStream fim = null;
                     try {
-                        File f = new File("/home/altius/performanceMods/ingram/amazon_tracking.xml");
-//                        File f = new File("/home/altius/xmlDocs/amazon_tracking.xml");
+                        File f = new File("/home/ubuntu/performanceMods/ingram/amazon_tracking.xml");
+//                        File f = new File("/home/ubuntu/xmlDocs/amazon_tracking.xml");
                         fim = new FileInputStream(f);
                         FeedContentData = computeContentMD5Value(fim);
                     } finally {
                         fim.close();
                     }
-                    feedRequest.setFeedContent(new FileInputStream("/home/altius/performanceMods/ingram/amazon_tracking.xml"));
-//                    feedRequest.setFeedContent(new FileInputStream("/home/altius/xmlDocs/amazon_tracking.xml"));
+                    feedRequest.setFeedContent(new FileInputStream("/home/ubuntu/performanceMods/ingram/amazon_tracking.xml"));
+//                    feedRequest.setFeedContent(new FileInputStream("/home/ubuntu/xmlDocs/amazon_tracking.xml"));
                     feedRequest.setContentMD5(FeedContentData);
                     requestList.add(feedRequest);
                     response = a.invokeSubmitFeed(service, requestList);
@@ -102,8 +102,8 @@ public class TrackingApiServiceImpl implements TrackingApiService {
 //                    System.out.println("Response rgetFeedSubmissionInfo: " + response.getSubmitFeedResult().getFeedSubmissionInfo());
                     if ("_SUBMITTED_".equals(response.getSubmitFeedResult().getFeedSubmissionInfo().getFeedProcessingStatus())) {
                         this.orderService.updateTrackingRecord(trackId);
-                        File f = new File("/home/altius/performanceMods/ingram/amazon_tracking.xml");
-//                        File f = new File("/home/altius/xmlDocs/amazon_tracking.xml");
+                        File f = new File("/home/ubuntu/performanceMods/ingram/amazon_tracking.xml");
+//                        File f = new File("/home/ubuntu/xmlDocs/amazon_tracking.xml");
 //                        f.delete();
                     }
                 } catch (Exception e) {
@@ -169,15 +169,15 @@ public class TrackingApiServiceImpl implements TrackingApiService {
                     feedRequest.setMWSAuthToken("amzn.mws.ccab02a3-e705-4005-2081-34e54350f847");
                     FileInputStream fim = null;
                     try {
-//                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
-                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
+//                        File f = new File("/home/ubuntu/performanceMods/ingram/amazon_acknowledgement.xml");
+                        File f = new File("/home/ubuntu/xmlDocs/amazon_acknowledgement.xml");
                         fim = new FileInputStream(f);
                         FeedContentData = computeContentMD5Value(fim);
                     } finally {
                         fim.close();
                     }
-//                    feedRequest.setFeedContent(new FileInputStream("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml"));
-                    feedRequest.setFeedContent(new FileInputStream("/home/altius/xmlDocs/amazon_acknowledgement.xml"));
+//                    feedRequest.setFeedContent(new FileInputStream("/home/ubuntu/performanceMods/ingram/amazon_acknowledgement.xml"));
+                    feedRequest.setFeedContent(new FileInputStream("/home/ubuntu/xmlDocs/amazon_acknowledgement.xml"));
                     feedRequest.setContentMD5(FeedContentData);
                     requestList.add(feedRequest);
                     response = a.invokeSubmitFeed(service, requestList);
@@ -186,8 +186,8 @@ public class TrackingApiServiceImpl implements TrackingApiService {
 //                    System.out.println("Response rgetFeedSubmissionInfo: " + response.getSubmitFeedResult().getFeedSubmissionInfo());
                     if ("_SUBMITTED_".equals(response.getSubmitFeedResult().getFeedSubmissionInfo().getFeedProcessingStatus())) {
                         this.orderService.updateOrderAcknowledgementRecord(orderId);
-//                        File f = new File("/home/altius/performanceMods/ingram/amazon_acknowledgement.xml");
-                        File f = new File("/home/altius/xmlDocs/amazon_acknowledgement.xml");
+//                        File f = new File("/home/ubuntu/performanceMods/ingram/amazon_acknowledgement.xml");
+                        File f = new File("/home/ubuntu/xmlDocs/amazon_acknowledgement.xml");
                         //f.delete();
                     }
                 } catch (Exception e) {

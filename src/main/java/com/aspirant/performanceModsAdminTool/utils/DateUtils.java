@@ -561,7 +561,7 @@ public class DateUtils {
     }
 
     /**
-     * Gives Version of Altius Utils
+     * Gives Version of ubuntu Utils
      *
      * @return Version
      */

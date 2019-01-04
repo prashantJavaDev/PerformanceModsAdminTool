@@ -1479,12 +1479,12 @@ public class ProductDaoImpl implements ProductDao {
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `tel_easy_admin_tool`.`temp_website_upload`";
+        String sql = "TRUNCATE TABLE `performance_mods`.`temp_website_upload`";
         this.jdbcTemplate.update(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_website_upload done.", GlobalConstants.TAG_SYSTEMLOG));
         //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
-        //sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `tel_easy_admin_tool`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES  (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
+        //sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES  (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
         this.jdbcTemplate.execute(sql);
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
