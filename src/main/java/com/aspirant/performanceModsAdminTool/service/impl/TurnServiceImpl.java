@@ -167,7 +167,7 @@ public class TurnServiceImpl implements TurnService {
                     for (int j = 0; j < 50; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
-                        callTurnAPI(get, fout);
+//                        callTurnAPI(get, fout);
                         pageNo++;
                     }
                 }
@@ -284,7 +284,7 @@ public class TurnServiceImpl implements TurnService {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
-                        callTurnAPIPrice(get, fout);
+//                        callTurnAPIPrice(get, fout);
                         pageNo++;
                     }
                 }
@@ -418,7 +418,7 @@ public class TurnServiceImpl implements TurnService {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
-                        callTurnAPIInventory(get, fout);
+//                        callTurnAPIInventory(get, fout);
                         pageNo++;
                     }
                 }

@@ -23,7 +23,7 @@ public class ProductListRowMapper implements RowMapper<Product> {
         Product p = new Product();
         p.setProductId(rs.getInt("PRODUCT_ID"));
         p.setProductName(rs.getString("PRODUCT_NAME"));
-        p.setperformanceModsMpn(rs.getString("performanceMods_MPN"));
+        p.setperformanceModsMpn(rs.getString("ADMIN_TOOL_MPN"));
 
         Manufacturer mf = new Manufacturer();
         mf.setManufacturerId(rs.getInt("MANUFACTURER_ID"));

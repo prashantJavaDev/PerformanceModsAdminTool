@@ -79,7 +79,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
         //insert all new products into product table
         sqlString = "INSERT INTO pm_product"
                 + " SELECT NULL,NULL,tt.MANUFACTURER_ID,tt.MPN,NULL,"
-                + " UPPER(CONCAT('TEL-', tm.`MANUFACTURER_CODE`,'-',tt.`MPN`)),tt.MAP,tt.MSRP,tt.WEIGHT,tt.ESTIMATED_SHIP_WEIGHT,tt.`LENGTH`,tt.`WIDTH`,tt.`HEIGHT`,tt.UPC,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"
+                + " UPPER(CONCAT('PM-', tm.`MANUFACTURER_CODE`,'-',tt.`MPN`)),tt.MAP,tt.MSRP,tt.WEIGHT,tt.ESTIMATED_SHIP_WEIGHT,tt.`LENGTH`,tt.`WIDTH`,tt.`HEIGHT`,tt.UPC,NULL,NULL,NULL,NULL,NULL,NULL,NULL,"
                 + " tt.SHORT_DESC,tt.LONG_DESC,NULL,NULL,tt.RESIZE_IMAGE_URL,NULL,NULL,NULL,:createdDate,:createdBy,:lastModifiedDate,:lastModifiedBy,:active,:productStatusId"
                 + " FROM temp_table tt"
                 + " LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tt.`MANUFACTURER_ID`"
@@ -239,7 +239,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
         if (result1 > 0) {
             //append data into pm_warehouse_feed_data table daily
             sqlString = "INSERT INTO pm_warehouse_feed_data"
-                    + " SELECT NULL,:feedId,:warehouseId,tp.PRODUCT_ID,tp.`MANUFACTURER_ID`,NULL,tp.`performanceMods_MPN`,tt.MAP,tt.MSRP,"
+                    + " SELECT NULL,:feedId,:warehouseId,tp.PRODUCT_ID,tp.`MANUFACTURER_ID`,NULL,tp.`ADMIN_TOOL_MPN`,tt.MAP,tt.MSRP,"
                     + " tt.PRICE,tt.QUANTITY,COALESCE(tc.CONDITION_ID,1),tt.WAREHOUSE_IDENTIFICATION_NO,"
                     + " tt.WEIGHT,tt.`ESTIMATED_SHIP_WEIGHT`,tt.LENGTH,tt.WIDTH,tt.HEIGHT,tt.UPC,tt.`SHIPPING`,:createdDate,:createdBy"
                     + " FROM temp_table tt"
