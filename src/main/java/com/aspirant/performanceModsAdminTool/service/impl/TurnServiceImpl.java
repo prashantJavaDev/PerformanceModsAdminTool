@@ -130,7 +130,7 @@ public class TurnServiceImpl implements TurnService {
             }.getType();
             if (res.getStatusLine().getStatusCode() == 200) {
                 ItemApiResponse resp = new Gson().fromJson(json, typeList);
-                List<ItemResponse> data = resp.getData();
+//                List<ItemResponse> data = resp.getData();
                 System.out.println("resp.getData().size()" + resp.getData().size());
 //                System.out.println("Resp-===" + resp);
 //                addItem(data);
@@ -140,6 +140,7 @@ public class TurnServiceImpl implements TurnService {
                 int process = Math.round(total_pages / 50) + 1;
                 System.out.println("process==" + process);
                 executeParallel(process, fout);
+//                executeParallel(1, fout);
 //                fout.close();
             }
         } catch (Exception e) {
@@ -158,6 +159,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
+          final FileOutputStream fout1=fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -167,7 +169,7 @@ public class TurnServiceImpl implements TurnService {
                     for (int j = 0; j < 50; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
-                        callTurnAPI(get, fout);
+                        callTurnAPI(get, fout1);
                         pageNo++;
                     }
                 }
@@ -251,7 +253,7 @@ public class TurnServiceImpl implements TurnService {
             }.getType();
             if (res.getStatusLine().getStatusCode() == 200) {
                 PriceApiResponse resp = new Gson().fromJson(json, typeList);
-                List<PriceResponse> data = resp.getData();
+//                List<PriceResponse> data = resp.getData();
                 System.out.println("resp.getData().size()" + resp.getData().size());
 //                System.out.println("Resp-===" + data);
 //                addItem(data);
@@ -274,6 +276,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
+             final FileOutputStream fout1=fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -284,7 +287,7 @@ public class TurnServiceImpl implements TurnService {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
-                        callTurnAPIPrice(get, fout);
+                        callTurnAPIPrice(get, fout1);
                         pageNo++;
                     }
                 }
@@ -371,11 +374,11 @@ public class TurnServiceImpl implements TurnService {
     public void getInventory() {
 
         getApiTokenOfTurn();
-        HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=1");
+        HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=1");
         TokenResponse token = getToken();
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-//            FileOutputStream fout = new FileOutputStream("/home/pk/Videos/APIResponseInventory.csv");
+            FileOutputStream fout = new FileOutputStream("/home/pk/Videos/APIResponseInventory.csv");
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
@@ -385,17 +388,17 @@ public class TurnServiceImpl implements TurnService {
             }.getType();
             if (res.getStatusLine().getStatusCode() == 200) {
                 InventoryApiResponse resp = new Gson().fromJson(json, typeList);
-                List<InventoryResponse> data = resp.getData();
+//                List<InventoryResponse> data = resp.getData();
                 System.out.println("resp.getData().size()" + resp.getData().size());
-                System.out.println("Resp-===" + data);
+//                System.out.println("Resp-===" + data);
 //                addItem(data);
-//                writeInFile(data,fout);
-//                int total_pages = resp.getMeta().getTotal_pages();
-//                System.out.println("toalpages==" + total_pages);
-//                int process = Math.round(total_pages / 50) + 1;
-//                System.out.println("process==" + process);
-//                executeParallelForInventory(process, fout);
-//                fout.close();
+//                writeInFileInventory(data,fout);
+                int total_pages = resp.getMeta().getTotal_pages();
+                System.out.println("toalpages==" + total_pages);
+                int process = Math.round(total_pages / 50) + 1;
+                System.out.println("process==" + process);
+                executeParallelForInventory(process, fout);
+                fout.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -408,6 +411,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
+             final FileOutputStream fout1=fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -418,7 +422,7 @@ public class TurnServiceImpl implements TurnService {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
-                        callTurnAPIInventory(get, fout);
+                        callTurnAPIInventory(get, fout1);
                         pageNo++;
                     }
                 }
@@ -472,25 +476,25 @@ public class TurnServiceImpl implements TurnService {
             for (InventoryResponse i : data) {
                 InventoryAttributes a = i.getAttributes();
                 String str = i.getId() + "," + i.getType() + ",";
-//                if (a.isHas_map()) {
-//                    List<PriceList> pricelists = a.getPricelists();
-//                    if (pricelists.isEmpty()) {
-//                        str = str + "0 \n";
-//                    } else {
-//                        int count = 0;
-//                        for (PriceList p : pricelists) {
-//                            if (p.getName().equals("MAP")) {
-//                                count++;
-//                                str = str + p.getPrice() + "\n";
-//                            }
-//                        }
-//                        if (count == 0) {
-//                            str = str + "0 \n";
-//                        }
-//                    }
-//                } else {
-//                    str = str + "0 \n";
-//                }
+               if(a.getInventory()!=null){
+                    String invData = a.getInventory().toString().substring(1,23);
+//                    System.out.println("invaData===="+invData);
+                    String[] splitlevel1Data = invData.split(",");
+                    double total=0;
+                    for (String strg : splitlevel1Data) {
+//                        System.out.println("Strg==="+strg);
+                   total=total+Double.parseDouble(strg.split("=")[1]);
+                   }
+                    str=str+total+",";
+//                    System.out.println("Total"+total);
+               }else{
+                   str=str+0+",";
+               }
+               if(a.getManufacturer()!=null){
+                    str=str+a.getManufacturer().getStock()+"\n";
+               }else{
+                    str=str+0+"\n";
+               }
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
