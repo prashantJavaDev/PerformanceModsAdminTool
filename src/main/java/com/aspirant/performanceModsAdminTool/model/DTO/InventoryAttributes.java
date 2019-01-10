@@ -15,7 +15,7 @@ import java.util.Map;
 public class InventoryAttributes {
 
     private List<Map<String, String>> inventory;
-//    private ManufacturerAPIDTO manufacturer;
+    private ManufacturerAPIDTO manufacturer;
 
     public List<Map<String, String>> getInventory() {
         return inventory;
@@ -25,19 +25,19 @@ public class InventoryAttributes {
         this.inventory = inventory;
     }
 
-//    public ManufacturerAPIDTO getManufacturer() {
-//        return manufacturer;
-//    }
-//
-//    public void setManufacturer(ManufacturerAPIDTO manufacturer) {
-//        this.manufacturer = manufacturer;
-//    }
+    public ManufacturerAPIDTO getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(ManufacturerAPIDTO manufacturer) {
+        this.manufacturer = manufacturer;
+    }
 
     @Override
     public String toString() {
-//        return "InventoryAttributes{" + "inventory=" + inventory + ", manufacturer=" + manufacturer + '}';
+        return "InventoryAttributes{" + "inventory=" + inventory + ", manufacturer=" + manufacturer + '}';
 //        return "InventoryAttributes{ manufacturer=" + manufacturer + '}';
-        return "InventoryAttributes{inventory=" + inventory + '}';
+//        return "InventoryAttributes{inventory=" + inventory + '}';
     }
 
 }

@@ -21,6 +21,7 @@ public class TurnFourteenApiController {
 
     @Autowired
     TurnService turnService;
+    
     @RequestMapping("turn/location.htm")
     public String getLocationOfTurn(){
         turnService.getLocation();
@@ -39,6 +40,11 @@ public class TurnFourteenApiController {
     @RequestMapping("turn/inventory.htm")
     public String getInventoryOfTurn(){
         turnService.getInventory();
+        return "home/home";
+    }
+    @RequestMapping("turn/token.htm")
+    public String gettokenOfTurn(){
+        turnService.getApiTokenOfTurn();
         return "home/home";
     }
 }

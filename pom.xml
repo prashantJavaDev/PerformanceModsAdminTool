@@ -227,12 +227,12 @@
             <version>4.1</version>
         </dependency>
        
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-osgi</artifactId>
             <version>4.2.3</version>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>

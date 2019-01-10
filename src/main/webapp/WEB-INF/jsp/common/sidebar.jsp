@@ -212,7 +212,7 @@
                             <a href="../product/deleteProduct.htm"><span class="fa fa-eraser"></span>Delete Product</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_MAP_performanceMods_MPN">
+                    <sec:authorize ifAnyGranted="ROLE_BF_MAP_ADMIN_TOOL_MPN">
                         <li>
                             <a href="../product/mapProduct.htm"><span class="fa fa-link"></span>Map Product</a>
                         </li>
