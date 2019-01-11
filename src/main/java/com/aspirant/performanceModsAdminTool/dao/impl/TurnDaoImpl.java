@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.aspirant.performanceModsAdminTool.dao.impl;
 
 import com.aspirant.performanceModsAdminTool.dao.TurnDao;
@@ -28,8 +27,9 @@ import org.springframework.stereotype.Repository;
  * @author pk
  */
 @Repository
-public class TurnDaoImpl implements TurnDao{
- private JdbcTemplate jdbcTemplate;
+public class TurnDaoImpl implements TurnDao {
+
+    private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
 
     @Autowired
@@ -37,21 +37,22 @@ public class TurnDaoImpl implements TurnDao{
         this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+
     @Override
     public int updateTokenEntry(TokenResponse tokenResponse) {
-        String sql="UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=?;";
-        return this.jdbcTemplate.update(sql, tokenResponse.getAccess_token(),tokenResponse.getExprires_in(),tokenResponse.getScope(),tokenResponse.getToken_type());
+        String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=?;";
+        return this.jdbcTemplate.update(sql, tokenResponse.getAccess_token(), tokenResponse.getExprires_in(), tokenResponse.getScope(), tokenResponse.getToken_type());
     }
 
     @Override
     public TokenResponse getToken() {
         try {
-            String sql="SELECT * FROM token t;";
+            String sql = "SELECT * FROM token t;";
             return this.jdbcTemplate.queryForObject(sql, new RowMapper<TokenResponse>() {
 
                 @Override
                 public TokenResponse mapRow(ResultSet rs, int i) throws SQLException {
-                    TokenResponse t=new TokenResponse();
+                    TokenResponse t = new TokenResponse();
                     t.setAccess_token(rs.getString("ACCESS_TOKEN"));
                     t.setExprires_in(rs.getInt("EXPIRES_IN"));
                     t.setScope(rs.getString("SCOPE"));
@@ -61,13 +62,13 @@ public class TurnDaoImpl implements TurnDao{
             });
         } catch (Exception e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
     }
 
     @Override
     public int addItem(List<ItemResponse> data) {
-          try {
+        try {
 //            System.out.println("=====IN CountriesList   ");
             MapSqlParameterSource[] batchParams = new MapSqlParameterSource[data.size()];
             Map<String, Object> params = new HashMap<>();
@@ -93,5 +94,61 @@ public class TurnDaoImpl implements TurnDao{
             return 0;
         }
     }
-    
+
+    @Override
+    public int addItemByFile(String path) {
+        try {
+            this.jdbcTemplate.execute("TRUNCATE TABLE `item_master_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_master_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `PART_NUMBER`, `MFR_PART_NUMBER`, `BRAND`) ";
+//            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
+            this.jdbcTemplate.execute(sql);
+
+            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+                    + "LEFT JOIN item_master_temp t ON t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO`\n"
+                    + "SET d.`ITEM_ID`=t.`ITEM_ID`\n"
+                    + "WHERE t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO`;";
+            this.jdbcTemplate.update(sql1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int addPriceFile(String path) {
+        try {
+            this.jdbcTemplate.execute("TRUNCATE TABLE `item_price_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `ITEM_MAP`) ";
+//            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
+            this.jdbcTemplate.execute(sql);
+            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+                    + "LEFT JOIN item_price_temp p ON p.`ITEM_ID`=d.`ITEM_ID`\n"
+                    + "SET d.`MAP`=p.`ITEM_MAP`,d.`PRICE`=p.`ITEM_PURCHASE_COST`\n"
+                    + "WHERE p.`ITEM_ID`=d.`ITEM_ID`;";
+            this.jdbcTemplate.update(sql1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int addInventoryFile(String path) {
+        try {
+            this.jdbcTemplate.execute("TRUNCATE TABLE `item_inventory_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_inventory_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `LOCATION_STOCK`, `STOCK`) ";
+//            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
+            this.jdbcTemplate.execute(sql);
+
+            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+                    + "LEFT JOIN item_inventory_temp i ON i.`ITEM_ID`=d.`ITEM_ID`\n"
+                    + "SET d.`QUANTITY`=i.`LOCATION_STOCK`\n"
+                    + "WHERE d.`ITEM_ID`=i.`ITEM_ID`;";
+            this.jdbcTemplate.update(sql1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

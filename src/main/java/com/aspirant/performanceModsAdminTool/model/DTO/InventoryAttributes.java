@@ -14,14 +14,14 @@ import java.util.Map;
  */
 public class InventoryAttributes {
 
-    private List<Map<String, String>> inventory;
+    private Object inventory;
     private ManufacturerAPIDTO manufacturer;
 
-    public List<Map<String, String>> getInventory() {
+    public Object getInventory() {
         return inventory;
     }
 
-    public void setInventory(List<Map<String, String>> inventory) {
+    public void setInventory(Object inventory) {
         this.inventory = inventory;
     }
 

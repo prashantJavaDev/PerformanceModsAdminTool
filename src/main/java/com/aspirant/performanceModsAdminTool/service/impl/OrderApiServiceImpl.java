@@ -111,6 +111,7 @@ public class OrderApiServiceImpl implements OrderApiService {
 
 //                            nxtNumber = "" + (Integer.parseInt(nxtNumber) + 1);
 //                            nxtPONumber = "ING" + nxtNumber;
+
                             params1.addValue("customerName", o.getBuyerName());
                             if (o.getShippingAddress() == null) {
                                 params1.addValue("shipToName", "");
@@ -143,7 +144,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                                 params1.addValue("updatedBy", "Api");
                                 if (o.getShippingAddress().getPhone() != null) {
                                     phone = o.getShippingAddress().getPhone();
-//                                    String number = phone.replaceAll("[^,0-9]", "");
+                                    String number = phone.replaceAll("[^,0-9]", "");
 //                                    int i=number.indexOf("X");
 //                                    String result="";
 //                                    if(i== -1){
@@ -153,7 +154,7 @@ public class OrderApiServiceImpl implements OrderApiService {
 //                                    }
 
 //                                    contact = result.substring(result.length() - 10);
-                                    contact = phone;
+                                    contact = number;
                                 } else {
                                     contact = "";
                                 }
@@ -271,7 +272,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                                 params.put("country", o.getShippingAddress().getCountryCode());
                                 if (o.getShippingAddress().getPhone() != null) {
                                     phone = o.getShippingAddress().getPhone();
-//                                    String number = phone.replaceAll("[^,0-9]", "");
+                                    String number = phone.replaceAll("[^,0-9]", "");
 //                                    int i=number.indexOf("X");
 //                                    String result="";
 //                                    if(i== -1){
@@ -281,7 +282,7 @@ public class OrderApiServiceImpl implements OrderApiService {
 //                                    }
 
 //                                    contact = result.substring(result.length() - 10);
-                                    contact = phone;
+                                    contact = number;
 
                                 } else {
                                     contact = "";
@@ -307,6 +308,7 @@ public class OrderApiServiceImpl implements OrderApiService {
                             //pm_order_trans table insert
                             params.put("marketplace_order_id", o.getAmazonOrderId());
                             batchParams2[x] = new MapSqlParameterSource(params2);
+
 
                             sqlInsert = "INSERT INTO pm_order_trans"
                                     + " SELECT tor.PO_NUMBER,tor.ORDER_ID,tor.MARKETPLACE_ID,tor.MARKETPLACE_ORDER_ID,tor.MARKETPLACE_SKU,tor.MARKETPLACE_LISTING_ID,tor.ORDER_DATE,tor.SHIP_BY_DATE,tor.DELIVERY_BY_DATE,"

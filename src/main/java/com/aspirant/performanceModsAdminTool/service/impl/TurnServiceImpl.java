@@ -21,6 +21,7 @@ import com.aspirant.performanceModsAdminTool.model.DTO.TokenResponse;
 import com.aspirant.performanceModsAdminTool.service.TurnService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -51,6 +52,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class TurnServiceImpl implements TurnService {
 //   private  int  pageNo=0;
+
+    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
+//    private final String ITEM_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponce.csv";  
+    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
+//    private final String PRICE_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
+    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
+//    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
 
     @Autowired
     TurnDao turnDao;
@@ -120,7 +128,8 @@ public class TurnServiceImpl implements TurnService {
         TokenResponse token = getToken();
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            FileOutputStream fout = new FileOutputStream("/home/pk/Videos/APIResponce.csv");
+            File f = new File(ITEM_FILE_PATH);
+            FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
@@ -159,7 +168,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
-          final FileOutputStream fout1=fout;
+            final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -182,6 +191,7 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
+            this.turnDao.addItemByFile(ITEM_FILE_PATH);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,7 +253,8 @@ public class TurnServiceImpl implements TurnService {
         TokenResponse token = getToken();
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            FileOutputStream fout = new FileOutputStream("/home/pk/Videos/APIResponsePrice.csv");
+            File f = new File(PRICE_FILE_PATH);
+            FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
@@ -276,7 +287,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
-             final FileOutputStream fout1=fout;
+            final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -300,6 +311,7 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
+            this.turnDao.addPriceFile(PRICE_FILE_PATH);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -368,9 +380,8 @@ public class TurnServiceImpl implements TurnService {
             e.printStackTrace();
         }
     }
-    
-    
-     @Override
+
+    @Override
     public void getInventory() {
 
         getApiTokenOfTurn();
@@ -378,7 +389,8 @@ public class TurnServiceImpl implements TurnService {
         TokenResponse token = getToken();
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            FileOutputStream fout = new FileOutputStream("/home/pk/Videos/APIResponseInventory.csv");
+            File f = new File(INVENTORY_FILE_PATH);
+            FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
@@ -411,7 +423,7 @@ public class TurnServiceImpl implements TurnService {
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
-             final FileOutputStream fout1=fout;
+            final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 50 + 1;
@@ -435,6 +447,7 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
+            this.turnDao.addInventoryFile(INVENTORY_FILE_PATH);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -476,25 +489,25 @@ public class TurnServiceImpl implements TurnService {
             for (InventoryResponse i : data) {
                 InventoryAttributes a = i.getAttributes();
                 String str = i.getId() + "," + i.getType() + ",";
-               if(a.getInventory()!=null){
-                    String invData = a.getInventory().toString().substring(1,23);
+                if (a.getInventory() != null) {
+                    String invData = a.getInventory().toString().substring(1, 23);
 //                    System.out.println("invaData===="+invData);
                     String[] splitlevel1Data = invData.split(",");
-                    double total=0;
+                    double total = 0;
                     for (String strg : splitlevel1Data) {
 //                        System.out.println("Strg==="+strg);
-                   total=total+Double.parseDouble(strg.split("=")[1]);
-                   }
-                    str=str+total+",";
+                        total = total + Double.parseDouble(strg.split("=")[1]);
+                    }
+                    str = str + total + ",";
 //                    System.out.println("Total"+total);
-               }else{
-                   str=str+0+",";
-               }
-               if(a.getManufacturer()!=null){
-                    str=str+a.getManufacturer().getStock()+"\n";
-               }else{
-                    str=str+0+"\n";
-               }
+                } else {
+                    str = str + 0 + ",";
+                }
+                if (a.getManufacturer() != null) {
+                    str = str + a.getManufacturer().getStock() + "\n";
+                } else {
+                    str = str + 0 + "\n";
+                }
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -502,5 +515,25 @@ public class TurnServiceImpl implements TurnService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public int addItemByFile() {
+        this.turnDao.addItemByFile("/home/pk/Videos/APIResponce.csv");
+//        this.turnDao.addItemByFile("/home/pk/Videos/APIResponsePrice.csv");
+        return 0;
+    }
+
+    @Override
+    public int addPriceByFile() {
+        this.turnDao.addPriceFile("/home/pk/Videos/APIResponsePrice.csv");
+        return 0;
+    }
+
+    @Override
+    public int addInventoryByFile() {
+        this.turnDao.addInventoryFile("/home/pk/Videos/APIResponseInventory.csv");
+        return 0;
+
     }
 }

@@ -18,7 +18,13 @@ public interface TurnDao {
     public int updateTokenEntry(TokenResponse tokenResponse);
 
     public TokenResponse getToken();
-    
-     public int addItem(List<ItemResponse> data);
+
+    public int addItem(List<ItemResponse> data);
+
+    public int addItemByFile(String path);
+
+    public int addPriceFile(String path);
+
+    public int addInventoryFile(String path);
 
 }

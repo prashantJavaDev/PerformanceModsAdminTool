@@ -35,7 +35,7 @@ public class ProductRowMapper implements RowMapper<Product> {
 
         p.setManufacturerMpn(rs.getString("MANUFACTURER_MPN"));
         p.setProductTitle(rs.getString("TITLE"));
-        p.setperformanceModsMpn(rs.getString("ADMIN_TOOL_MPN"));
+        p.setperformanceModsMpn(rs.getString("performanceMods_MPN"));
         p.setProductMap(rs.getDouble("MAP"));
         p.setProductMsrp(rs.getDouble("MSRP"));
         p.setProductWeight(rs.getDouble("WEIGHT"));

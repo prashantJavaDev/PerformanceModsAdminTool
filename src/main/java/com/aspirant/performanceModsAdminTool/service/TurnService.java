@@ -30,4 +30,10 @@ public interface TurnService {
     public void getInventory();
 
     public int addItem(List<ItemResponse> data);
+
+    public int addItemByFile();
+
+    public int addPriceByFile();
+
+    public int addInventoryByFile();
 }
