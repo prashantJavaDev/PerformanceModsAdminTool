@@ -119,7 +119,7 @@ public class IngramServiceImpl implements IngramService {
             String poNumber = null;
 
             //File file = new File("/home/ubuntu/Desktop/OrderResponce.xml");
-            File file = new File("/home/ubuntu/performanceMods/ingram/OrderResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/turn14/OrderResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
@@ -162,7 +162,7 @@ public class IngramServiceImpl implements IngramService {
             String warehouseOrderNumber = null;
             String poNumber = "";
 //            File file = new File("/home/ubuntu/Desktop/OrderStatusResponce.xml");
-            File file = new File("/home/ubuntu/performanceMods/ingram/OrderStatusResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/turn14/OrderStatusResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
@@ -220,7 +220,7 @@ public class IngramServiceImpl implements IngramService {
             String trackingId = null;
             String poNumber = null;
 //            File file = new File("/home/ubuntu/Desktop/OrderTrackingResponce.xml");
-            File file = new File("/home/ubuntu/performanceMods/ingram/OrderTrackingResponce.xml");
+            File file = new File("/home/ubuntu/performanceMods/turn14/OrderTrackingResponce.xml");
             FileWriter writer = new FileWriter(file);
             writer.write(responce);
             writer.close();
@@ -291,7 +291,7 @@ public class IngramServiceImpl implements IngramService {
 //            File downloadTotalFile1 = new File("/home/ubuntu/Desktop/Ingram/" + curDate + "TOTAL.ZIP");
 
             //Live Path
-            File downloadTotalFile = new File("/home/ubuntu/performanceMods/ingram/TOTAL.ZIP");
+            File downloadTotalFile = new File("/home/ubuntu/performanceMods/turn14/TOTAL.ZIP");
             File downloadTotalFile1 = new File("/home/ubuntu/performanceMods/feeds/ingram/" + curDate + "TOTAL.ZIP");
 
             OutputStream totaloutputStream1 = new BufferedOutputStream(new FileOutputStream(downloadTotalFile));
@@ -306,7 +306,7 @@ public class IngramServiceImpl implements IngramService {
 //            File downloadPriceFile = new File("/home/ubuntu/Desktop/PRICE.ZIP");
 //            File downloadPriceFile1 = new File("/home/ubuntu/Desktop/Ingram/" + curDate + "PRICE.ZIP");
             //Live Path
-            File downloadPriceFile = new File("/home/ubuntu/performanceMods/ingram/PRICE.ZIP");
+            File downloadPriceFile = new File("/home/ubuntu/performanceMods/turn14/PRICE.ZIP");
             File downloadPriceFile1 = new File("/home/ubuntu/performanceMods/feeds/ingram/" + curDate + "PRICE.ZIP");
 
             OutputStream priceOutputStream1 = new BufferedOutputStream(new FileOutputStream(downloadPriceFile));
@@ -316,17 +316,17 @@ public class IngramServiceImpl implements IngramService {
             priceOutputStream1.close();
             priceOutputStream2.close();
 
-            String zipTotalFilePath = "/home/ubuntu/performanceMods/ingram/TOTAL.ZIP";
+            String zipTotalFilePath = "/home/ubuntu/performanceMods/turn14/TOTAL.ZIP";
 //            String zipTotalFilePath = "/home/ubuntu/Desktop/TOTAL.ZIP";
-            String destDir = "/home/ubuntu/performanceMods/ingram";
+            String destDir = "/home/ubuntu/performanceMods/turn14";
 //            String destDir = "/home/ubuntu/Desktop/Ingram";
             unzip(zipTotalFilePath, destDir);
 
-            String zipPriceFilePath = "/home/ubuntu/performanceMods/ingram/PRICE.ZIP";
+            String zipPriceFilePath = "/home/ubuntu/performanceMods/turn14/PRICE.ZIP";
 //            String zipPriceFilePath = "/home/ubuntu/Desktop/PRICE.ZIP";
             unzip(zipPriceFilePath, destDir);
 
-            String quantityFile = "/home/ubuntu/performanceMods/ingram/TOTAL.TXT";
+            String quantityFile = "/home/ubuntu/performanceMods/turn14/TOTAL.TXT";
 //            String quantityFile = "/home/ubuntu/Desktop/Ingram/TOTAL.TXT";
             String[] dataFields = new String[2];
             try {
@@ -343,7 +343,7 @@ public class IngramServiceImpl implements IngramService {
                 e.printStackTrace();
             }
 
-            String priceFile = "/home/ubuntu/performanceMods/ingram/PRICE.TXT";
+            String priceFile = "/home/ubuntu/performanceMods/turn14/PRICE.TXT";
 //            String priceFile = "/home/ubuntu/Desktop/Ingram/PRICE.TXT";
             String[] dataFields1 = new String[24];
             try {

@@ -187,35 +187,7 @@ Author     : shrutika
                                             </div>
                                         </div>
 
-                                        <div class="row" style="margin-top: 10px">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="col-md-4 col-xs-6 control-label"><spring:message code="neweggItemId"/></label>
-                                                    <div class="col-md-6 col-xs-6">
-                                                        <form:input path="neweggItemId" minlength="14" cssClass="form-control" />
-                                                        <span class="help-block">Please enter product NewEgg Item Id</span>
-                                                        <button id="NewEggButtonDiv" type="button" class="btn-info btn-sm" onclick="showAddNewEggDiv();" style="display: none">Add New Newegg Item Id</button>
-                                                    </div>
-                                                    <div id="addAnotherNewEggDiv" class="col-md-6 col-xs-6" style="display: none">
-                                                        <input type="text" id="addNewEgg" class="form-control"/> <button id="addNewEgg" type="button" class="btn-info btn-sm" onclick="addNewNewEgg();">Add</button>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="col-md-4 col-xs-6 control-label"><spring:message code="neweggB2BItemId"/></label>
-                                                    <div class="col-md-6 col-xs-6">
-                                                        <form:input path="neweggB2BItemId" minlength="14" cssClass="form-control" />
-                                                        <span class="help-block">Please enter product NewEgg Business Item Id</span>
-                                                        <button id="NewEggB2BButtonDiv" type="button" class="btn-info btn-sm" onclick="showAddNewEggB2BDiv();" style="display: none">Add New Newegg Business Item Id</button>
-                                                    </div>
-                                                    <div id="addAnotherNewEggB2BDiv" class="col-md-6 col-xs-6" style="display: none">
-                                                        <input type="text" id="addNewEggB2B" class="form-control"/> <button id="addNewEggB2B" type="button" class="btn-info btn-sm" onclick="addNewNewEggB2B();">Add</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <div class="row" style="margin-top: 10px">
                                             <div class="col-md-6">
