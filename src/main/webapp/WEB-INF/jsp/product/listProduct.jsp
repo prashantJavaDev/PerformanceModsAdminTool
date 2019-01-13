@@ -44,9 +44,9 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title"><spring:message code="title.listProduct"/></h3>
                                     <ul class="panel-controls">
-                                        <sec:authorize ifAnyGranted="'ROLE_BF_EXPORT_PRODUCT'">
+                                        
                                         <c:if test="${fn:length(productList)>0}"><li><a href="#" onclick="$('#excelForm').submit();" title="Export to excel"><span class="fa fa-file-excel-o"></span></a></li></c:if>
-                                        </sec:authorize>
+                                        
                                         <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                                     </ul>
                                 </div>

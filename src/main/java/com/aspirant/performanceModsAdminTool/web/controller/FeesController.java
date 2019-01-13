@@ -29,7 +29,7 @@ public class FeesController {
     @Autowired
     ListingDao listingDao;
 
-    @Scheduled(cron = "0 0 10,21 * * *")
+//    @Scheduled(cron = "0 0 10,21 * * *")
     @RequestMapping(value = "order/getMarketplaceFees.htm", method = RequestMethod.GET)
     public void getFees() {
         this.listingDao.flushFeesStatus();

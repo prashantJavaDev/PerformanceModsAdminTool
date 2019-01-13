@@ -269,7 +269,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
         // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_NAME`, `MPN`, `MAP`, `MSRP`, `PRICE`, `QUANTITY`, `CONDITION`, `WAREHOUSE_IDENTIFICATION_NO`, `WEIGHT`, `ESTIMATED_SHIP_WEIGHT`, `LENGTH`, `WIDTH`, `HEIGHT`, `UPC`, `SHORT_DESC`, `LONG_DESC`, `RESIZE_IMAGE_URL`, `LARGE_IMAGE_URL`, `SHIPPING`) ";
         this.jdbcTemplate.execute(sql);
-        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", G  lobalConstants.TAG_SYSTEMLOG));
 
 //        if (extension.equals("csv")) {
 //        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_NAME`, `MPN`, `MAP`, `MSRP`, `PRICE`, `QUANTITY`, `CONDITION`, `WAREHOUSE_IDENTIFICATION_NO`, `WEIGHT`, `ESTIMATED_SHIP_WEIGHT`, `LENGTH`, `WIDTH`, `HEIGHT`, `UPC`, `SHORT_DESC`, `LONG_DESC`, `RESIZE_IMAGE_URL`, `LARGE_IMAGE_URL`, `SHIPPING`) ";
@@ -767,87 +767,90 @@ public class WarehouseDaoImpl implements WarehouseDao {
         //to remove new line character from large image
         sql = "UPDATE temp_table tt SET tt.`LARGE_IMAGE_URL`=REPLACE(REPLACE(tt.`LARGE_IMAGE_URL`, '\\r', ''), '\\n', '')";
         this.jdbcTemplate.update(sql);
+        
+        //to remove new line character from Shipping
+        sql = "UPDATE temp_table tt SET tt.`SHIPPING`=REPLACE(REPLACE(tt.`SHIPPING`, '\\r', ''), '\\n', '')";
+        this.jdbcTemplate.update(sql);
 
         //check valid decimal number for Shipping
         sql = "UPDATE temp_table tt SET tt.`STATUS`=0,tt.`REASON`=CONCAT(tt.`REASON`,'Shipping :Invalid decimal value.') "
                 + " WHERE (tt.`SHIPPING` NOT REGEXP '^[0-9]*[.]?[0-9]+$') AND tt.`SHIPPING`!='' AND tt.`SHIPPING`IS NOT NULL";
         this.jdbcTemplate.update(sql);
 
-        //Add shipping based on condition
-        //ASI, Wintron, Bed in Bag, Harris Communication
-        if (warehouseId == 18 || warehouseId == 16 || warehouseId == 21 || warehouseId == 22) {
-            double shipping = 0.00;
-            if (warehouseId == 18) {
-                shipping = 15.00;
-            } else if (warehouseId == 16) {
-                shipping = 9.99;
-            } else if (warehouseId == 21) {
-                shipping = 5.95;
-            } else if (warehouseId == 22) {
-                shipping = 10;
-            }
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=?";
-            this.jdbcTemplate.update(sql, shipping);
-            //Synnex
-        } else if (warehouseId == 8) {
-
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`< 50,15,IF(tt.`PRICE`>= 50 AND tt.`PRICE`<=250 ,5,IF(tt.`PRICE` > 250,0,0)))";
-
-            this.jdbcTemplate.update(sql);
-            //TechData
-        } else if (warehouseId == 27) {
-
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE` > 500,0,IF(tt.`LENGTH`> 30 || tt.`WIDTH`>30 || tt.`HEIGHT`>30 ,100,IF(tt.`WEIGHT`>10,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`<=10,12,IF(tt.`PRICE`<=500,10,10)))));";
-
-            this.jdbcTemplate.update(sql);
-            //Petra
-        } else if (warehouseId == 4) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>=0 AND tt.`WEIGHT`<=0.8,6,IF(tt.`WEIGHT`>=0.8 AND tt.`WEIGHT`<=1,12.25,IF(tt.`WEIGHT`>1 AND tt.`WEIGHT`<=2,12.75,IF(tt.`WEIGHT`>2 AND tt.`WEIGHT`<=3,12.85,IF(tt.`WEIGHT`>3 AND tt.`WEIGHT`<=4,13.25,13.25)))))";
-            this.jdbcTemplate.update(sql);
-            //Teledynamics
-        } else if (warehouseId == 5) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>=200 OR tt.`MANUFACTURER_ID` IN(1553,1560,2382,2532,2407,878),0,IF(tt.`WEIGHT`>=0 AND tt.`WEIGHT`<=0.85,3.65,IF(tt.`WEIGHT`>0.85 AND tt.`WEIGHT`<=7,7,IF(tt.`WEIGHT`>7 AND tt.`WEIGHT`<=9,7.85,(tt.`WEIGHT`+1)))))";
-            this.jdbcTemplate.update(sql);
-            //Essendent , AE Warehouse
-        } else if (warehouseId == 14 || warehouseId == 9) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>50,0,IF(tt.`PRICE`=<50,10,10))";
-            this.jdbcTemplate.update(sql);
-            //Fontel
-        } else if (warehouseId == 19) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>100,0,IF(tt.`PRICE`<=100,5,5))";
-            this.jdbcTemplate.update(sql);
-            //CWR
-        } else if (warehouseId == 24) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>15,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`<=15,9.95,9.95))";
-            this.jdbcTemplate.update(sql);
-            //D and H
-        } else if (warehouseId == 25) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>8,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`>=2 AND tt.`WEIGHT`<=8,10,IF(tt.`WEIGHT`<2,6,6)))";
-            this.jdbcTemplate.update(sql);
-
-        }//ma labs
-        else if (warehouseId == 26) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>7,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`>5 AND tt.`WEIGHT`<=7,20,IF(tt.`WEIGHT`>3 AND tt.`WEIGHT`<=5,15,IF(tt.`WEIGHT`<=3,10,10))))";
-            this.jdbcTemplate.update(sql);
-            //ScanSource Catalyst, Jenne
-        } else if (warehouseId == 7 || warehouseId == 3) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>100,0,IF(tt.`PRICE`<=100,10,10))";
-            this.jdbcTemplate.update(sql);
-            //Ingram
-        } else if (warehouseId == 20) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`LENGTH`>48,(2*tt.`LENGTH`),IF(tt.`WEIGHT`>30,(3*tt.`WEIGHT`),\n"
-                    + "IF(tt.`WEIGHT`>10 AND tt.`WEIGHT`<=30,(2*tt.`WEIGHT`),IF(tt.`WEIGHT`>6 AND tt.`WEIGHT`<=10,15,\n"
-                    + "IF(tt.`WEIGHT`>2 AND tt.`WEIGHT`<=6,10,IF(tt.`WEIGHT`>0 AND tt.`WEIGHT`<=2,6,6))))))";
-            this.jdbcTemplate.update(sql);
-        } //Bluestar
-        else if (warehouseId == 11) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>200,0,IF(tt.`PRICE`<=200,10,10))";
-            this.jdbcTemplate.update(sql);
-            //Capitol Sales, Wynit
-        } else if (warehouseId == 1 || warehouseId == 6) {
-            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`<=20,15,IF(tt.`WEIGHT`>20, (2 * tt.`WEIGHT`),15))";
-            this.jdbcTemplate.update(sql);
-        }
+        
+//            if (warehouseId == 18 || warehouseId == 16 || warehouseId == 21 || warehouseId == 22) {
+//            double shipping = 0.00;
+//            if (warehouseId == 18) {
+//                shipping = 15.00;
+//            } else if (warehouseId == 16) {
+//                shipping = 9.99;
+//            } else if (warehouseId == 21) {
+//                shipping = 5.95;
+//            } else if (warehouseId == 22) {
+//                shipping = 10;
+//            }
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=?";
+//            this.jdbcTemplate.update(sql, shipping);
+//            //Synnex
+//        } else if (warehouseId == 8) {
+//
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`< 50,15,IF(tt.`PRICE`>= 50 AND tt.`PRICE`<=250 ,5,IF(tt.`PRICE` > 250,0,0)))";
+//
+//            this.jdbcTemplate.update(sql);
+//            //TechData
+//        } else if (warehouseId == 27) {
+//
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE` > 500,0,IF(tt.`LENGTH`> 30 || tt.`WIDTH`>30 || tt.`HEIGHT`>30 ,100,IF(tt.`WEIGHT`>10,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`<=10,12,IF(tt.`PRICE`<=500,10,10)))));";
+//
+//            this.jdbcTemplate.update(sql);
+//            //Petra
+//        } else if (warehouseId == 4) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>=0 AND tt.`WEIGHT`<=0.8,6,IF(tt.`WEIGHT`>=0.8 AND tt.`WEIGHT`<=1,12.25,IF(tt.`WEIGHT`>1 AND tt.`WEIGHT`<=2,12.75,IF(tt.`WEIGHT`>2 AND tt.`WEIGHT`<=3,12.85,IF(tt.`WEIGHT`>3 AND tt.`WEIGHT`<=4,13.25,13.25)))))";
+//            this.jdbcTemplate.update(sql);
+//            //Teledynamics
+//        } else if (warehouseId == 5) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>=200 OR tt.`MANUFACTURER_ID` IN(1553,1560,2382,2532,2407,878),0,IF(tt.`WEIGHT`>=0 AND tt.`WEIGHT`<=0.85,3.65,IF(tt.`WEIGHT`>0.85 AND tt.`WEIGHT`<=7,7,IF(tt.`WEIGHT`>7 AND tt.`WEIGHT`<=9,7.85,(tt.`WEIGHT`+1)))))";
+//            this.jdbcTemplate.update(sql);
+//            //Essendent , AE Warehouse
+//        } else if (warehouseId == 14 || warehouseId == 9) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>50,0,IF(tt.`PRICE`=<50,10,10))";
+//            this.jdbcTemplate.update(sql);
+//            //Fontel
+//        } else if (warehouseId == 19) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>100,0,IF(tt.`PRICE`<=100,5,5))";
+//            this.jdbcTemplate.update(sql);
+//            //CWR
+//        } else if (warehouseId == 24) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>15,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`<=15,9.95,9.95))";
+//            this.jdbcTemplate.update(sql);
+//            //D and H
+//        } else if (warehouseId == 25) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>8,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`>=2 AND tt.`WEIGHT`<=8,10,IF(tt.`WEIGHT`<2,6,6)))";
+//            this.jdbcTemplate.update(sql);
+//
+//        }//ma labs
+//        else if (warehouseId == 26) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`>7,(tt.`WEIGHT`*2),IF(tt.`WEIGHT`>5 AND tt.`WEIGHT`<=7,20,IF(tt.`WEIGHT`>3 AND tt.`WEIGHT`<=5,15,IF(tt.`WEIGHT`<=3,10,10))))";
+//            this.jdbcTemplate.update(sql);
+//            //ScanSource Catalyst, Jenne
+//        } else if (warehouseId == 7 || warehouseId == 3) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>100,0,IF(tt.`PRICE`<=100,10,10))";
+//            this.jdbcTemplate.update(sql);
+//            //Ingram
+//        } else if (warehouseId == 20) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`LENGTH`>48,(2*tt.`LENGTH`),IF(tt.`WEIGHT`>30,(3*tt.`WEIGHT`),\n"
+//                    + "IF(tt.`WEIGHT`>10 AND tt.`WEIGHT`<=30,(2*tt.`WEIGHT`),IF(tt.`WEIGHT`>6 AND tt.`WEIGHT`<=10,15,\n"
+//                    + "IF(tt.`WEIGHT`>2 AND tt.`WEIGHT`<=6,10,IF(tt.`WEIGHT`>0 AND tt.`WEIGHT`<=2,6,6))))))";
+//            this.jdbcTemplate.update(sql);
+//        } //Bluestar
+//        else if (warehouseId == 11) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`PRICE`>200,0,IF(tt.`PRICE`<=200,10,10))";
+//            this.jdbcTemplate.update(sql);
+//            //Capitol Sales, Wynit
+//        } else if (warehouseId == 1 || warehouseId == 6) {
+//            sql = "UPDATE temp_table tt SET tt.`SHIPPING`=IF(tt.`WEIGHT`<=20,15,IF(tt.`WEIGHT`>20, (2 * tt.`WEIGHT`),15))";
+//            this.jdbcTemplate.update(sql);
+//        }
 
         sql = "UPDATE temp_table tt SET tt.`STATUS`=0,tt.`REASON`=CONCAT(tt.`REASON`,'Invalid resize/large image url')"
                 + " WHERE (tt.`RESIZE_IMAGE_URL`!='' AND tt.`RESIZE_IMAGE_URL` IS NOT NULL"

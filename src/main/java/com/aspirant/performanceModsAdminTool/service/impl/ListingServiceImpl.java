@@ -33,7 +33,7 @@ public class ListingServiceImpl implements ListingService {
 
     @Autowired
     private ListingDao listingDao;
-    public static final String FEES_FILE_PATH = "/home/ubuntu/telEasy/fees/";
+    public static final String FEES_FILE_PATH = "/home/altius/performanceMods/fees/";
 
     @Override
     public int saveMultipartFileData(UploadFeed uploadFeed, int marketplaceId) {
