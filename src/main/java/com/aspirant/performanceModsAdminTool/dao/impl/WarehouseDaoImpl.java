@@ -241,7 +241,7 @@ public class WarehouseDaoImpl implements WarehouseDao {
             sqlString = "INSERT INTO pm_warehouse_feed_data"
                     + " SELECT NULL,:feedId,:warehouseId,tp.PRODUCT_ID,tp.`MANUFACTURER_ID`,NULL,tp.`ADMIN_TOOL_MPN`,tt.MAP,tt.MSRP,"
                     + " tt.PRICE,tt.QUANTITY,COALESCE(tc.CONDITION_ID,1),tt.WAREHOUSE_IDENTIFICATION_NO,"
-                    + " tt.WEIGHT,tt.`ESTIMATED_SHIP_WEIGHT`,tt.LENGTH,tt.WIDTH,tt.HEIGHT,tt.UPC,tt.`SHIPPING`,:createdDate,:createdBy"
+                    + " tt.WEIGHT,tt.`ESTIMATED_SHIP_WEIGHT`,tt.LENGTH,tt.WIDTH,tt.HEIGHT,tt.UPC,tt.`SHIPPING`,:createdDate,:createdBy,NULL"
                     + " FROM temp_table tt"
                     + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                     + " LEFT JOIN pm_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION)"

@@ -198,7 +198,7 @@ public class ProductDaoImpl implements ProductDao {
             params.put("MANUFACTURER_ID", product.getManufacturer().getManufacturerId());
             params.put("MANUFACTURER_MPN", product.getManufacturerMpn());
             params.put("TITLE", product.getProductTitle());
-            params.put("performanceMods_MPN", performanceModsMpn);
+            params.put("ADMIN_TOOL_MPN", performanceModsMpn);
             params.put("MAP", product.getProductMap());
             params.put("MSRP", product.getProductMsrp());
             params.put("WEIGHT", product.getProductWeight());
@@ -383,7 +383,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> getProductList(int productStatusId, int manufacturerId, String performanceModsMpn, String productName, int pageNo, String warehouseMpn, String productMpn, String startDate, String stopDate) {
         StringBuilder sql = new StringBuilder();
         try {
-            sql.append("SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`performanceMods_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,"
+            sql.append("SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`ADMIN_TOOL_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,"
                     + " tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,"
                     + " GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + " GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
@@ -421,7 +421,7 @@ public class ProductDaoImpl implements ProductDao {
             }
 
             if (performanceModsMpn != null && !performanceModsMpn.isEmpty()) {
-                sql.append(" AND tp.`performanceMods_MPN`=:performanceModsMpn");
+                sql.append(" AND tp.`ADMIN_TOOL_MPN`=:performanceModsMpn");
                 params.put("performanceModsMpn", performanceModsMpn);
             }
 
@@ -496,7 +496,7 @@ public class ProductDaoImpl implements ProductDao {
         }
 
         if (productMpn != null && !productMpn.isEmpty()) {
-            sql.append(" AND SUBSTR(tp.`performanceMods_MPN`,9)=:productMpn");
+            sql.append(" AND SUBSTR(tp.`ADMIN_TOOL_MPN`,9)=:productMpn");
             params.put("productMpn", productMpn);
         }
 
@@ -537,7 +537,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> getProductListForExcel(int productStatusId, int manufacturerId, String performanceModsMpn, String productName, String warehouseMpn, String productMpn) {
         StringBuilder sql = new StringBuilder();
         try {
-            sql.append("SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`performanceMods_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,\n"
+            sql.append("SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`ADMIN_TOOL_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,\n"
                     + "tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,\n"
                     + "GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + "GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
@@ -575,7 +575,7 @@ public class ProductDaoImpl implements ProductDao {
             }
 
              if (productMpn != null && !productMpn.isEmpty()) {
-                sql.append(" AND SUBSTR(tp.`performanceMods_MPN`,9)=:productMpn");
+                sql.append(" AND SUBSTR(tp.`ADMIN_TOOL_MPN`,9)=:productMpn");
                 params.put("productMpn", productMpn);
             }
 
@@ -896,7 +896,7 @@ public class ProductDaoImpl implements ProductDao {
     //For autocomplete
     @Override
     public List<String> searchMpn(String term) {
-        String sql = "SELECT performanceMods_MPN FROM pm_product WHERE performanceMods_MPN LIKE '%" + term + "%'";
+        String sql = "SELECT ADMIN_TOOL_MPN FROM pm_product WHERE ADMIN_TOOL_MPN LIKE '%" + term + "%'";
 
        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
@@ -925,7 +925,7 @@ public class ProductDaoImpl implements ProductDao {
                     + " LEFT JOIN pm_product_image tpi ON tpi.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
                     + " AND twpm.`WAREHOUSE_ID`=tcwp.`WAREHOUSE_ID`"
                     + " LEFT JOIN pm_product tp ON tp.`PRODUCT_ID`=tcwp.`PRODUCT_ID`\n"
-                    + " WHERE tp.`performanceMods_MPN`=:performanceModsMpn "
+                    + " WHERE tp.`ADMIN_TOOL_MPN`=:performanceModsMpn "
                     + " GROUP BY tcwp.`WAREHOUSE_ID`");
 
             Map<String, Object> params = new HashMap<String, Object>();
@@ -1004,7 +1004,7 @@ public class ProductDaoImpl implements ProductDao {
     public String getperformanceModsMpnByManufacturerMpn(String manufacturerMpn, int manufacturerId) {
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT tp.`performanceMods_MPN` FROM pm_product tp"
+        sql.append("SELECT tp.`ADMIN_TOOL_MPN` FROM pm_product tp"
                 + " WHERE tp.`MANUFACTURER_MPN`= :manufacturerMpn "
                 + " AND tp.`MANUFACTURER_ID`=:manufacturerId");
 
@@ -1162,7 +1162,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<Product> getProductListForDelet(String performanceModsMpn) {
         try {
-            String sql = "SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`performanceMods_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,\n"
+            String sql = "SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`ADMIN_TOOL_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,\n"
                     + "tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,\n"
                     + "GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
                     + "GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
@@ -1508,14 +1508,14 @@ public class ProductDaoImpl implements ProductDao {
 
             sql = "UPDATE temp_website_upload tm \n"
                     + "LEFT JOIN pm_product tp ON tp.`MANUFACTURER_ID`= tm.`MANUFACTURER_ID`\n"
-                    + "SET tm.`performanceMods_MPN`= tp.`performanceMods_MPN`\n"
+                    + "SET tm.`ADMIN_TOOL_MPN`= tp.`ADMIN_TOOL_MPN`\n"
                     + "WHERE tm.`MANUFACTURER_ID`= tp.`MANUFACTURER_ID` \n"
                     + "AND tm.`MANUFACTURER_MPN`=tp.`MANUFACTURER_MPN`";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
-                    + "LEFT JOIN pm_product tp ON tp.`performanceMods_MPN`= tm.`performanceMods_MPN`\n"
-                    + "SET tm.`PRODUCT_ID`=tp.`PRODUCT_ID` WHERE tp.`performanceMods_MPN`= tm.`performanceMods_MPN`;";
+                    + "LEFT JOIN pm_product tp ON tp.`ADMIN_TOOL_MPN`= tm.`ADMIN_TOOL_MPN`\n"
+                    + "SET tm.`PRODUCT_ID`=tp.`PRODUCT_ID` WHERE tp.`ADMIN_TOOL_MPN`= tm.`ADMIN_TOOL_MPN`;";
             jdbcTemplate.update(sql);
 
             sql = "UPDATE temp_website_upload tm \n"
@@ -1549,13 +1549,13 @@ public class ProductDaoImpl implements ProductDao {
                     + "tp.`SHORT_DESC`=tw.`SHORT_DESC`,\n"
                     + "tp.`LONG_DESC`=tw.`LONG_DESC`,\n"
                     + "tp.`WEBSITE_ID`=?\n"
-                    + "WHERE tp.`performanceMods_MPN`=tw.`performanceMods_MPN` AND tp.`PRODUCT_ID`=tw.`PRODUCT_ID`;";
+                    + "WHERE tp.`ADMIN_TOOL_MPN`=tw.`ADMIN_TOOL_MPN` AND tp.`PRODUCT_ID`=tw.`PRODUCT_ID`;";
             jdbcTemplate.update(sql, companyId);
 
             sql = "SELECT twu.`PRODUCT_ID`,TRIM(twu.`IMAGE_URL_1`) AS i1,TRIM(twu.`IMAGE_URL_2`) AS i2,TRIM(twu.`IMAGE_URL_3`) AS i3,TRIM(twu.`IMAGE_URL_4`)AS i4\n"
                     + "FROM temp_website_upload twu\n"
                     + "LEFT JOIN pm_product tp ON tp.`PRODUCT_ID` = twu.`PRODUCT_ID`\n"
-                    + "WHERE tp.`PRODUCT_ID` = twu.`PRODUCT_ID` AND tp.`performanceMods_MPN` =twu.`performanceMods_MPN`";
+                    + "WHERE tp.`PRODUCT_ID` = twu.`PRODUCT_ID` AND tp.`ADMIN_TOOL_MPN` =twu.`ADMIN_TOOL_MPN`";
 
             List<TempWebsiteUpload> list = this.jdbcTemplate.query(sql, new TempWebsiteUploadRowMapper());
 

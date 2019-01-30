@@ -48,7 +48,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Autowired
     private WarehouseDao warehouseDao;
-    public static final String IMG_FILE_PATH = "/home/altius/performanceMods/feeds/";
+    public static final String IMG_FILE_PATH = "/home/ubuntu/performanceMods/feeds/";
 
     /*
      * column 0 - Manufacturer

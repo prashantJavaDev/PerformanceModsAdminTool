@@ -53,12 +53,12 @@ import org.springframework.stereotype.Service;
 public class TurnServiceImpl implements TurnService {
 //   private  int  pageNo=0;
 
-    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
-//    private final String ITEM_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponce.csv";  
-    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
-//    private final String PRICE_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
-    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
-//    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
+//    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
+    private final String ITEM_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponce.csv";  
+//    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
+    private final String PRICE_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
+//    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
+    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
 
     @Autowired
     TurnDao turnDao;

@@ -129,7 +129,7 @@ public class AdminDaoImpl implements AdminDao {
 
     @Override
     public String getperformanceModsMpnByMPN(String productMpn) {
-        String sql = "SELECT tp.`performanceMods_MPN` FROM pm_product tp WHERE tp.`MANUFACTURER_MPN`=?";
+        String sql = "SELECT tp.`ADMIN_TOOL_MPN` FROM pm_product tp WHERE tp.`MANUFACTURER_MPN`=?";
         return this.jdbcTemplate.queryForObject(sql, String.class, productMpn);
     }
 

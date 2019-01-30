@@ -47,11 +47,11 @@ public class ListingDaoImpl implements ListingDao {
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_fees`";
         this.jdbcTemplate.update(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_table done.", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_fees` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `FEES`); ";
         this.jdbcTemplate.execute(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "UPDATE pm_available_listing tal\n"
                 + " LEFT JOIN pm_temp_fees ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
@@ -119,8 +119,7 @@ public class ListingDaoImpl implements ListingDao {
             sql += " LIMIT " + (pageNo - 1) * GlobalConstants.PAGE_SIZE + "," + GlobalConstants.PAGE_SIZE;
         }
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
-
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         return nm.query(sql, params, new ProductListingDTORowMapper());
     }
@@ -164,8 +163,7 @@ public class ListingDaoImpl implements ListingDao {
             sql += " AND tal.ACTIVE ";
         }
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
-
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
         Integer i = nm.queryForObject(sql, params, Integer.class);
         if (i == null) {
@@ -180,15 +178,15 @@ public class ListingDaoImpl implements ListingDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
 
-        String sql1= "SELECT  tal.`CURRENT_PRICE` FROM pm_available_listing tal WHERE tal.`SKU`=?";
+        String sql1 = "SELECT  tal.`CURRENT_PRICE` FROM pm_available_listing tal WHERE tal.`SKU`=?";
         float cost = this.jdbcTemplate.queryForObject(sql1, Float.class, sku);
-        if(price>cost){
-        profit += price-cost;
-        }else{
-        profit -=cost-price;
+        if (price > cost) {
+            profit += price - cost;
+        } else {
+            profit -= cost - price;
         }
         String sql = "UPDATE pm_available_listing tal SET tal.`CURRENT_PRICE`=?,tal.`CURRENT_PROFIT`=?, tal.`CURRENT_QUANTITY`=?,tal.`ACTIVE`=?,tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE tal.`SKU`=?";
-        return this.jdbcTemplate.update(sql, price,profit,quantity, active, curDate, curUser, sku);
+        return this.jdbcTemplate.update(sql, price, profit, quantity, active, curDate, curUser, sku);
     }
 
     @Override
@@ -220,7 +218,7 @@ public class ListingDaoImpl implements ListingDao {
     public List<String> searchSku(String term) {
         String sql = "SELECT t.`SKU` FROM pm_mpn_sku_mapping  t WHERE t.`SKU` LIKE '%" + term + "%'";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -235,33 +233,21 @@ public class ListingDaoImpl implements ListingDao {
                 + "  LEFT JOIN pm_mpn_sku_mapping tmsm ON tmsm.`SKU`=tal.`SKU`"
                 + "  LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tmsm.`MANUFACTURER_MPN` AND tp.`MANUFACTURER_ID`=tmsm.`MANUFACTURER_ID`"
                 + "  LEFT JOIN (SELECT t.`CALCULATED_PRICE` PRICE, t.`PRODUCT_ID`,t.`WAREHOUSE_ID`,t.`QUANTITY`,t.`SHIPPING`"
-                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`>8 AND t.`CALCULATED_PRICE`IN ("
+                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`>=0 AND t.`CALCULATED_PRICE`IN ("
                 + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM pm_current_warehouse_product t GROUP BY t.`PRODUCT_ID`  "
                 + "  ) GROUP BY t.`PRODUCT_ID`) tc ON tc.PRODUCT_ID=tp.`PRODUCT_ID`"
                 + "  LEFT JOIN (SELECT t.`CALCULATED_PRICE` PRICE,t.`PRODUCT_ID`,t.`WAREHOUSE_ID`,t.`QUANTITY`,t.`SHIPPING`"
-                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`<=8   AND t.`CALCULATED_PRICE`IN ("
+                + "  FROM pm_current_warehouse_product t WHERE t.`QUANTITY`<=0  AND t.`CALCULATED_PRICE`IN ("
                 + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM pm_current_warehouse_product t GROUP BY t.`PRODUCT_ID`"
                 + "  ) GROUP BY t.`PRODUCT_ID`) tc1 ON tc1.PRODUCT_ID=tp.`PRODUCT_ID`"
-                + "  SET tal.`CURRENT_PRICE`=IF(tal.`ISMAP` AND (COALESCE(ROUND(((COALESCE(tc.`PRICE`,tc1.`PRICE`)+"
-                + "  tal.`CURRENT_COMMISSION`)*tmsm.`PACK`),2),0))<tp.`MAP`,tp.`MAP`,"
-                + "  COALESCE(ROUND((((COALESCE(tc.`PRICE`,tc1.`PRICE`)+tal.`CURRENT_COMMISSION`))*tmsm.`PACK`),2),0)),"
+                + "  SET tal.`CURRENT_PRICE`=IF(tal.`ISMAP` AND"
+                + " (COALESCE(ROUND(((((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`)*tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0))<tp.`MAP`,tp.`MAP`,"
+                + " COALESCE(ROUND((((((COALESCE(tc.`PRICE`,tc1.`PRICE`)))*tmsm.`PACK`)*tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0)),"
                 + "  tal.`WAREHOUSE_ID`=COALESCE(tc.`WAREHOUSE_ID`,tc1.WAREHOUSE_ID),"
-                + "  tal.`CURRENT_QUANTITY`=("
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=8 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=15,2,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=16 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=20,5,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=21 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=30,10,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=31 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=50,20, "
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=51 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=70,30,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=71 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=100,40,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=101 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=150,50,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=151 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=200,60,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=201 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=300,70,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=301 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=400,80,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=401 AND COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)<=500,90,"
-                + "  IF(COALESCE(tc.`QUANTITY`,tc1.`QUANTITY`)>=500,120,0))))))))))))/tal.`PACK`),"
+                + "  tal.`CURRENT_QUANTITY`=(tc.`QUANTITY`/tal.`PACK`),"
                 + "  tal.`CURRENT_LISTED_DATE`=:curDate, "
                 + "  tal.`CURRENT_SHIPPING`=COALESCE(tc.`SHIPPING`,tc1.`SHIPPING`),tal.`LAST_MODIFIED_DATE`=:curDate,tal.`LAST_MODIFIED_BY`=:curUser,"
-                + "  tal.`CURRENT_COMMISSION`=COALESCE(tal.`CURRENT_COMMISSION`)"
+                + "  tal.`CURRENT_COMMISSION`=((((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`)*tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)"
                 + "  WHERE tal.`MARKETPLACE_ID`=:marketplaceId  AND tp.`ACTIVE` AND tal.`ACTIVE`";
 
         String sql1 = "UPDATE pm_available_listing tal"
@@ -342,11 +328,11 @@ public class ListingDaoImpl implements ListingDao {
         String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_available_listing`";
         String sql1;
         this.jdbcTemplate.update(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
 
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
         this.jdbcTemplate.execute(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
         try {
 //            sql = "UPDATE pm_available_listing tal\n"
 //                    + " LEFT JOIN pm_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
