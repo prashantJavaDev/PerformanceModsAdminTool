@@ -62,7 +62,8 @@ public class ListingServiceImpl implements ListingService {
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+                System.out.println("Path------------->" + path);
                 this.listingDao.loadFeesDataLocally(path, marketplaceId);
                 return 1;
             } catch (FileNotFoundException ex) {
@@ -101,7 +102,7 @@ public class ListingServiceImpl implements ListingService {
     public int UpdateListings(int marketplaceId) {
         try {
             this.listingDao.UpdateListings(marketplaceId);
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("listing confirmed", GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("listing confirmed", GlobalConstants.TAG_SYSTEMLOG));
             return 1;
         } catch (Exception e) {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
@@ -123,7 +124,7 @@ public class ListingServiceImpl implements ListingService {
     public int processListing(int marketplaceId, int manufacturerId) {
         try {
             int result = this.listingDao.processListing(marketplaceId, manufacturerId);
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + ": listing updated", GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(+result + ": listing updated", GlobalConstants.TAG_SYSTEMLOG));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,7 +170,7 @@ public class ListingServiceImpl implements ListingService {
                 fos.write(imgBytes);
                 fos.flush();
                 fos.close();
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog("File transferred.. :" + originaFileName, GlobalConstants.TAG_SYSTEMLOG));
                 this.listingDao.loadFeesDataLocally1(path, marketplaceId);
                 return 1;
             } catch (FileNotFoundException ex) {

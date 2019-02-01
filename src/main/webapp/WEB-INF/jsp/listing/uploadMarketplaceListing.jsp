@@ -86,6 +86,7 @@
                                             <tr><td>Listed Price</td><td>Listed Price of the Listing</td><td style="text-align: center;">Yes</td><td style="text-align: center;"><b>Yes</b></td></tr>
                                             <tr><td>Listed Quantity</td><td>Listed Quantity of the Listing</td><td style="text-align: center;">Yes</td><td style="text-align: center;"><b>Yes</b></td></tr>
                                             <tr><td>Pack</td><td>Pack</td><td style="text-align: center;">Yes</td><td style="text-align: center;"><b>Yes</b></td></tr>
+                                            <tr><td>Manufacturer Name</td><td>Name of the Manufacturer </td><td style="text-align: center;">Yes</td><td style="text-align: center;"><b>Yes</b></td></tr>
                                             <tr><td>MPN</td><td>Manufaturer Part Number</td><td style="text-align: center;">Yes</td><td style="text-align: center;"><b>Yes</b></td></tr>
                                         </table>
                                     </div>

@@ -55,7 +55,7 @@ public class ListingDaoImpl implements ListingDao {
 
         sql = "UPDATE pm_available_listing tal\n"
                 + " LEFT JOIN pm_temp_fees ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
-                + " SET tal.`CURRENT_COMMISSION`=COALESCE(ttf.`FEES`,'0'),tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
+                + " SET tal.`CURRENT_COMMISSION_PERCENTAGE`=COALESCE(ttf.`FEES`,'15'),tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
                 + " WHERE tal.`MARKETPLACE_ID`=?";
         jdbcTemplate.update(sql, curUser, curDate, marketplaceId);
     }
@@ -330,7 +330,7 @@ public class ListingDaoImpl implements ListingDao {
         this.jdbcTemplate.update(sql);
         // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
 
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MPN`); ";
+        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MANUFACTURER_NAME`,`MPN`); ";
         this.jdbcTemplate.execute(sql);
         // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
         try {
@@ -338,8 +338,8 @@ public class ListingDaoImpl implements ListingDao {
 //                    + " LEFT JOIN pm_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
 //                    + " SET tal.`LAST_LISTED_PRICE`=ttf.`LAST_LISTED_PRICE`,tal.`LAST_LISTED_QUANTITY`=ttf.`LAST_LISTED_QUANTITY`,tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
 //                    + " WHERE tal.`MARKETPLACE_ID`=? AND tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`";
-            sql1 = "UPDATE pm_temp_available_listing ttp LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN` = ttp.MPN\n"
-                    + "SET ttp.`MANUFACTURER_ID` = tp.MANUFACTURER_ID WHERE tp.`MANUFACTURER_MPN` = ttp.MPN";
+            sql1 = "UPDATE pm_temp_available_listing ttp LEFT JOIN `pm_manufacturer` tp ON tp.`MANUFACTURER_NAME` = ttp.`MANUFACTURER_NAME`\n"
+                    + " SET ttp.`MANUFACTURER_ID` = tp.MANUFACTURER_ID WHERE tp.`MANUFACTURER_NAME` = ttp.`MANUFACTURER_NAME`";
 
             jdbcTemplate.update(sql1);
 

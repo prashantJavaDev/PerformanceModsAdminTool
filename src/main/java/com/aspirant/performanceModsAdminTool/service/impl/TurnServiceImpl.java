@@ -146,7 +146,7 @@ public class TurnServiceImpl implements TurnService {
 //                writeInFile(data,fout);
                 int total_pages = resp.getMeta().getTotal_pages();
                 System.out.println("toalpages==" + total_pages);
-                int process = Math.round(total_pages / 50) + 1;
+                int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
                 executeParallel(process, fout);
 //                executeParallel(1, fout);
@@ -171,11 +171,11 @@ public class TurnServiceImpl implements TurnService {
             final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
-                int pageNo = cal * 50 + 1;
+                int pageNo = cal * 100 + 1;
 
                 @Override
                 public void run() {
-                    for (int j = 0; j < 50; j++) {
+                    for (int j = 0; j < 100; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
                         callTurnAPI(get, fout1);
@@ -271,7 +271,7 @@ public class TurnServiceImpl implements TurnService {
 //                writeInFile(data,fout);
                 int total_pages = resp.getMeta().getTotal_pages();
                 System.out.println("toalpages==" + total_pages);
-                int process = Math.round(total_pages / 50) + 1;
+                int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
                 executeParallelForPrice(process, fout);
                 fout.close();
@@ -290,11 +290,11 @@ public class TurnServiceImpl implements TurnService {
             final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
-                int pageNo = cal * 50 + 1;
+                int pageNo = cal * 100 + 1;
 
                 @Override
                 public void run() {
-                    for (int j = 0; j < 50; j++) {
+                    for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
@@ -407,7 +407,7 @@ public class TurnServiceImpl implements TurnService {
 //                writeInFileInventory(data,fout);
                 int total_pages = resp.getMeta().getTotal_pages();
                 System.out.println("toalpages==" + total_pages);
-                int process = Math.round(total_pages / 50) + 1;
+                int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
                 executeParallelForInventory(process, fout);
                 fout.close();
@@ -426,11 +426,11 @@ public class TurnServiceImpl implements TurnService {
             final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
-                int pageNo = cal * 50 + 1;
+                int pageNo = cal * 100 + 1;
 
                 @Override
                 public void run() {
-                    for (int j = 0; j < 50; j++) {
+                    for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
