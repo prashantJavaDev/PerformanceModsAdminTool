@@ -58,7 +58,7 @@ public class TurnServiceImpl implements TurnService {
 //    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
     private final String PRICE_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
 //    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
-    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
+    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponseInventory.csv";  
 
     @Autowired
     TurnDao turnDao;
