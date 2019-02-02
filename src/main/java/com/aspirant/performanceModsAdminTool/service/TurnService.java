@@ -17,7 +17,7 @@ public interface TurnService {
 
     public int updateTokenEntry(TokenResponse tokenResponse);
 
-    public TokenResponse getToken();
+    public TokenResponse getToken(String apiType);
 
     public void getApiTokenOfTurn();
 

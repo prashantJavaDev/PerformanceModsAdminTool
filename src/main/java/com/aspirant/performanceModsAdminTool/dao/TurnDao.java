@@ -17,7 +17,7 @@ public interface TurnDao {
 
     public int updateTokenEntry(TokenResponse tokenResponse);
 
-    public TokenResponse getToken();
+    public TokenResponse getToken(String apiType);
 
     public int addItem(List<ItemResponse> data);
 
