@@ -69,8 +69,8 @@ public class TurnServiceImpl implements TurnService {
     }
 
     @Override
-    public TokenResponse getToken() {
-        return turnDao.getToken();
+    public TokenResponse getToken(String apiType) {
+        return turnDao.getToken(apiType);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class TurnServiceImpl implements TurnService {
     public void getLocation() {
         getApiTokenOfTurn();
         HttpGet get = new HttpGet("https://api.turn14.com/v1/locations");
-        TokenResponse token = getToken();
+        TokenResponse token = getToken("T");
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
             HttpClient client = new DefaultHttpClient();
@@ -125,7 +125,7 @@ public class TurnServiceImpl implements TurnService {
     public void getItems() {
         getApiTokenOfTurn();
         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=1");
-        TokenResponse token = getToken();
+        TokenResponse token = getToken("T");
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
             File f = new File(ITEM_FILE_PATH);
@@ -201,7 +201,7 @@ public class TurnServiceImpl implements TurnService {
 
     private void callTurnAPI(HttpGet get, FileOutputStream fout) {
         try {
-            TokenResponse token = getToken();
+            TokenResponse token = getToken("T");
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -250,7 +250,7 @@ public class TurnServiceImpl implements TurnService {
 
         getApiTokenOfTurn();
         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=1");
-        TokenResponse token = getToken();
+        TokenResponse token = getToken("T");
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
             File f = new File(PRICE_FILE_PATH);
@@ -321,7 +321,7 @@ public class TurnServiceImpl implements TurnService {
 
     private void callTurnAPIPrice(HttpGet get, FileOutputStream fout) {
         try {
-            TokenResponse token = getToken();
+            TokenResponse token = getToken("T");
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -386,7 +386,7 @@ public class TurnServiceImpl implements TurnService {
 
         getApiTokenOfTurn();
         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=1");
-        TokenResponse token = getToken();
+        TokenResponse token = getToken("T");
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
             File f = new File(INVENTORY_FILE_PATH);
@@ -457,7 +457,7 @@ public class TurnServiceImpl implements TurnService {
 
     private void callTurnAPIInventory(HttpGet get, FileOutputStream fout) {
         try {
-            TokenResponse token = getToken();
+            TokenResponse token = getToken("T");
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);

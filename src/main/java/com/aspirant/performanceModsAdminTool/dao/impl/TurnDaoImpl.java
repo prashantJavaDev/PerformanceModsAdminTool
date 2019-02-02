@@ -40,14 +40,14 @@ public class TurnDaoImpl implements TurnDao {
 
     @Override
     public int updateTokenEntry(TokenResponse tokenResponse) {
-        String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=?;";
+        String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=? WHERE t.`TOKEN_API`='T';";
         return this.jdbcTemplate.update(sql, tokenResponse.getAccess_token(), tokenResponse.getExprires_in(), tokenResponse.getScope(), tokenResponse.getToken_type());
     }
 
     @Override
-    public TokenResponse getToken() {
+    public TokenResponse getToken(String apiType) {
         try {
-            String sql = "SELECT * FROM token t;";
+            String sql = "SELECT * FROM token t WHERE t.`TOKEN_API`=?;";
             return this.jdbcTemplate.queryForObject(sql, new RowMapper<TokenResponse>() {
 
                 @Override
@@ -59,7 +59,7 @@ public class TurnDaoImpl implements TurnDao {
                     t.setToken_type(rs.getString("TOKEN_TYPE"));
                     return t;
                 }
-            });
+            },apiType);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
