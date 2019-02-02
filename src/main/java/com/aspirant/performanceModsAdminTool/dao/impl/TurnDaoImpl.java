@@ -103,10 +103,10 @@ public class TurnDaoImpl implements TurnDao {
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
 
-            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+            String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_master_temp t ON t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "SET d.`ITEM_ID`=t.`ITEM_ID`\n"
-                    + "WHERE t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO`;";
+                    + "WHERE t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO` AND d.`WAREHOUSE_ID`='1'";
             this.jdbcTemplate.update(sql1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,10 +121,10 @@ public class TurnDaoImpl implements TurnDao {
             String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `ITEM_MAP`) ";
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
-            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+            String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_price_temp p ON p.`ITEM_ID`=d.`ITEM_ID`\n"
                     + "SET d.`MAP`=p.`ITEM_MAP`,d.`PRICE`=p.`ITEM_PURCHASE_COST`\n"
-                    + "WHERE p.`ITEM_ID`=d.`ITEM_ID`;";
+                    + "WHERE p.`ITEM_ID`=d.`ITEM_ID` AND d.`WAREHOUSE_ID`='1'";
             this.jdbcTemplate.update(sql1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,10 +140,10 @@ public class TurnDaoImpl implements TurnDao {
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
 
-            String sql1 = "UPDATE pm_warehouse_feed_data d\n"
+            String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_inventory_temp i ON i.`ITEM_ID`=d.`ITEM_ID`\n"
                     + "SET d.`QUANTITY`=i.`LOCATION_STOCK`\n"
-                    + "WHERE d.`ITEM_ID`=i.`ITEM_ID`;";
+                    + "WHERE d.`ITEM_ID`=i.`ITEM_ID` AND d.`WAREHOUSE_ID`='1'";
             this.jdbcTemplate.update(sql1);
         } catch (Exception e) {
             e.printStackTrace();
