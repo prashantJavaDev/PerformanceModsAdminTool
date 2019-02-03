@@ -118,7 +118,7 @@ public class TurnDaoImpl implements TurnDao {
     public int addPriceFile(String path) {
         try {
             this.jdbcTemplate.execute("TRUNCATE TABLE `item_price_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `ITEM_MAP`) ";
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `IS_MAP`, `ITEM_MAP`) ";
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
             String sql1 = "UPDATE pm_current_warehouse_product d\n"

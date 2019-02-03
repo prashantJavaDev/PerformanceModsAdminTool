@@ -18,8 +18,9 @@ import org.springframework.stereotype.Repository;
  * @author pk
  */
 @Repository
-public class PremierDaoImpl implements PremierDao{
-     private JdbcTemplate jdbcTemplate;
+public class PremierDaoImpl implements PremierDao {
+
+    private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
 
     @Autowired
@@ -31,7 +32,11 @@ public class PremierDaoImpl implements PremierDao{
     @Override
     public List<String> getFeedEntries() {
         try {
-           return new ArrayList<>();
+           List<String> list= new ArrayList<>();
+           list.add("BUB176757");
+           list.add("SKYB8507");
+           list.add("SKYM9592");
+           return list;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -42,11 +47,11 @@ public class PremierDaoImpl implements PremierDao{
     public int updateTokenOfPremier(String sessionToken) {
         try {
             String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=? WHERE t.`TOKEN_API`='P';";
-        return this.jdbcTemplate.update(sql, sessionToken);
+            return this.jdbcTemplate.update(sql, sessionToken);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
-    
+
 }

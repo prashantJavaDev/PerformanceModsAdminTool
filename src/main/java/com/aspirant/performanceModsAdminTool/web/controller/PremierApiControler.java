@@ -22,6 +22,12 @@ public class PremierApiControler {
     
     @RequestMapping("/premier/token.htm")
     public String getPremierToken(){
+        premierService.getSessionToken();
+        return "home/home";
+    }
+    @RequestMapping("/premier/inventory.htm")
+    public String getInventory(){
+        premierService.getInventory();
         return "home/home";
     }
     
