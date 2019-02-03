@@ -14,5 +14,6 @@ import java.util.List;
 public interface PremierDao {
 
     public List<String> getFeedEntries();
+
     public int updateTokenOfPremier(String sessionToken);
 }

@@ -41,11 +41,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class PremierServiceImpl implements PremierService {
 
-    private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/premier/IventoryAPIResponce.csv";
+//    private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/premier/IventoryAPIResponce.csv";
+    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/IventoryAPIResponce.csv";
     private final String INVENTORY_BASE_URL = "https://api.premierwd.com/api/v5/inventory?itemNumbers=";
     private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/premier/PriceAPIResponce.csv";
     private final String PRICE_BASE_URL = "https://api.premierwd.com/api/v5/pricing?itemNumbers=";
-    private final String API_KEY = "";
+    private final String API_KEY = "4f99608a-7690-4a9e-8a3a-ed6b13c24130";
 
     @Autowired
     PremierDao premierDao;
@@ -67,7 +68,7 @@ public class PremierServiceImpl implements PremierService {
             PremierTokenResponse resp = new Gson().fromJson(json, typeList);
             System.out.println("Resp-===" + resp);
             premierDao.updateTokenOfPremier(resp.getSessionToken());
-            sessionToken=resp.getSessionToken();
+            sessionToken = resp.getSessionToken();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,6 +78,7 @@ public class PremierServiceImpl implements PremierService {
     @Override
     public void getInventory() {
         try {
+            getSessionToken();
             File f = new File(INVENTORY_FILE_PATH);
             FileOutputStream fout = new FileOutputStream(f);
             executeParallel(4, INVENTORY_BASE_URL, fout, "INV");
@@ -101,8 +103,10 @@ public class PremierServiceImpl implements PremierService {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         final List<String> feedEntries = this.premierDao.getFeedEntries();
-        final int loopCount = Math.round(feedEntries.size() / times);
+        final int loopCount = Math.round(feedEntries.size() / times) == 0 ? 1 : Math.round(feedEntries.size() / times);
+        System.out.println("loop Count==" + loopCount);
         for (int i = 0; i < times; i++) {
+            System.out.println("In Count==" + i);
             final int start = (loopCount * i) + 1;
             final int cal = i;
             final FileOutputStream fout1 = fout;
@@ -113,18 +117,31 @@ public class PremierServiceImpl implements PremierService {
                 public void run() {
                     int count = 0;
                     StringBuilder sb = new StringBuilder();
-                    for (int j = start; j <= end; j++) {
+                    System.out.println("start==" + start);
+                    System.out.println("end==" + end);
+                    if ((end - start) > 50) {
+                        for (int j = start; j <= end; j++) {
 //                        callTurnAPI(get, fout1);
-                        sb.append(feedEntries.get(j));
-                        count++;
-                        if (count == 50) {
-                            HttpGet get = new HttpGet(url + sb);
-                            callPremierAPI(get, fout1, apiName);
-                            count = 0;
+                            sb.append(feedEntries.get(j));
+                            sb.append(",");
+                            count++;
+                            if (count == 50) {
+                                HttpGet get = new HttpGet(url + sb);
+                                callPremierAPI(get, fout1, apiName);
+                                count = 0;
+                            }
                         }
+                    } else {
+                        for (int j = start; j <= end; j++) {
+                            sb.append(feedEntries.get(j));
+                            sb.append(",");
+                        }
+                        HttpGet get = new HttpGet(url + sb.substring(0, sb.length() - 1));
+                        callPremierAPI(get, fout1, apiName);
                     }
                 }
             };
+            exec.submit(r);
         }
         exec.shutdown();
         while (!exec.isTerminated()) {
@@ -141,21 +158,22 @@ public class PremierServiceImpl implements PremierService {
             InputStream content = res.getEntity().getContent();
             String json = IOUtils.toString(content);
             if (res.getStatusLine().getStatusCode() == 200) {
-            if (apiName.equals("INV")) {
+                if (apiName.equals("INV")) {
 
-                Type typeList = new TypeToken<PremierInventoryApiResponse>() {
-                }.getType();
+                    Type typeList = new TypeToken<List<PremierInventoryResponse>>() {
+                    }.getType();
+                    System.out.println("Json==="+json);
+                    List<PremierInventoryResponse> resp = new Gson().fromJson(json, typeList);
+//                    List<PremierInventoryResponse> data = resp.g
+                    System.out.println("data==========" + resp);
+                } else if (apiName.equals("PRI")) {
+                    Type typeList = new TypeToken<List<PremierPriceResponse>>() {
+                    }.getType();
 
-                PremierInventoryApiResponse resp = new Gson().fromJson(json, typeList);
-                List<PremierInventoryResponse> data = resp.getData();
-            } else if (apiName.equals("PRI")) {
-                Type typeList = new TypeToken<PremierPriceApiResponse>() {
-                }.getType();
-
-                PremierPriceApiResponse resp = new Gson().fromJson(json, typeList);
-                List<PremierPriceResponse> data = resp.getData();
-            }
-            }else{
+                    List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
+//                    List<PremierPriceResponse> data = resp.getData();
+                }
+            } else {
                 getSessionToken();
                 callPremierAPI(get, fout, apiName);
             }
