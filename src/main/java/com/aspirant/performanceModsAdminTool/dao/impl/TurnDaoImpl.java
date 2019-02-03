@@ -59,7 +59,7 @@ public class TurnDaoImpl implements TurnDao {
                     t.setToken_type(rs.getString("TOKEN_TYPE"));
                     return t;
                 }
-            },apiType);
+            }, apiType);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

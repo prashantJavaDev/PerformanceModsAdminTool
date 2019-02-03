@@ -519,7 +519,7 @@ public class TurnServiceImpl implements TurnService {
 
     @Override
     public int addItemByFile() {
-        this.turnDao.addItemByFile("/home/altius/Videos/APIResponce.csv");
+        this.turnDao.addItemByFile("/home/pk/Videos/APIResponce.csv");
 //        this.turnDao.addItemByFile("/home/pk/Videos/APIResponsePrice.csv");
         return 0;
     }
