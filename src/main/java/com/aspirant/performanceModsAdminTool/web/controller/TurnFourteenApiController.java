@@ -29,21 +29,21 @@ public class TurnFourteenApiController {
     }
 
     @Scheduled(cron = "0 0 4 ? * SUN")
-//    @RequestMapping("turn/items.htm")
+    @RequestMapping("turn/items.htm")
     public void getitemsOfTurn() {
         turnService.getItems();
 //        return "home/home";
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
-//    @RequestMapping("turn/prices.htm")
+    @RequestMapping("turn/prices.htm")
     public void getPriceOfTurn() {
         turnService.getPrice();
         //return null;
     }
 
     @Scheduled(cron = "0 0 */3 * * *")
-//    @RequestMapping("turn/inventory.htm")
+    @RequestMapping("turn/inventory.htm")
     public void getInventoryOfTurn() {
         turnService.getInventory();
 //        return "home/home";
