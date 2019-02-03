@@ -20,7 +20,7 @@
     <context:annotation-config />
     
     <task:scheduler id="taskScheduler"/>
-    <task:executor id="taskExecutor" pool-size="1"/>
+    <task:executor id="taskExecutor" pool-size="4"/>
     <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
     
     <util:properties id="versionProperties" location="WEB-INF/version.properties"></util:properties>   

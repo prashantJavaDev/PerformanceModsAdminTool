@@ -8,6 +8,7 @@ package com.aspirant.performanceModsAdminTool.web.controller;
 import com.aspirant.performanceModsAdminTool.service.TurnService;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,22 +28,25 @@ public class TurnFourteenApiController {
         return "home/home";
     }
 
-    @RequestMapping("turn/items.htm")
-    public String getitemsOfTurn() {
+    @Scheduled(cron = "0 0 */3 * * *")
+//    @RequestMapping("turn/items.htm")
+    public void getitemsOfTurn() {
         turnService.getItems();
-        return "home/home";
+//        return "home/home";
     }
 
-    @RequestMapping("turn/prices.htm")
-    public String getPriceOfTurn() {
+    @Scheduled(cron = "0 0 12 * * ?")
+//    @RequestMapping("turn/prices.htm")
+    public void getPriceOfTurn() {
         turnService.getPrice();
-        return "home/home";
+        //return null;
     }
 
-    @RequestMapping("turn/inventory.htm")
-    public String getInventoryOfTurn() {
+    @Scheduled(cron = "0 0 */3 * * *")
+//    @RequestMapping("turn/inventory.htm")
+    public void getInventoryOfTurn() {
         turnService.getInventory();
-        return "home/home";
+//        return "home/home";
     }
 
     @RequestMapping("turn/token.htm")
