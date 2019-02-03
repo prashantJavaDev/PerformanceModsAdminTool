@@ -28,7 +28,7 @@ public class TurnFourteenApiController {
         return "home/home";
     }
 
-    @Scheduled(cron = "0 0 */3 * * *")
+    @Scheduled(cron = "0 0 4 ? * SUN")
 //    @RequestMapping("turn/items.htm")
     public void getitemsOfTurn() {
         turnService.getItems();
