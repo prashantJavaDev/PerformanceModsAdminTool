@@ -42,8 +42,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PremierServiceImpl implements PremierService {
 
-//    private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/premier/IventoryAPIResponce.csv";
-    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/IventoryAPIResponce.csv";
+    private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/premier/InventoryAPIResponce.csv";
+//    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/InventoryAPIResponce.csv";
     private final String INVENTORY_BASE_URL = "https://api.premierwd.com/api/v5/inventory?itemNumbers=";
     private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/premier/PriceAPIResponce.csv";
     private final String PRICE_BASE_URL = "https://api.premierwd.com/api/v5/pricing?itemNumbers=";
