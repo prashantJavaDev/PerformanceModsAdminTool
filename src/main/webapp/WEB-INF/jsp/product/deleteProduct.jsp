@@ -183,7 +183,6 @@
             });
 
             function functionchange(productId) {
-                alert("productId==" + productId);
                 $.ajax({
                     url: "../ajax/deleteProductByID.htm",
                     data: ({'productId': productId}),
