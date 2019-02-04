@@ -148,7 +148,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallel(process, fout);
+                executeParallel(process, fout,total_pages);
 //                executeParallel(1, fout);
 //                fout.close();
             }
@@ -163,12 +163,13 @@ public class TurnServiceImpl implements TurnService {
         return 0;
     }
 
-    public void executeParallel(int times, FileOutputStream fout) {
+    public void executeParallel(int times, FileOutputStream fout,int total_Pages) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
             final FileOutputStream fout1 = fout;
+            final int totalpages=total_Pages;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 100 + 1;
@@ -177,9 +178,11 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
                         System.out.println("Page NO======" + pageNo);
+                        if(pageNo<=totalpages){
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
                         callTurnAPI(get, fout1);
                         pageNo++;
+                        }
                     }
                 }
             };
@@ -273,7 +276,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallelForPrice(process, fout);
+                executeParallelForPrice(process, fout,total_pages);
                 fout.close();
             }
         } catch (Exception e) {
@@ -282,11 +285,12 @@ public class TurnServiceImpl implements TurnService {
 
     }
 
-    public void executeParallelForPrice(int times, FileOutputStream fout) {
+    public void executeParallelForPrice(int times, FileOutputStream fout,int total_pages) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
+            final int totalpages = total_pages;
             final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
@@ -296,10 +300,12 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
+                        if(pageNo<=totalpages){
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
                         callTurnAPIPrice(get, fout1);
                         pageNo++;
+                        }
                     }
                 }
             };
@@ -409,7 +415,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallelForInventory(process, fout);
+                executeParallelForInventory(process, fout,total_pages);
                 fout.close();
             }
         } catch (Exception e) {
@@ -418,11 +424,12 @@ public class TurnServiceImpl implements TurnService {
 
     }
 
-    public void executeParallelForInventory(int times, FileOutputStream fout) {
+    public void executeParallelForInventory(int times, FileOutputStream fout,int total_pages) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
+            final int totalpages = i;
             final FileOutputStream fout1 = fout;
             Runnable r;
             r = new Runnable() {
@@ -432,10 +439,12 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
+                        if(pageNo<=totalpages){
                         System.out.println("Page NO======" + pageNo);
                         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
                         callTurnAPIInventory(get, fout1);
                         pageNo++;
+                        }
                     }
                 }
             };

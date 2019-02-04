@@ -9,6 +9,7 @@ import com.aspirant.performanceModsAdminTool.dao.PremierDao;
 import com.aspirant.performanceModsAdminTool.dao.TurnDao;
 import com.aspirant.performanceModsAdminTool.model.DTO.ItemApiResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.LocationApiResponce;
+import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventory;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventoryApiResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventoryResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierPriceApiResponse;
@@ -62,11 +63,11 @@ public class PremierServiceImpl implements PremierService {
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
             String json = IOUtils.toString(content);
-            System.out.println("Jsono oadsand=======" + json);
+//            System.out.println("Jsono oadsand=======" + json);
             Type typeList = new TypeToken<PremierTokenResponse>() {
             }.getType();
             PremierTokenResponse resp = new Gson().fromJson(json, typeList);
-            System.out.println("Resp-===" + resp);
+//            System.out.println("Resp-===" + resp);
             premierDao.updateTokenOfPremier(resp.getSessionToken());
             sessionToken = resp.getSessionToken();
         } catch (Exception e) {
@@ -129,6 +130,7 @@ public class PremierServiceImpl implements PremierService {
                                 HttpGet get = new HttpGet(url + sb);
                                 callPremierAPI(get, fout1, apiName);
                                 count = 0;
+                                sb.setLength(0);
                             }
                         }
                     } else {
@@ -147,6 +149,14 @@ public class PremierServiceImpl implements PremierService {
         while (!exec.isTerminated()) {
 
         }
+        try {
+            fout.close();
+            this.premierDao.addInventoryFile(INVENTORY_FILE_PATH);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("All thead Finished");
+        System.out.println("Out Time" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
     }
 
     private void callPremierAPI(HttpGet get, FileOutputStream fout, String apiName) {
@@ -157,26 +167,62 @@ public class PremierServiceImpl implements PremierService {
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
             String json = IOUtils.toString(content);
+            System.out.println("res.getStatusLine().getStatusCode()====" + res.getStatusLine().getStatusCode());
             if (res.getStatusLine().getStatusCode() == 200) {
                 if (apiName.equals("INV")) {
-
                     Type typeList = new TypeToken<List<PremierInventoryResponse>>() {
                     }.getType();
-                    System.out.println("Json==="+json);
                     List<PremierInventoryResponse> resp = new Gson().fromJson(json, typeList);
-//                    List<PremierInventoryResponse> data = resp.g
-                    System.out.println("data==========" + resp);
+                    writeInInventoryFile(resp, fout);
                 } else if (apiName.equals("PRI")) {
                     Type typeList = new TypeToken<List<PremierPriceResponse>>() {
                     }.getType();
-
                     List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
-//                    List<PremierPriceResponse> data = resp.getData();
                 }
-            } else {
+            } else if (res.getStatusLine().getStatusCode() == 401) {
                 getSessionToken();
                 callPremierAPI(get, fout, apiName);
+            } else {
+                HttpResponse res1 = client.execute(get);
+                InputStream content1 = res1.getEntity().getContent();
+                String json1 = IOUtils.toString(content1);
+                System.out.println("res.getStatusLine().getStatusCode()22222222222====" + res.getStatusLine().getStatusCode());
+                if (res1.getStatusLine().getStatusCode() == 200) {
+                    if (apiName.equals("INV")) {
+                        Type typeList1 = new TypeToken<List<PremierInventoryResponse>>() {
+                        }.getType();
+                        List<PremierInventoryResponse> resp = new Gson().fromJson(json1, typeList1);
+                        writeInInventoryFile(resp, fout);
+                    } else if (apiName.equals("PRI")) {
+                        Type typeList = new TypeToken<List<PremierPriceResponse>>() {
+                        }.getType();
+
+                        List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeInInventoryFile(List<PremierInventoryResponse> data, FileOutputStream fout) {
+        System.out.println("size===" + data.size());
+        StringBuilder sb = new StringBuilder();
+        for (PremierInventoryResponse response : data) {
+            sb.append(response.getItemNumber());
+            sb.append(";");
+            List<PremierInventory> inventory = response.getInventory();
+            int sumOfInventory = 0;
+            for (PremierInventory premierInventory : inventory) {
+                sumOfInventory = sumOfInventory + premierInventory.getQuantityAvailable();
+            }
+            sb.append(sumOfInventory);
+            sb.append("\n");
+        }
+        byte[] bytes = sb.toString().getBytes();
+        try {
+            fout.write(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
