@@ -219,8 +219,8 @@ public class WarehouseDaoImpl implements WarehouseDao {
 //        this.jdbcTemplate.update(sqlString, warehouseId);
         //insert into pm_current_warehouse_product table only todays data
         sqlString = "REPLACE INTO pm_current_warehouse_product"
-                + " SELECT tp.PRODUCT_ID,:warehouseId,:feedId,tp.`MANUFACTURER_MPN`,tt.`PRICE`,tt.`QUANTITY`,COALESCE(tc.CONDITION_ID,1),"
-                + " tt.`WAREHOUSE_IDENTIFICATION_NO`,COALESCE(tt.`SHIPPING`,0),ROUND((tt.`PRICE`+COALESCE(tt.`SHIPPING`,0)),2),:createdDate,:createdBy,0,:createdDate,:createdBy"
+                + " SELECT tp.PRODUCT_ID,:warehouseId,:feedId,tp.`MANUFACTURER_MPN`,tp.`MAP`,tt.`PRICE`,tt.`QUANTITY`,COALESCE(tc.CONDITION_ID,1),"
+                + " tt.`WAREHOUSE_IDENTIFICATION_NO`,COALESCE(tt.`SHIPPING`,0),ROUND((tt.`PRICE`+COALESCE(tt.`SHIPPING`,0)),2),:createdDate,:createdBy,0,:createdDate,:createdBy,NULL"
                 + " FROM temp_table tt"
                 + " LEFT JOIN pm_product tp ON tp.`MANUFACTURER_MPN`=tt.`MPN` AND tt.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`"
                 + " LEFT JOIN pm_condition tc ON tc.CONDITION_DESC=UPPER(tt.CONDITION) "

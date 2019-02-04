@@ -29,8 +29,8 @@
         <li class="active">
             <a href="../home/home.htm"><span class="fa fa-home"></span> <span class="xn-text">Home</span></a>
         </li>
-        
-        
+
+
         <sec:authorize ifAnyGranted="ROLE_BF_RELOAD_APPLICATION,ROLE_BF_CREATE_USER,ROLE_BF_LIST_USER,ROLE_BF_CREATE_CATEGORY,ROLE_BF_ADD_WAREHOUSE,ROLE_BF_LIST_WAREHOUSE,ROLE_BF_ADD_MANUFACTURER,ROLE_BF_MAP_MANUFACTURER">
             <li class="xn-openable">
                 <a href="#" title="Admin"><span class="fa fa-user"></span><span class="xn-text">Admin</span></a>
@@ -121,59 +121,59 @@
                             </ul>
                         </li>
                     </sec:authorize>
-<!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE,ROLE_BF_LIST_MARKETPLACE">
-                        <li class="xn-openable">
-                            <a href="#"><span class="fa fa-shopping-cart"></span>Marketplace</a>
-                            <ul>
-                                <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE">
-                                    <li>
-                                        <a href="../admin/addMarketplace.htm"><span class="fa fa-plus"></span>Add Marketplace</a>
-                                    </li>
-                                </sec:authorize>
-                                <sec:authorize ifAnyGranted="ROLE_BF_LIST_MARKETPLACE">
-                                    <li>
-                                        <a href="../admin/listMarketplace.htm"><span class="fa fa-list-alt"></span>List Marketplace</a>
-                                    </li>
-                                </sec:authorize>
-
-                            </ul>
-                        </li>
-                    </sec:authorize>-->
-<!--                    <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
-                        <li class="xn-openable">
-                            <a href="#"><span class="fa fa-list-ol"></span>Listings</a>
-                            <ul>
-                                <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
-                                    <li><a href="../admin/addNewListing.htm"><span class="fa fa-plus"></span>Add New Listing</a></li>
-                                </sec:authorize>
-                            </ul>
-                        </li>
-                    </sec:authorize>-->
-<!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY,ROLE_BF_LIST_COMPANY">
-                        <li class="xn-openable">
-                            <a href="#"><span class="fa fa-globe"></span>Company</a>
-                            <ul>
-                                <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY">
-                                    <li><a href="../admin/addCompany.htm"><span class="fa fa-plus"></span>Add Company</a></li>
-                                </sec:authorize>
-                                <sec:authorize ifAnyGranted="ROLE_BF_LIST_COMPANY">
-                                    <li>
-                                        <a href="../admin/companyList.htm"><span class="fa fa-list-alt"></span>List Company</a>
-                                    </li>
-                                </sec:authorize>
-                            </ul>
-                        </li>
-                    </sec:authorize>-->
-<!--                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
-                        <li class="xn-openable">
-                            <a href="#"><span class="fa fa-money"></span>Accounting</a>
-                            <ul>
-                                <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
-                                    <li><a href="../admin/uploadInvoice.htm"><span class="fa fa-upload"></span>Invoice Upload</a></li>
-                                </sec:authorize>
-                            </ul>
-                        </li>
-                    </sec:authorize>-->
+                    <!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE,ROLE_BF_LIST_MARKETPLACE">
+                                            <li class="xn-openable">
+                                                <a href="#"><span class="fa fa-shopping-cart"></span>Marketplace</a>
+                                                <ul>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_MARKETPLACE">
+                                                        <li>
+                                                            <a href="../admin/addMarketplace.htm"><span class="fa fa-plus"></span>Add Marketplace</a>
+                                                        </li>
+                                                    </sec:authorize>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_LIST_MARKETPLACE">
+                                                        <li>
+                                                            <a href="../admin/listMarketplace.htm"><span class="fa fa-list-alt"></span>List Marketplace</a>
+                                                        </li>
+                                                    </sec:authorize>
+                    
+                                                </ul>
+                                            </li>
+                                        </sec:authorize>-->
+                    <!--                    <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
+                                            <li class="xn-openable">
+                                                <a href="#"><span class="fa fa-list-ol"></span>Listings</a>
+                                                <ul>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_CREATE_NEW_LISTINGS">
+                                                        <li><a href="../admin/addNewListing.htm"><span class="fa fa-plus"></span>Add New Listing</a></li>
+                                                    </sec:authorize>
+                                                </ul>
+                                            </li>
+                                        </sec:authorize>-->
+                    <!--                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY,ROLE_BF_LIST_COMPANY">
+                                            <li class="xn-openable">
+                                                <a href="#"><span class="fa fa-globe"></span>Company</a>
+                                                <ul>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_ADD_COMPANY">
+                                                        <li><a href="../admin/addCompany.htm"><span class="fa fa-plus"></span>Add Company</a></li>
+                                                    </sec:authorize>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_LIST_COMPANY">
+                                                        <li>
+                                                            <a href="../admin/companyList.htm"><span class="fa fa-list-alt"></span>List Company</a>
+                                                        </li>
+                                                    </sec:authorize>
+                                                </ul>
+                                            </li>
+                                        </sec:authorize>-->
+                    <!--                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
+                                            <li class="xn-openable">
+                                                <a href="#"><span class="fa fa-money"></span>Accounting</a>
+                                                <ul>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_INVOICE">
+                                                        <li><a href="../admin/uploadInvoice.htm"><span class="fa fa-upload"></span>Invoice Upload</a></li>
+                                                    </sec:authorize>
+                                                </ul>
+                                            </li>
+                                        </sec:authorize>-->
                 </ul>
             </li>
         </sec:authorize>
@@ -207,11 +207,11 @@
                             <a href="../product/missingProductDataList.htm"><span class="fa fa-edit"></span>Product Missing Data</a>
                         </li>
                     </sec:authorize>
-                    <sec:authorize ifAnyGranted="ROLE_BF_VIEW_DELETE_PRODUCT">
+                    -->                    <sec:authorize ifAnyGranted="ROLE_BF_VIEW_DELETE_PRODUCT">
                         <li>
                             <a href="../product/deleteProduct.htm"><span class="fa fa-eraser"></span>Delete Product</a>
                         </li>
-                    </sec:authorize>
+                    </sec:authorize><!--
                     <sec:authorize ifAnyGranted="ROLE_BF_MAP_ADMIN_TOOL_MPN">
                         <li>
                             <a href="../product/mapProduct.htm"><span class="fa fa-link"></span>Map Product</a>
@@ -270,7 +270,7 @@
                             <a href="../order/marketplaceOrderList.htm"><span class="fa fa-list-alt"></span>Order List</a>
                         </li>
                     </sec:authorize>
-                     <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
+                    <sec:authorize ifAnyGranted="ROLE_BF_SUPER">
                         <li>
                             <a href="../order/marketplaceOrderUpload.htm"><span class="fa fa-upload"></span>MarketPlace Orders Upload</a>
                         </li>
@@ -300,11 +300,11 @@
             <li class="xn-openable">
                 <a href="#" title="Website"><span class="fa fa-globe"></span><span class="xn-text">Website</span></a>
                 <ul>
-<!--                     <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_FOR_WEBSITE">
-                        <li>
-                            <a href="../website/uploadWebsiteProduct.htm"><span class="fa fa-upload"></span>Upload Products for website</a>
-                        </li>
-                    </sec:authorize>-->
+                    <!--                     <sec:authorize ifAnyGranted="ROLE_BF_UPLOAD_FOR_WEBSITE">
+                                            <li>
+                                                <a href="../website/uploadWebsiteProduct.htm"><span class="fa fa-upload"></span>Upload Products for website</a>
+                                            </li>
+                                        </sec:authorize>-->
                     <sec:authorize ifAnyGranted="ROLE_BF_DOWNLOAD_WEBSITE_PRODUCT">
                         <li>
                             <a href="../product/downloadProduct.htm"><span class="fa fa-download"></span>Download Product</a>
