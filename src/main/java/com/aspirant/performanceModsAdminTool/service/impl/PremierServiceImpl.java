@@ -9,6 +9,7 @@ import com.aspirant.performanceModsAdminTool.dao.PremierDao;
 import com.aspirant.performanceModsAdminTool.dao.TurnDao;
 import com.aspirant.performanceModsAdminTool.model.DTO.ItemApiResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.LocationApiResponce;
+import com.aspirant.performanceModsAdminTool.model.DTO.PremierCountryPrice;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventory;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventoryApiResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.PremierInventoryResponse;
@@ -46,6 +47,7 @@ public class PremierServiceImpl implements PremierService {
 //    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/InventoryAPIResponce.csv";
     private final String INVENTORY_BASE_URL = "https://api.premierwd.com/api/v5/inventory?itemNumbers=";
     private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/premier/PriceAPIResponce.csv";
+//    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/premier/PriceAPIResponce.csv";
     private final String PRICE_BASE_URL = "https://api.premierwd.com/api/v5/pricing?itemNumbers=";
     private final String API_KEY = "4f99608a-7690-4a9e-8a3a-ed6b13c24130";
 
@@ -151,7 +153,11 @@ public class PremierServiceImpl implements PremierService {
         }
         try {
             fout.close();
-            this.premierDao.addInventoryFile(INVENTORY_FILE_PATH);
+            if (apiName.equals("INV")) {
+                this.premierDao.addInventoryFile(INVENTORY_FILE_PATH);
+            } else if (apiName.equals("PRI")) {
+                this.premierDao.addPriceFile(PRICE_FILE_PATH);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,6 +184,8 @@ public class PremierServiceImpl implements PremierService {
                     Type typeList = new TypeToken<List<PremierPriceResponse>>() {
                     }.getType();
                     List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
+//                    System.out.println("daatatta====" + resp);
+                    writeInPriceFile(resp, fout);
                 }
             } else if (res.getStatusLine().getStatusCode() == 401) {
                 getSessionToken();
@@ -198,6 +206,8 @@ public class PremierServiceImpl implements PremierService {
                         }.getType();
 
                         List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
+//                        System.out.println("daatatta====" + resp);
+                        writeInPriceFile(resp, fout);
                     }
                 }
             }
@@ -218,6 +228,31 @@ public class PremierServiceImpl implements PremierService {
                 sumOfInventory = sumOfInventory + premierInventory.getQuantityAvailable();
             }
             sb.append(sumOfInventory);
+            sb.append("\n");
+        }
+        byte[] bytes = sb.toString().getBytes();
+        try {
+            fout.write(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeInPriceFile(List<PremierPriceResponse> data, FileOutputStream fout) {
+        System.out.println("size===" + data.size());
+        StringBuilder sb = new StringBuilder();
+        for (PremierPriceResponse response : data) {
+
+            sb.append(response.getItemNumber());
+            sb.append(";");
+            List<PremierCountryPrice> pricing = response.getPricing();
+            for (PremierCountryPrice pr : pricing) {
+                if (pr.getCurrency().equals("USD")) {
+                    sb.append(pr.getCost());
+                    sb.append(";");
+                    sb.append(pr.getMap());
+                }
+            }
             sb.append("\n");
         }
         byte[] bytes = sb.toString().getBytes();

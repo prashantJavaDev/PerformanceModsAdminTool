@@ -32,7 +32,7 @@ public class PremierDaoImpl implements PremierDao {
     @Override
     public List<String> getFeedEntries() {
         try {
-            String sql = "SELECT t.`WAREHOUSE_IDENTIFICATION_NO` FROM pm_current_warehouse_product t WHERE t.`WAREHOUSE_ID`='7'";
+            String sql = "SELECT t.`WAREHOUSE_IDENTIFICATION_NO` FROM pm_current_warehouse_product t WHERE t.`WAREHOUSE_ID`='7' ";
             return this.jdbcTemplate.queryForList(sql, String.class);
 
 //           List<String> list= new ArrayList<>();
@@ -67,6 +67,25 @@ public class PremierDaoImpl implements PremierDao {
             String sql1 = "UPDATE pm_current_warehouse_product t \n"
                     + "LEFT JOIN premier_inventory_temp p ON p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "SET t.`QUANTITY`=p.QTY\n"
+                    + "WHERE p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
+                    + "AND t.`WAREHOUSE_ID`=7;";
+            this.jdbcTemplate.update(sql1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int addPriceFile(String path) {
+        try {
+            this.jdbcTemplate.execute("TRUNCATE TABLE `premier_price_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`premier_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ';' LINES TERMINATED BY '\\n' (`ITEM_NO`,`PRICE`, `MAP`) ";
+
+            this.jdbcTemplate.execute(sql);
+            String sql1 = "UPDATE pm_current_warehouse_product t \n"
+                    + "LEFT JOIN premier_price_temp p ON p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
+                    + "SET t.`PRICE`=p.`PRICE`,t.`MAP`=p.`MAP`\n"
                     + "WHERE p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "AND t.`WAREHOUSE_ID`=7;";
             this.jdbcTemplate.update(sql1);

@@ -30,5 +30,10 @@ public class PremierApiControler {
         premierService.getInventory();
         return "home/home";
     }
+    @RequestMapping("/premier/price.htm")
+    public String getPrice(){
+        premierService.getPrice();
+        return "home/home";
+    }
     
 }

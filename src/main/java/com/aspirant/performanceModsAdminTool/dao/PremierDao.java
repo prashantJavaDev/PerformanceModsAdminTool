@@ -18,4 +18,5 @@ public interface PremierDao {
     public int updateTokenOfPremier(String sessionToken);
 
     public int addInventoryFile(String path);
+    public int addPriceFile(String path);
 }
