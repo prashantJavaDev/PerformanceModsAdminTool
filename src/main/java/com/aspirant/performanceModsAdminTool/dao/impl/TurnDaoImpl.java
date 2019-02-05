@@ -39,9 +39,14 @@ public class TurnDaoImpl implements TurnDao {
     }
 
     @Override
-    public int updateTokenEntry(TokenResponse tokenResponse) {
+    public int updateTokenEntry(TokenResponse tokenResponse,int warehouseId) {
+        if(warehouseId==1){
         String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=? WHERE t.`TOKEN_API`='T';";
         return this.jdbcTemplate.update(sql, tokenResponse.getAccess_token(), tokenResponse.getExprires_in(), tokenResponse.getScope(), tokenResponse.getToken_type());
+        }else{
+        String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=?,t.`EXPIRES_IN`=?,t.`SCOPE`=?,t.`TOKEN_TYPE`=? WHERE t.`TOKEN_API`='T2';";
+        return this.jdbcTemplate.update(sql, tokenResponse.getAccess_token(), tokenResponse.getExprires_in(), tokenResponse.getScope(), tokenResponse.getToken_type());
+        }
     }
 
     @Override

@@ -54,18 +54,24 @@ public class TurnServiceImpl implements TurnService {
 //   private  int  pageNo=0;
 
 //    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
-    private final String ITEM_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponce.csv";  
+    private final String ITEM_FILE_PATH = "/home/ubuntu/performanceMods/turn14/APIResponce.csv";
 //    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
-    private final String PRICE_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";  
+    private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";
 //    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
-    private final String INVENTORY_FILE_PATH="/home/ubuntu/performanceMods/turn14/APIResponseInventory.csv";  
+    private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/turn14/APIResponseInventory.csv";
+//    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
+    private final String ITEM_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponce2.csv";
+//    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
+    private final String PRICE_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponsePrice2.csv";
+//    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
+    private final String INVENTORY_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponseInventory2.csv";
 
     @Autowired
     TurnDao turnDao;
 
     @Override
-    public int updateTokenEntry(TokenResponse tokenResponse) {
-        return turnDao.updateTokenEntry(tokenResponse);
+    public int updateTokenEntry(TokenResponse tokenResponse, int warehouseId) {
+        return turnDao.updateTokenEntry(tokenResponse, warehouseId);
     }
 
     @Override
@@ -74,13 +80,18 @@ public class TurnServiceImpl implements TurnService {
     }
 
     @Override
-    public void getApiTokenOfTurn() {
+    public void getApiTokenOfTurn(int warehouseId) {
         HttpPost post = new HttpPost("https://api.turn14.com/v1/token");
 //        post.setHeader("Content-type", "application/json");
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("grant_type", "client_credentials"));
-        pairs.add(new BasicNameValuePair("client_id", "4f4cb12a9ff2d0433f4304809cad2e956fb6900f"));
-        pairs.add(new BasicNameValuePair("client_secret", "589a422699942aad13ccc844f6155ec5489c8ff3"));
+        if (warehouseId == 1) {
+            pairs.add(new BasicNameValuePair("client_id", "4f4cb12a9ff2d0433f4304809cad2e956fb6900f"));
+            pairs.add(new BasicNameValuePair("client_secret", "589a422699942aad13ccc844f6155ec5489c8ff3"));
+        } else if (warehouseId == 8) {
+            pairs.add(new BasicNameValuePair("client_id", "32f6f5938f142ff216081b367ce42b9eb217ab84"));
+            pairs.add(new BasicNameValuePair("client_secret", "11ff12352b7d682316ce677708f6e268b1cad241"));
+        }
         try {
             post.setEntity(new UrlEncodedFormEntity(pairs));
             HttpClient client = new DefaultHttpClient();
@@ -91,7 +102,8 @@ public class TurnServiceImpl implements TurnService {
             }.getType();
             if (res.getStatusLine().getStatusCode() == 200) {
                 TokenResponse t = new Gson().fromJson(json, typeList);
-                updateTokenEntry(t);
+
+                updateTokenEntry(t, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +112,7 @@ public class TurnServiceImpl implements TurnService {
 
     @Override
     public void getLocation() {
-        getApiTokenOfTurn();
+//        getApiTokenOfTurn();
         HttpGet get = new HttpGet("https://api.turn14.com/v1/locations");
         TokenResponse token = getToken("T");
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
@@ -122,13 +134,23 @@ public class TurnServiceImpl implements TurnService {
     }
 
     @Override
-    public void getItems() {
-        getApiTokenOfTurn();
+    public void getItems(int warehouseId) {
+        getApiTokenOfTurn(warehouseId);
         HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=1");
-        TokenResponse token = getToken("T");
+        TokenResponse token = null;
+        if (warehouseId == 1) {
+            token = getToken("T");
+        } else if (warehouseId == 8) {
+            token = getToken("T2");
+        }
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            File f = new File(ITEM_FILE_PATH);
+            File f = null;
+            if (warehouseId == 1) {
+                f = new File(ITEM_FILE_PATH);
+            } else {
+                f = new File(ITEM_FILE_PATH2);
+            }
             FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -148,7 +170,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallel(process, fout,total_pages);
+                executeParallel(process, fout, total_pages, warehouseId);
 //                executeParallel(1, fout);
 //                fout.close();
             }
@@ -163,13 +185,14 @@ public class TurnServiceImpl implements TurnService {
         return 0;
     }
 
-    public void executeParallel(int times, FileOutputStream fout,int total_Pages) {
+    public void executeParallel(int times, FileOutputStream fout, int total_Pages, int warehouseId) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
             final FileOutputStream fout1 = fout;
-            final int totalpages=total_Pages;
+            final int totalpages = total_Pages;
+            final int wID = warehouseId;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 100 + 1;
@@ -178,10 +201,10 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
                         System.out.println("Page NO======" + pageNo);
-                        if(pageNo<=totalpages){
-                        HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
-                        callTurnAPI(get, fout1);
-                        pageNo++;
+                        if (pageNo <= totalpages) {
+                            HttpGet get = new HttpGet("https://api.turn14.com/v1/items?page=" + pageNo);
+                            callTurnAPI(get, fout1, wID);
+                            pageNo++;
                         }
                     }
                 }
@@ -194,7 +217,11 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
-            this.turnDao.addItemByFile(ITEM_FILE_PATH);
+            if (warehouseId == 1) {
+                this.turnDao.addItemByFile(ITEM_FILE_PATH);
+            } else {
+                this.turnDao.addItemByFile(ITEM_FILE_PATH2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,9 +229,15 @@ public class TurnServiceImpl implements TurnService {
         System.out.println("Out Time" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
     }
 
-    private void callTurnAPI(HttpGet get, FileOutputStream fout) {
+    private void callTurnAPI(HttpGet get, FileOutputStream fout, int warehouseId) {
         try {
-            TokenResponse token = getToken("T");
+//            TokenResponse token = getToken("T");
+            TokenResponse token = null;
+            if (warehouseId == 1) {
+                token = getToken("T");
+            } else if (warehouseId == 8) {
+                token = getToken("T2");
+            }
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -220,8 +253,8 @@ public class TurnServiceImpl implements TurnService {
                 writeInFile(data, fout);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
-                getApiTokenOfTurn();
-                callTurnAPI(get, fout);
+                getApiTokenOfTurn(warehouseId);
+                callTurnAPI(get, fout, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -249,14 +282,27 @@ public class TurnServiceImpl implements TurnService {
     }
 
     @Override
-    public void getPrice() {
+    public void getPrice(int warehouseId) {
 
-        getApiTokenOfTurn();
+        getApiTokenOfTurn(warehouseId);
         HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=1");
-        TokenResponse token = getToken("T");
+//        TokenResponse token = getToken("T");
+        TokenResponse token = null;
+        if (warehouseId == 1) {
+            token = getToken("T");
+        } else if (warehouseId == 8) {
+            token = getToken("T2");
+        }
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            File f = new File(PRICE_FILE_PATH);
+//            File f = new File(PRICE_FILE_PATH);
+
+            File f = null;
+            if (warehouseId == 1) {
+                f = new File(PRICE_FILE_PATH);
+            } else {
+                f = new File(PRICE_FILE_PATH2);
+            }
             FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -276,7 +322,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallelForPrice(process, fout,total_pages);
+                executeParallelForPrice(process, fout, total_pages, warehouseId);
                 fout.close();
             }
         } catch (Exception e) {
@@ -285,13 +331,14 @@ public class TurnServiceImpl implements TurnService {
 
     }
 
-    public void executeParallelForPrice(int times, FileOutputStream fout,int total_pages) {
+    public void executeParallelForPrice(int times, FileOutputStream fout, int total_pages, int warehouseId) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
             final int totalpages = total_pages;
             final FileOutputStream fout1 = fout;
+            final int wId = warehouseId;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 100 + 1;
@@ -300,11 +347,11 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
-                        if(pageNo<=totalpages){
-                        System.out.println("Page NO======" + pageNo);
-                        HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
-                        callTurnAPIPrice(get, fout1);
-                        pageNo++;
+                        if (pageNo <= totalpages) {
+                            System.out.println("Page NO======" + pageNo);
+                            HttpGet get = new HttpGet("https://api.turn14.com/v1/pricing?page=" + pageNo);
+                            callTurnAPIPrice(get, fout1, wId);
+                            pageNo++;
                         }
                     }
                 }
@@ -317,7 +364,11 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
-            this.turnDao.addPriceFile(PRICE_FILE_PATH);
+            if (warehouseId == 1) {
+                this.turnDao.addPriceFile(PRICE_FILE_PATH);
+            } else {
+                this.turnDao.addPriceFile(PRICE_FILE_PATH2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -325,9 +376,15 @@ public class TurnServiceImpl implements TurnService {
         System.out.println("Out Time" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
     }
 
-    private void callTurnAPIPrice(HttpGet get, FileOutputStream fout) {
+    private void callTurnAPIPrice(HttpGet get, FileOutputStream fout, int warehouseId) {
         try {
-            TokenResponse token = getToken("T");
+//            TokenResponse token = getToken("T");
+            TokenResponse token = null;
+            if (warehouseId == 1) {
+                token = getToken("T");
+            } else if (warehouseId == 8) {
+                token = getToken("T2");
+            }
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -343,8 +400,8 @@ public class TurnServiceImpl implements TurnService {
                 writeInFilePrice(data, fout);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
-                getApiTokenOfTurn();
-                callTurnAPIPrice(get, fout);
+                getApiTokenOfTurn(warehouseId);
+                callTurnAPIPrice(get, fout, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -388,14 +445,26 @@ public class TurnServiceImpl implements TurnService {
     }
 
     @Override
-    public void getInventory() {
+    public void getInventory(int warehouseId) {
 
-        getApiTokenOfTurn();
+        getApiTokenOfTurn(warehouseId);
         HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=1");
-        TokenResponse token = getToken("T");
+//        TokenResponse token = getToken("T");
+        TokenResponse token = null;
+        if (warehouseId == 1) {
+            token = getToken("T");
+        } else if (warehouseId == 8) {
+            token = getToken("T2");
+        }
         get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
         try {
-            File f = new File(INVENTORY_FILE_PATH);
+//            File f = new File(INVENTORY_FILE_PATH);
+            File f = null;
+            if (warehouseId == 1) {
+                f = new File(INVENTORY_FILE_PATH);
+            } else {
+                f = new File(INVENTORY_FILE_PATH2);
+            }
             FileOutputStream fout = new FileOutputStream(f);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -415,7 +484,7 @@ public class TurnServiceImpl implements TurnService {
                 System.out.println("toalpages==" + total_pages);
                 int process = Math.round(total_pages / 100) + 1;
                 System.out.println("process==" + process);
-                executeParallelForInventory(process, fout,total_pages);
+                executeParallelForInventory(process, fout, total_pages, warehouseId);
                 fout.close();
             }
         } catch (Exception e) {
@@ -424,13 +493,14 @@ public class TurnServiceImpl implements TurnService {
 
     }
 
-    public void executeParallelForInventory(int times, FileOutputStream fout,int total_pages) {
+    public void executeParallelForInventory(int times, FileOutputStream fout, int total_pages, int warehouseId) {
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
         for (int i = 0; i < times; i++) {
             final int cal = i;
             final int totalpages = i;
             final FileOutputStream fout1 = fout;
+            final int wId = warehouseId;
             Runnable r;
             r = new Runnable() {
                 int pageNo = cal * 100 + 1;
@@ -439,11 +509,11 @@ public class TurnServiceImpl implements TurnService {
                 public void run() {
                     for (int j = 0; j < 100; j++) {
 //                    for (int j = 0; j < 1; j++) {
-                        if(pageNo<=totalpages){
-                        System.out.println("Page NO======" + pageNo);
-                        HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
-                        callTurnAPIInventory(get, fout1);
-                        pageNo++;
+                        if (pageNo <= totalpages) {
+                            System.out.println("Page NO======" + pageNo);
+                            HttpGet get = new HttpGet("https://api.turn14.com/v1/inventory?page=" + pageNo);
+                            callTurnAPIInventory(get, fout1, wId);
+                            pageNo++;
                         }
                     }
                 }
@@ -456,7 +526,11 @@ public class TurnServiceImpl implements TurnService {
         }
         try {
             fout.close();
-            this.turnDao.addInventoryFile(INVENTORY_FILE_PATH);
+            if (warehouseId == 1) {
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH);
+            } else {
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH2);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -464,9 +538,16 @@ public class TurnServiceImpl implements TurnService {
         System.out.println("Out Time" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
     }
 
-    private void callTurnAPIInventory(HttpGet get, FileOutputStream fout) {
+    private void callTurnAPIInventory(HttpGet get, FileOutputStream fout, int warehouseId) {
         try {
-            TokenResponse token = getToken("T");
+//            TokenResponse token = getToken("T");
+            TokenResponse token = null;
+            if (warehouseId == 1) {
+                token = getToken("T");
+            } else if (warehouseId == 8) {
+                token = getToken("T2");
+            }
+
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
@@ -482,8 +563,8 @@ public class TurnServiceImpl implements TurnService {
                 writeInFileInventory(data, fout);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
-                getApiTokenOfTurn();
-                callTurnAPIPrice(get, fout);
+                getApiTokenOfTurn(warehouseId);
+                callTurnAPIInventory(get, fout, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
