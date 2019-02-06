@@ -31,27 +31,45 @@ public class TurnFourteenApiController {
     @Scheduled(cron = "0 0 4 ? * SUN")
     @RequestMapping("turn/items.htm")
     public void getitemsOfTurn() {
-        turnService.getItems();
+        turnService.getItems(1);
+//        return "home/home";
+    }
+//    @Scheduled(cron = "0 0 4 ? * SUN")
+    @RequestMapping("turn/itemsT2.htm")
+    public void getitemsOfTurnt2() {
+        turnService.getItems(8);
 //        return "home/home";
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
     @RequestMapping("turn/prices.htm")
     public void getPriceOfTurn() {
-        turnService.getPrice();
+        turnService.getPrice(1);
+        //return null;
+    }
+//    @Scheduled(cron = "0 0 12 * * ?")
+    @RequestMapping("turn/pricesT2.htm")
+    public void getPriceOfTurnT2() {
+        turnService.getPrice(8);
         //return null;
     }
 
     @Scheduled(cron = "0 0 */3 * * *")
     @RequestMapping("turn/inventory.htm")
     public void getInventoryOfTurn() {
-        turnService.getInventory();
+        turnService.getInventory(1);
+//        return "home/home";
+    }
+//    @Scheduled(cron = "0 0 */3 * * *")
+    @RequestMapping("turn/inventoryT2.htm")
+    public void getInventoryOfTurnT2() {
+        turnService.getInventory(8);
 //        return "home/home";
     }
 
     @RequestMapping("turn/token.htm")
     public String gettokenOfTurn() {
-        turnService.getApiTokenOfTurn();
+        turnService.getApiTokenOfTurn(1);
         return "home/home";
     }
 

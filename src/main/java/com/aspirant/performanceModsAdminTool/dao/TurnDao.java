@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface TurnDao {
 
-    public int updateTokenEntry(TokenResponse tokenResponse);
+    public int updateTokenEntry(TokenResponse tokenResponse,int warehouseId);
 
     public TokenResponse getToken(String apiType);
 

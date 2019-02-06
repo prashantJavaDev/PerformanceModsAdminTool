@@ -15,19 +15,19 @@ import java.util.List;
  */
 public interface TurnService {
 
-    public int updateTokenEntry(TokenResponse tokenResponse);
+    public int updateTokenEntry(TokenResponse tokenResponse,int warehouseId);
 
     public TokenResponse getToken(String apiType);
 
-    public void getApiTokenOfTurn();
+    public void getApiTokenOfTurn(int warehouseId);
 
     public void getLocation();
 
-    public void getItems();
+    public void getItems(int warehouseId);
 
-    public void getPrice();
+    public void getPrice(int warehouseId);
 
-    public void getInventory();
+    public void getInventory(int warehouseId);
 
     public int addItem(List<ItemResponse> data);
 
