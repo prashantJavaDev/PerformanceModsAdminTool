@@ -28,7 +28,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @Scheduled(cron = "0 */3 * * * *")
+//    @Scheduled(cron = "0 */3 * * * *")
 
     @RequestMapping(value = "order/getOrderList.htm", method = RequestMethod.GET)
     public void getOrderList() {
