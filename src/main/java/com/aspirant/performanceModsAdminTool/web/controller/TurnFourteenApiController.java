@@ -34,7 +34,7 @@ public class TurnFourteenApiController {
         turnService.getItems(1);
 //        return "home/home";
     }
-//    @Scheduled(cron = "0 0 4 ? * SUN")
+    @Scheduled(cron = "0 0 5 ? * SUN")
     @RequestMapping("turn/itemsT2.htm")
     public void getitemsOfTurnt2() {
         turnService.getItems(8);
@@ -47,7 +47,7 @@ public class TurnFourteenApiController {
         turnService.getPrice(1);
         //return null;
     }
-//    @Scheduled(cron = "0 0 12 * * ?")
+    @Scheduled(cron = "0 0 11 * * ?")
     @RequestMapping("turn/pricesT2.htm")
     public void getPriceOfTurnT2() {
         turnService.getPrice(8);
@@ -60,7 +60,7 @@ public class TurnFourteenApiController {
         turnService.getInventory(1);
 //        return "home/home";
     }
-//    @Scheduled(cron = "0 0 */3 * * *")
+    @Scheduled(cron = "0 0 */4 * * *")
     @RequestMapping("turn/inventoryT2.htm")
     public void getInventoryOfTurnT2() {
         turnService.getInventory(8);

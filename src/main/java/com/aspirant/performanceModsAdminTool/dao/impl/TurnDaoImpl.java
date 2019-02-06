@@ -101,18 +101,18 @@ public class TurnDaoImpl implements TurnDao {
     }
 
     @Override
-    public int addItemByFile(String path) {
+    public int addItemByFile(String path,int warehouseId) {
         try {
-            this.jdbcTemplate.execute("TRUNCATE TABLE `item_master_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_master_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `PART_NUMBER`, `MFR_PART_NUMBER`, `BRAND`) ";
+            this.jdbcTemplate.update("DELETE FROM item_master_temp  WHERE API_ID=?",warehouseId);
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_master_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `PART_NUMBER`, `MFR_PART_NUMBER`, `BRAND`, `API_ID`) ";
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
 
             String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_master_temp t ON t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "SET d.`ITEM_ID`=t.`ITEM_ID`\n"
-                    + "WHERE t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO` AND d.`WAREHOUSE_ID`='1'";
-            this.jdbcTemplate.update(sql1);
+                    + "WHERE t.`PART_NUMBER`=d.`WAREHOUSE_IDENTIFICATION_NO` AND d.`WAREHOUSE_ID`=? AND t.`API_ID`=?";
+            this.jdbcTemplate.update(sql1,warehouseId,warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,17 +120,18 @@ public class TurnDaoImpl implements TurnDao {
     }
 
     @Override
-    public int addPriceFile(String path) {
+    public int addPriceFile(String path,int warehouseId) {
         try {
-            this.jdbcTemplate.execute("TRUNCATE TABLE `item_price_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `IS_MAP`, `ITEM_MAP`) ";
+            this.jdbcTemplate.update("DELETE FROM item_price_temp  WHERE API_ID=?",warehouseId);
+//            this.jdbcTemplate.execute("TRUNCATE TABLE `item_price_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `ITEM_PURCHASE_COST`, `IS_MAP`, `ITEM_MAP`, `API_ID`) ";
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
             String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_price_temp p ON p.`ITEM_ID`=d.`ITEM_ID`\n"
                     + "SET d.`MAP`=p.`ITEM_MAP`,d.`PRICE`=p.`ITEM_PURCHASE_COST`\n"
-                    + "WHERE p.`ITEM_ID`=d.`ITEM_ID` AND d.`WAREHOUSE_ID`='1'";
-            this.jdbcTemplate.update(sql1);
+                    + "WHERE p.`ITEM_ID`=d.`ITEM_ID` AND d.`WAREHOUSE_ID`=? AND p.`API_ID`=?";
+            this.jdbcTemplate.update(sql1,warehouseId,warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,18 +139,19 @@ public class TurnDaoImpl implements TurnDao {
     }
 
     @Override
-    public int addInventoryFile(String path) {
+    public int addInventoryFile(String path,int warehouseId) {
         try {
-            this.jdbcTemplate.execute("TRUNCATE TABLE `item_inventory_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_inventory_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `LOCATION_STOCK`, `STOCK`) ";
+            this.jdbcTemplate.update("DELETE FROM item_inventory_temp  WHERE API_ID=?",warehouseId);
+//            this.jdbcTemplate.execute("TRUNCATE TABLE `item_inventory_temp`");
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`item_inventory_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ',' LINES TERMINATED BY '\\n' (`ITEM_ID`, `ITEM_TYPE`, `LOCATION_STOCK`, `STOCK`, `API_ID`) ";
 //            "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_table` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES 
             this.jdbcTemplate.execute(sql);
 
             String sql1 = "UPDATE pm_current_warehouse_product d\n"
                     + "LEFT JOIN item_inventory_temp i ON i.`ITEM_ID`=d.`ITEM_ID`\n"
                     + "SET d.`QUANTITY`=i.`LOCATION_STOCK`\n"
-                    + "WHERE d.`ITEM_ID`=i.`ITEM_ID` AND d.`WAREHOUSE_ID`='1'";
-            this.jdbcTemplate.update(sql1);
+                    + "WHERE d.`ITEM_ID`=i.`ITEM_ID` AND d.`WAREHOUSE_ID`=? AND i.`API_ID`=?";
+            this.jdbcTemplate.update(sql1,warehouseId,warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }

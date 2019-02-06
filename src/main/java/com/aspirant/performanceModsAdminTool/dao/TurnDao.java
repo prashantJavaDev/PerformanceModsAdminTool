@@ -21,10 +21,10 @@ public interface TurnDao {
 
     public int addItem(List<ItemResponse> data);
 
-    public int addItemByFile(String path);
+    public int addItemByFile(String path,int warehouseId);
 
-    public int addPriceFile(String path);
+    public int addPriceFile(String path,int warehouseId);
 
-    public int addInventoryFile(String path);
+    public int addInventoryFile(String path,int warehouseId);
 
 }

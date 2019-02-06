@@ -59,11 +59,11 @@ public class TurnServiceImpl implements TurnService {
     private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/turn14/APIResponsePrice.csv";
 //    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
     private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/turn14/APIResponseInventory.csv";
-//    private final String ITEM_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponce.csv";
+//    private final String ITEM_FILE_PATH2 = "/home/pk/performanceMods/turn14/APIResponce2.csv";
     private final String ITEM_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponce2.csv";
-//    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponsePrice.csv";
+//    private final String PRICE_FILE_PATH2 = "/home/pk/performanceMods/turn14/APIResponsePrice2.csv";
     private final String PRICE_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponsePrice2.csv";
-//    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/turn14/APIResponseInventory.csv";
+//    private final String INVENTORY_FILE_PATH2 = "/home/pk/performanceMods/turn14/APIResponseInventory2.csv";
     private final String INVENTORY_FILE_PATH2 = "/home/ubuntu/performanceMods/turn14/APIResponseInventory2.csv";
 
     @Autowired
@@ -218,9 +218,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addItemByFile(ITEM_FILE_PATH);
+                this.turnDao.addItemByFile(ITEM_FILE_PATH,warehouseId);
             } else {
-                this.turnDao.addItemByFile(ITEM_FILE_PATH2);
+                this.turnDao.addItemByFile(ITEM_FILE_PATH2,warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -250,7 +250,7 @@ public class TurnServiceImpl implements TurnService {
                 List<ItemResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFile(data, fout);
+                writeInFile(data, fout,warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -261,7 +261,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFile(List<ItemResponse> data, FileOutputStream fout) {
+    private void writeInFile(List<ItemResponse> data, FileOutputStream fout,int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -270,7 +270,7 @@ public class TurnServiceImpl implements TurnService {
             for (ItemResponse i : data) {
                 count++;
                 ItemAttributes a = i.getAttributes();
-                String str = i.getId() + "," + i.getType() + "," + a.getPart_number() + "," + a.getMfr_part_number() + "," + a.getBrand() + "\n";
+                String str = i.getId() + "," + i.getType() + "," + a.getPart_number() + "," + a.getMfr_part_number() + "," + a.getBrand() +","+warehouseId+ "\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -365,9 +365,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addPriceFile(PRICE_FILE_PATH);
+                this.turnDao.addPriceFile(PRICE_FILE_PATH,warehouseId);
             } else {
-                this.turnDao.addPriceFile(PRICE_FILE_PATH2);
+                this.turnDao.addPriceFile(PRICE_FILE_PATH2,warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -397,7 +397,7 @@ public class TurnServiceImpl implements TurnService {
                 List<PriceResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFilePrice(data, fout);
+                writeInFilePrice(data, fout,warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -408,7 +408,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFilePrice(List<PriceResponse> data, FileOutputStream fout) {
+    private void writeInFilePrice(List<PriceResponse> data, FileOutputStream fout,int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -419,22 +419,23 @@ public class TurnServiceImpl implements TurnService {
                 if (a.isHas_map()) {
                     List<PriceList> pricelists = a.getPricelists();
                     if (pricelists.isEmpty()) {
-                        str = str + "0 \n";
+                        str = str + "0,";
                     } else {
                         int count = 0;
                         for (PriceList p : pricelists) {
                             if (p.getName().equals("MAP")) {
                                 count++;
-                                str = str + p.getPrice() + "\n";
+                                str = str + p.getPrice() + ",";
                             }
                         }
                         if (count == 0) {
-                            str = str + "0 \n";
+                            str = str + "0,";
                         }
                     }
                 } else {
-                    str = str + "0 \n";
+                    str = str + "0,";
                 }
+                str=str+warehouseId+"\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -527,9 +528,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH);
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH,warehouseId);
             } else {
-                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH2);
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH2,warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -560,7 +561,7 @@ public class TurnServiceImpl implements TurnService {
                 List<InventoryResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFileInventory(data, fout);
+                writeInFileInventory(data, fout,warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -571,7 +572,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFileInventory(List<InventoryResponse> data, FileOutputStream fout) {
+    private void writeInFileInventory(List<InventoryResponse> data, FileOutputStream fout,int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -594,10 +595,11 @@ public class TurnServiceImpl implements TurnService {
                     str = str + 0 + ",";
                 }
                 if (a.getManufacturer() != null) {
-                    str = str + a.getManufacturer().getStock() + "\n";
+                    str = str + a.getManufacturer().getStock() + ",";
                 } else {
-                    str = str + 0 + "\n";
+                    str = str + 0 + ",";
                 }
+                str=str+warehouseId+"\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -609,20 +611,20 @@ public class TurnServiceImpl implements TurnService {
 
     @Override
     public int addItemByFile() {
-        this.turnDao.addItemByFile("/home/pk/Videos/APIResponce.csv");
+//        this.turnDao.addItemByFile("/home/pk/Videos/APIResponce.csv");
 //        this.turnDao.addItemByFile("/home/pk/Videos/APIResponsePrice.csv");
         return 0;
     }
 
     @Override
     public int addPriceByFile() {
-        this.turnDao.addPriceFile("/home/pk/Videos/APIResponsePrice.csv");
+//        this.turnDao.addPriceFile("/home/pk/Videos/APIResponsePrice.csv");
         return 0;
     }
 
     @Override
     public int addInventoryByFile() {
-        this.turnDao.addInventoryFile("/home/pk/Videos/APIResponseInventory.csv");
+//        this.turnDao.addInventoryFile("/home/pk/Videos/APIResponseInventory.csv");
         return 0;
 
     }
