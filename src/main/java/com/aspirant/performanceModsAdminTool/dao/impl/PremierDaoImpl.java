@@ -47,10 +47,16 @@ public class PremierDaoImpl implements PremierDao {
     }
 
     @Override
-    public int updateTokenOfPremier(String sessionToken) {
+    public int updateTokenOfPremier(String sessionToken,int warehouseId) {
         try {
+            if(warehouseId==3){
+                
             String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=? WHERE t.`TOKEN_API`='P';";
             return this.jdbcTemplate.update(sql, sessionToken);
+            }else{
+            String sql = "UPDATE token t SET t.`ACCESS_TOKEN`=? WHERE t.`TOKEN_API`='P2';";
+            return this.jdbcTemplate.update(sql, sessionToken);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -58,18 +64,18 @@ public class PremierDaoImpl implements PremierDao {
     }
 
     @Override
-    public int addInventoryFile(String path) {
+    public int addInventoryFile(String path,int warehousId) {
         try {
-            this.jdbcTemplate.execute("TRUNCATE TABLE `premier_inventory_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`premier_inventory_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ';' LINES TERMINATED BY '\\n' (`ITEM_NO`, `QTY`) ";
+            this.jdbcTemplate.update("DELETE FROM premier_inventory_temp WHERE API_ID=?",warehousId);
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`premier_inventory_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ';' LINES TERMINATED BY '\\n' (`ITEM_NO`, `QTY`, `API_ID`) ";
 
             this.jdbcTemplate.execute(sql);
             String sql1 = "UPDATE pm_current_warehouse_product t \n"
                     + "LEFT JOIN premier_inventory_temp p ON p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "SET t.`QUANTITY`=p.QTY\n"
                     + "WHERE p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
-                    + "AND t.`WAREHOUSE_ID`=7;";
-            this.jdbcTemplate.update(sql1);
+                    + "AND t.`WAREHOUSE_ID`=? AND p.`API_ID`=?;";
+            this.jdbcTemplate.update(sql1,warehousId,warehousId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,18 +83,19 @@ public class PremierDaoImpl implements PremierDao {
     }
 
     @Override
-    public int addPriceFile(String path) {
+    public int addPriceFile(String path,int warehousId) {
         try {
-            this.jdbcTemplate.execute("TRUNCATE TABLE `premier_price_temp`");
-            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`premier_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ';' LINES TERMINATED BY '\\n' (`ITEM_NO`,`PRICE`, `MAP`) ";
+//            this.jdbcTemplate.execute("TRUNCATE TABLE `premier_price_temp`");
+            this.jdbcTemplate.update("DELETE FROM premier_price_temp WHERE API_ID=?",warehousId);
+            String sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`premier_price_temp` FIELDS ESCAPED BY '\\\"' TERMINATED BY ';' LINES TERMINATED BY '\\n' (`ITEM_NO`,`PRICE`, `MAP`, `API_ID`) ";
 
             this.jdbcTemplate.execute(sql);
             String sql1 = "UPDATE pm_current_warehouse_product t \n"
                     + "LEFT JOIN premier_price_temp p ON p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
                     + "SET t.`PRICE`=p.`PRICE`,t.`MAP`=p.`MAP`\n"
                     + "WHERE p.ITEM_NO=t.`WAREHOUSE_IDENTIFICATION_NO`\n"
-                    + "AND t.`WAREHOUSE_ID`=7;";
-            this.jdbcTemplate.update(sql1);
+                    + "AND t.`WAREHOUSE_ID`=? AND p.`API_ID`=? ;";
+            this.jdbcTemplate.update(sql1,warehousId,warehousId);
         } catch (Exception e) {
             e.printStackTrace();
         }

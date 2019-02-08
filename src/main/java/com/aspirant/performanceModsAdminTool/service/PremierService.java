@@ -12,9 +12,9 @@ package com.aspirant.performanceModsAdminTool.service;
 public interface PremierService {
     
     
-    public String getSessionToken();
+    public String getSessionToken(int warehouseId);
     
-    public void getInventory(); 
+    public void getInventory(int warehouseId); 
     
-    public void getPrice(); 
+    public void getPrice(int warehouseId); 
 }

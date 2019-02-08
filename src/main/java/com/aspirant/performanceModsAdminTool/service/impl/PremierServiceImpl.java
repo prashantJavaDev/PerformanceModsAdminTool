@@ -45,11 +45,16 @@ public class PremierServiceImpl implements PremierService {
 
     private final String INVENTORY_FILE_PATH = "/home/ubuntu/performanceMods/premier/InventoryAPIResponce.csv";
 //    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/InventoryAPIResponce.csv";
+    private final String INVENTORY_FILE_PATH2 = "/home/ubuntu/performanceMods/premier/InventoryAPIResponce2.csv";
+//    private final String INVENTORY_FILE_PATH = "/home/pk/performanceMods/premier/InventoryAPIResponce2.csv";
     private final String INVENTORY_BASE_URL = "https://api.premierwd.com/api/v5/inventory?itemNumbers=";
     private final String PRICE_FILE_PATH = "/home/ubuntu/performanceMods/premier/PriceAPIResponce.csv";
 //    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/premier/PriceAPIResponce.csv";
+    private final String PRICE_FILE_PATH2 = "/home/ubuntu/performanceMods/premier/PriceAPIResponce2.csv";
+//    private final String PRICE_FILE_PATH = "/home/pk/performanceMods/premier/PriceAPIResponce.csv";
     private final String PRICE_BASE_URL = "https://api.premierwd.com/api/v5/pricing?itemNumbers=";
-    private final String API_KEY = "4f99608a-7690-4a9e-8a3a-ed6b13c24130";
+    private final String API_KEY = "4f99608a-7690-4a9e-8a3a-ed6b13c24130"; //Warehouse ID 3
+    private final String API_KEY2 = "abf0ef0f-4c9d-4f87-b95b-c212fda120cc"; //warehouse id 7
 
     @Autowired
     PremierDao premierDao;
@@ -57,10 +62,16 @@ public class PremierServiceImpl implements PremierService {
     TurnDao turnDao;
 
     @Override
-    public String getSessionToken() {
+    public String getSessionToken(int warehouseId) {
         String sessionToken = null;
         try {
-            HttpGet get = new HttpGet("https://api.premierwd.com/api/v5/authenticate?apiKey=" + API_KEY);
+            String apiKey = "";
+            if (warehouseId == 3) {
+                apiKey = API_KEY;
+            } else {
+                apiKey = API_KEY2;
+            }
+            HttpGet get = new HttpGet("https://api.premierwd.com/api/v5/authenticate?apiKey=" + apiKey);
             HttpClient client = new DefaultHttpClient();
             HttpResponse res = client.execute(get);
             InputStream content = res.getEntity().getContent();
@@ -70,7 +81,7 @@ public class PremierServiceImpl implements PremierService {
             }.getType();
             PremierTokenResponse resp = new Gson().fromJson(json, typeList);
 //            System.out.println("Resp-===" + resp);
-            premierDao.updateTokenOfPremier(resp.getSessionToken());
+            premierDao.updateTokenOfPremier(resp.getSessionToken(), warehouseId);
             sessionToken = resp.getSessionToken();
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,29 +90,41 @@ public class PremierServiceImpl implements PremierService {
     }
 
     @Override
-    public void getInventory() {
+    public void getInventory(int warehouseId) {
         try {
-            getSessionToken();
-            File f = new File(INVENTORY_FILE_PATH);
+            getSessionToken(warehouseId);
+
+            File f = null;
+            if (warehouseId == 3) {
+                f = new File(INVENTORY_FILE_PATH);
+            } else {
+                f = new File(INVENTORY_FILE_PATH2);
+            }
             FileOutputStream fout = new FileOutputStream(f);
-            executeParallel(4, INVENTORY_BASE_URL, fout, "INV");
+            executeParallel(4, INVENTORY_BASE_URL, fout, "INV", warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void getPrice() {
+    public void getPrice(int warehouseId) {
         try {
-            File f = new File(PRICE_FILE_PATH);
+            getSessionToken(warehouseId);
+            File f = null;
+            if (warehouseId == 3) {
+                f = new File(PRICE_FILE_PATH);
+            } else {
+                f = new File(PRICE_FILE_PATH2);
+            }
             FileOutputStream fout = new FileOutputStream(f);
-            executeParallel(4, PRICE_BASE_URL, fout, "PRI");
+            executeParallel(4, PRICE_BASE_URL, fout, "PRI", warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void executeParallel(int times, final String url, FileOutputStream fout, final String apiName) {
+    private void executeParallel(int times, final String url, FileOutputStream fout, final String apiName, int warehousId) {
 
         System.out.println("inTime" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
         ExecutorService exec = Executors.newFixedThreadPool(times);
@@ -113,6 +136,7 @@ public class PremierServiceImpl implements PremierService {
             final int start = (loopCount * i) + 1;
             final int cal = i;
             final FileOutputStream fout1 = fout;
+            final int wId = warehousId;
             Runnable r = new Runnable() {
                 int end = (loopCount * cal) + loopCount;
 
@@ -130,7 +154,7 @@ public class PremierServiceImpl implements PremierService {
                             count++;
                             if (count == 50) {
                                 HttpGet get = new HttpGet(url + sb);
-                                callPremierAPI(get, fout1, apiName);
+                                callPremierAPI(get, fout1, apiName, wId);
                                 count = 0;
                                 sb.setLength(0);
                             }
@@ -141,7 +165,7 @@ public class PremierServiceImpl implements PremierService {
                             sb.append(",");
                         }
                         HttpGet get = new HttpGet(url + sb.substring(0, sb.length() - 1));
-                        callPremierAPI(get, fout1, apiName);
+                        callPremierAPI(get, fout1, apiName, wId);
                     }
                 }
             };
@@ -154,9 +178,17 @@ public class PremierServiceImpl implements PremierService {
         try {
             fout.close();
             if (apiName.equals("INV")) {
-                this.premierDao.addInventoryFile(INVENTORY_FILE_PATH);
+                if (warehousId == 3) {
+                    this.premierDao.addInventoryFile(INVENTORY_FILE_PATH, warehousId);
+                } else {
+                    this.premierDao.addInventoryFile(INVENTORY_FILE_PATH2, warehousId);
+                }
             } else if (apiName.equals("PRI")) {
-                this.premierDao.addPriceFile(PRICE_FILE_PATH);
+                if (warehousId == 3) {
+                    this.premierDao.addPriceFile(PRICE_FILE_PATH, warehousId);
+                } else {
+                    this.premierDao.addPriceFile(PRICE_FILE_PATH2, warehousId);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,9 +197,14 @@ public class PremierServiceImpl implements PremierService {
         System.out.println("Out Time" + System.currentTimeMillis() + " Namo Time" + System.nanoTime() + "Date Time===" + new Date());
     }
 
-    private void callPremierAPI(HttpGet get, FileOutputStream fout, String apiName) {
+    private void callPremierAPI(HttpGet get, FileOutputStream fout, String apiName, int warehouseId) {
         try {
-            TokenResponse token = this.turnDao.getToken("P");
+            TokenResponse token = null;
+            if (warehouseId == 3) {
+                token = this.turnDao.getToken("P");
+            } else {
+                token = this.turnDao.getToken("P2");
+            }
             HttpClient client = new DefaultHttpClient();
             get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
             HttpResponse res = client.execute(get);
@@ -179,17 +216,17 @@ public class PremierServiceImpl implements PremierService {
                     Type typeList = new TypeToken<List<PremierInventoryResponse>>() {
                     }.getType();
                     List<PremierInventoryResponse> resp = new Gson().fromJson(json, typeList);
-                    writeInInventoryFile(resp, fout);
+                    writeInInventoryFile(resp, fout, warehouseId);
                 } else if (apiName.equals("PRI")) {
                     Type typeList = new TypeToken<List<PremierPriceResponse>>() {
                     }.getType();
                     List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
 //                    System.out.println("daatatta====" + resp);
-                    writeInPriceFile(resp, fout);
+                    writeInPriceFile(resp, fout, warehouseId);
                 }
             } else if (res.getStatusLine().getStatusCode() == 401) {
-                getSessionToken();
-                callPremierAPI(get, fout, apiName);
+                getSessionToken(warehouseId);
+                callPremierAPI(get, fout, apiName, warehouseId);
             } else {
                 HttpResponse res1 = client.execute(get);
                 InputStream content1 = res1.getEntity().getContent();
@@ -200,14 +237,14 @@ public class PremierServiceImpl implements PremierService {
                         Type typeList1 = new TypeToken<List<PremierInventoryResponse>>() {
                         }.getType();
                         List<PremierInventoryResponse> resp = new Gson().fromJson(json1, typeList1);
-                        writeInInventoryFile(resp, fout);
+                        writeInInventoryFile(resp, fout, warehouseId);
                     } else if (apiName.equals("PRI")) {
                         Type typeList = new TypeToken<List<PremierPriceResponse>>() {
                         }.getType();
 
                         List<PremierPriceResponse> resp = new Gson().fromJson(json, typeList);
 //                        System.out.println("daatatta====" + resp);
-                        writeInPriceFile(resp, fout);
+                        writeInPriceFile(resp, fout, warehouseId);
                     }
                 }
             }
@@ -216,7 +253,7 @@ public class PremierServiceImpl implements PremierService {
         }
     }
 
-    private void writeInInventoryFile(List<PremierInventoryResponse> data, FileOutputStream fout) {
+    private void writeInInventoryFile(List<PremierInventoryResponse> data, FileOutputStream fout, int warehouseId) {
         System.out.println("size===" + data.size());
         StringBuilder sb = new StringBuilder();
         for (PremierInventoryResponse response : data) {
@@ -228,6 +265,8 @@ public class PremierServiceImpl implements PremierService {
                 sumOfInventory = sumOfInventory + premierInventory.getQuantityAvailable();
             }
             sb.append(sumOfInventory);
+            sb.append(";");
+            sb.append(warehouseId);
             sb.append("\n");
         }
         byte[] bytes = sb.toString().getBytes();
@@ -238,7 +277,7 @@ public class PremierServiceImpl implements PremierService {
         }
     }
 
-    private void writeInPriceFile(List<PremierPriceResponse> data, FileOutputStream fout) {
+    private void writeInPriceFile(List<PremierPriceResponse> data, FileOutputStream fout, int warehouseId) {
         System.out.println("size===" + data.size());
         StringBuilder sb = new StringBuilder();
         for (PremierPriceResponse response : data) {
@@ -253,6 +292,8 @@ public class PremierServiceImpl implements PremierService {
                     sb.append(pr.getMap());
                 }
             }
+            sb.append(";");
+            sb.append(warehouseId);
             sb.append("\n");
         }
         byte[] bytes = sb.toString().getBytes();
