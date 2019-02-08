@@ -7,6 +7,7 @@ package com.aspirant.performanceModsAdminTool.web.controller;
 
 import com.aspirant.performanceModsAdminTool.service.PremierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,24 +17,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class PremierApiControler {
-   
+
     @Autowired
     PremierService premierService;
-    
+
     @RequestMapping("/premier/token.htm")
-    public String getPremierToken(){
+    public String getPremierToken() {
         premierService.getSessionToken();
         return "home/home";
     }
+
+    @Scheduled(cron = "0 0 */4 * * *")
     @RequestMapping("/premier/inventory.htm")
-    public String getInventory(){
+    public String getInventory() {
         premierService.getInventory();
         return "home/home";
     }
+
+    @Scheduled(cron = "0 0 10 * * ?")
     @RequestMapping("/premier/price.htm")
-    public String getPrice(){
+    public String getPrice() {
         premierService.getPrice();
         return "home/home";
     }
-    
+
 }
