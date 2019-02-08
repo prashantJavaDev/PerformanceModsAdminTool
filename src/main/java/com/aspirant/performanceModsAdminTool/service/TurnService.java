@@ -36,4 +36,6 @@ public interface TurnService {
     public int addPriceByFile();
 
     public int addInventoryByFile();
+    
+    public void getShipping(int warehouseId);
 }

@@ -7,7 +7,9 @@ package com.aspirant.performanceModsAdminTool.dao.impl;
 
 import com.aspirant.performanceModsAdminTool.dao.TurnDao;
 import com.aspirant.performanceModsAdminTool.model.DTO.ItemResponse;
+import com.aspirant.performanceModsAdminTool.model.DTO.ShippingAPIResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.TokenResponse;
+import com.aspirant.performanceModsAdminTool.web.controller.ShippingTurnAPIResponse;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -156,6 +158,28 @@ public class TurnDaoImpl implements TurnDao {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public void addShipping(ShippingTurnAPIResponse data) {
+        try {
+            MapSqlParameterSource[] batchParams = new MapSqlParameterSource[data.getData().size()];
+            Map<String, Object> params = new HashMap<>();
+            SimpleJdbcInsert insert = new SimpleJdbcInsert(dataSource).withTableName("shipping_carrier");
+            int i = 0;
+            for (ShippingAPIResponse item : data.getData()) {
+                params.put("SHIPPING_ID", item.getId());
+                params.put("TYPE", item.getType());
+                params.put("TRANSPORTATION_NAME", item.getAttributes().getTransportation_name());
+                params.put("CARRIER", item.getAttributes().getCarrier_name());
+                batchParams[i] = new MapSqlParameterSource(params);
+                i++;
+            }
+            params.clear();
+            int[] key = insert.executeBatch(batchParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

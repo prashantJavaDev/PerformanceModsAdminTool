@@ -7,6 +7,7 @@ package com.aspirant.performanceModsAdminTool.dao;
 
 import com.aspirant.performanceModsAdminTool.model.DTO.ItemResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.TokenResponse;
+import com.aspirant.performanceModsAdminTool.web.controller.ShippingTurnAPIResponse;
 import java.util.List;
 
 /**
@@ -15,16 +16,18 @@ import java.util.List;
  */
 public interface TurnDao {
 
-    public int updateTokenEntry(TokenResponse tokenResponse,int warehouseId);
+    public int updateTokenEntry(TokenResponse tokenResponse, int warehouseId);
 
     public TokenResponse getToken(String apiType);
 
     public int addItem(List<ItemResponse> data);
 
-    public int addItemByFile(String path,int warehouseId);
+    public int addItemByFile(String path, int warehouseId);
 
-    public int addPriceFile(String path,int warehouseId);
+    public int addPriceFile(String path, int warehouseId);
 
-    public int addInventoryFile(String path,int warehouseId);
+    public int addInventoryFile(String path, int warehouseId);
+
+    public void addShipping(ShippingTurnAPIResponse data);
 
 }
