@@ -17,8 +17,10 @@ import com.aspirant.performanceModsAdminTool.model.DTO.PriceApiResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.PriceAttributes;
 import com.aspirant.performanceModsAdminTool.model.DTO.PriceList;
 import com.aspirant.performanceModsAdminTool.model.DTO.PriceResponse;
+import com.aspirant.performanceModsAdminTool.model.DTO.ShippingAPIResponse;
 import com.aspirant.performanceModsAdminTool.model.DTO.TokenResponse;
 import com.aspirant.performanceModsAdminTool.service.TurnService;
+import com.aspirant.performanceModsAdminTool.web.controller.ShippingTurnAPIResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -218,9 +220,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addItemByFile(ITEM_FILE_PATH,warehouseId);
+                this.turnDao.addItemByFile(ITEM_FILE_PATH, warehouseId);
             } else {
-                this.turnDao.addItemByFile(ITEM_FILE_PATH2,warehouseId);
+                this.turnDao.addItemByFile(ITEM_FILE_PATH2, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -250,7 +252,7 @@ public class TurnServiceImpl implements TurnService {
                 List<ItemResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFile(data, fout,warehouseId);
+                writeInFile(data, fout, warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -261,7 +263,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFile(List<ItemResponse> data, FileOutputStream fout,int warehouseId) {
+    private void writeInFile(List<ItemResponse> data, FileOutputStream fout, int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -270,7 +272,7 @@ public class TurnServiceImpl implements TurnService {
             for (ItemResponse i : data) {
                 count++;
                 ItemAttributes a = i.getAttributes();
-                String str = i.getId() + "," + i.getType() + "," + a.getPart_number() + "," + a.getMfr_part_number() + "," + a.getBrand() +","+warehouseId+ "\n";
+                String str = i.getId() + "," + i.getType() + "," + a.getPart_number() + "," + a.getMfr_part_number() + "," + a.getBrand() + "," + warehouseId + "\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -365,9 +367,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addPriceFile(PRICE_FILE_PATH,warehouseId);
+                this.turnDao.addPriceFile(PRICE_FILE_PATH, warehouseId);
             } else {
-                this.turnDao.addPriceFile(PRICE_FILE_PATH2,warehouseId);
+                this.turnDao.addPriceFile(PRICE_FILE_PATH2, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -397,7 +399,7 @@ public class TurnServiceImpl implements TurnService {
                 List<PriceResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFilePrice(data, fout,warehouseId);
+                writeInFilePrice(data, fout, warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -408,7 +410,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFilePrice(List<PriceResponse> data, FileOutputStream fout,int warehouseId) {
+    private void writeInFilePrice(List<PriceResponse> data, FileOutputStream fout, int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -435,7 +437,7 @@ public class TurnServiceImpl implements TurnService {
                 } else {
                     str = str + "0,";
                 }
-                str=str+warehouseId+"\n";
+                str = str + warehouseId + "\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -528,9 +530,9 @@ public class TurnServiceImpl implements TurnService {
         try {
             fout.close();
             if (warehouseId == 1) {
-                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH,warehouseId);
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH, warehouseId);
             } else {
-                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH2,warehouseId);
+                this.turnDao.addInventoryFile(INVENTORY_FILE_PATH2, warehouseId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -561,7 +563,7 @@ public class TurnServiceImpl implements TurnService {
                 List<InventoryResponse> data = resp.getData();
 //                System.out.println("resp.getData().size()" + resp.getData().size());
 //                addItem(data);
-                writeInFileInventory(data, fout,warehouseId);
+                writeInFileInventory(data, fout, warehouseId);
             } else if (res.getStatusLine().getStatusCode() == 401) {
 
                 getApiTokenOfTurn(warehouseId);
@@ -572,7 +574,7 @@ public class TurnServiceImpl implements TurnService {
         }
     }
 
-    private void writeInFileInventory(List<InventoryResponse> data, FileOutputStream fout,int warehouseId) {
+    private void writeInFileInventory(List<InventoryResponse> data, FileOutputStream fout, int warehouseId) {
         try {
 
 //            PrintWriter p=new PrintWriter(fout);
@@ -599,7 +601,7 @@ public class TurnServiceImpl implements TurnService {
                 } else {
                     str = str + 0 + ",";
                 }
-                str=str+warehouseId+"\n";
+                str = str + warehouseId + "\n";
                 byte[] bytes = str.getBytes();
                 fout.write(bytes);
             }
@@ -627,5 +629,33 @@ public class TurnServiceImpl implements TurnService {
 //        this.turnDao.addInventoryFile("/home/pk/Videos/APIResponseInventory.csv");
         return 0;
 
+    }
+
+    @Override
+    public void getShipping(int warehouseId) {
+        getApiTokenOfTurn(warehouseId);
+        HttpGet get = new HttpGet("https://api.turn14.com/v1/shipping");
+        TokenResponse token = null;
+        if (warehouseId == 1) {
+            token = getToken("T");
+        } else if (warehouseId == 8) {
+            token = getToken("T2");
+        }
+        get.setHeader("Authorization", token.getToken_type() + " " + token.getAccess_token());
+        try {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse res = client.execute(get);
+            InputStream content = res.getEntity().getContent();
+            String json = IOUtils.toString(content);
+//            System.out.println("Jsono oadsand=======" + json);
+            Type typeList = new TypeToken<ShippingTurnAPIResponse>() {
+            }.getType();
+            if (res.getStatusLine().getStatusCode() == 200) {
+                ShippingTurnAPIResponse sp = new Gson().fromJson(json, typeList);
+                this.turnDao.addShipping(sp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
