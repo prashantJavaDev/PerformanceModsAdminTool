@@ -22,23 +22,39 @@ public class PremierApiControler {
     PremierService premierService;
 
     @RequestMapping("/premier/token.htm")
-    public void getPremierToken() {
-        premierService.getSessionToken();
-//        return "home/home";
+    public String getPremierToken(){
+        premierService.getSessionToken(3);
+        return "home/home";
+    }
+    @RequestMapping("/premier/token2.htm")
+    public String getPremierToken2(){
+        premierService.getSessionToken(7);
+        return "home/home";
     }
 
-    @Scheduled(cron = "0 0 */4 * * *")
+    @Scheduled(cron = "0 0 */3 * * *")
     @RequestMapping("/premier/inventory.htm")
-    public void getInventory() {
-        premierService.getInventory();
+    public void getInventory(){
+        premierService.getInventory(3);
 //        return "home/home";
+    }
+    @Scheduled(cron = "0 0 */4* * *")
+    @RequestMapping("/premier/inventory2.htm")
+    public String getInventory2(){
+        premierService.getInventory(7);
+        return "home/home";
     }
 
     @Scheduled(cron = "0 0 10 * * ?")
     @RequestMapping("/premier/price.htm")
-    public void getPrice() {
-        premierService.getPrice();
-//        /return "home/home";
+    public void getPrice(){
+        premierService.getPrice(3);
+//        return "home/home";
+    }
+    @RequestMapping("/premier/price2.htm")
+    public String getPrice2(){
+        premierService.getPrice(7);
+        return "home/home";
     }
 
 }

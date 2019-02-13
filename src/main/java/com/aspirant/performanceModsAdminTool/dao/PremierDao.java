@@ -15,8 +15,9 @@ public interface PremierDao {
 
     public List<String> getFeedEntries();
 
-    public int updateTokenOfPremier(String sessionToken);
+    public int updateTokenOfPremier(String sessionToken, int warehouseId);
 
-    public int addInventoryFile(String path);
-    public int addPriceFile(String path);
+    public int addInventoryFile(String path, int warehouseId);
+
+    public int addPriceFile(String path, int warehouseId);
 }
