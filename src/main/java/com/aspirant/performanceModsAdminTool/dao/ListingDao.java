@@ -125,4 +125,7 @@ public interface ListingDao {
      * @return 
      */
     public int getExportMarketplaceFeesCount(int marketplaceId);
+    
+    public Listing getListingForDelete(String sku);
+    
 }

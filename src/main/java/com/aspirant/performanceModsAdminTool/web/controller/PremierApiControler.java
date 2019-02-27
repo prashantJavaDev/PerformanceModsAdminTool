@@ -38,11 +38,12 @@ public class PremierApiControler {
         premierService.getInventory(3);
 //        return "home/home";
     }
-    @Scheduled(cron = "0 0 */4* * *")
+    
+    @Scheduled(cron = "0 0 */4 * * *")
     @RequestMapping("/premier/inventory2.htm")
-    public String getInventory2(){
+    public void getInventory2(){
         premierService.getInventory(7);
-        return "home/home";
+//        return "home/home";
     }
 
     @Scheduled(cron = "0 0 10 * * ?")

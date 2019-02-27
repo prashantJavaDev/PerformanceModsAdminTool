@@ -80,6 +80,7 @@
                                                                             <th width="200px">Current Feed Date</th>
                                                                             <th width="200px">Current Price</th>
                                                                             <th width="200px">Current Quantity</th>
+                                                                            <th width="200px">Shipping</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -90,6 +91,7 @@
                                                                                 <td><c:out value="${productItem.currentFeedDate}"/></td>
                                                                                 <td ${priceStyle}><c:out value="${productItem.currentPrice}"/></td>
                                                                                 <td ${quantityStyle}><c:out value="${productItem.currentQuantity}"/></td>
+                                                                                <td><c:out value="${productItem.shipping}"/></td>
                                                                             </tr>
                                                                         </c:forEach>
                                                                     </tbody>

@@ -188,4 +188,9 @@ public class ListingServiceImpl implements ListingService {
     public List<Listing> exportMarketplaceFeesForExcel(int marketplaceId) {
         return this.listingDao.exportMarketplaceFeesForExcel(marketplaceId);
     }
+
+    @Override
+    public Listing getListingForDelete(String sku) {
+        return this.listingDao.getListingForDelete(sku);
+    }
 }

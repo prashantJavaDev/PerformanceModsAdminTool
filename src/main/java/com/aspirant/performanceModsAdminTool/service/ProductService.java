@@ -259,6 +259,8 @@ public interface ProductService {
      * @return
      */
     public int deleteProductByProductID(int productId);
+    
+    public int deleteListingBySku(String sku);
 
     /**
      * This method is used to get list of active child categories by selected

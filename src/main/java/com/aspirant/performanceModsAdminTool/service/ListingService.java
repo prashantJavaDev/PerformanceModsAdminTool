@@ -131,4 +131,6 @@ public interface ListingService {
      * @return count of ExportMarketplaceFeesCount
      */
     public int getExportMarketplaceFeesCount(int marketplaceId);
+    
+    public Listing getListingForDelete(String sku);
 }

@@ -52,10 +52,11 @@ public interface ProductDao {
      * @return
      */
     public List<ChildOfSubCategory> getListOfChildCategory();
-    
+
     /**
      * This method is used to get list of all active Sub child categories.
-     * @return 
+     *
+     * @return
      */
     public List<ChildOfChildCategory> getListOfSubChildCategory();
 
@@ -75,7 +76,7 @@ public interface ProductDao {
      * @return
      */
     public List<ChildOfSubCategory> getChildCategoryListForSubCategory(int subCategoryId);
-    
+
     public List<ChildOfChildCategory> getsubChildCategoryListForSubCategory(int childCategoryId);
 
     /**
@@ -87,7 +88,7 @@ public interface ProductDao {
     public List<Integer> getSubCategoryIdListByMainCategory(int mainCategoryId);
 
     public List<Integer> getChildCategoryIdListBySubCategory(int subCategoryId);
-    
+
     public List<Integer> getSubChildCategoryIdListByChildCategory(int childCategoryId);
 
     /**
@@ -130,7 +131,7 @@ public interface ProductDao {
      * @param productMpn manufacturer MPN
      * @return count of products
      */
-    public int getProductListCount(int productStatusId, int manufacturerId, String performanceModsMpn, String productName, String warehouseMpn, String productMpn,String startDate, String stopDate);
+    public int getProductListCount(int productStatusId, int manufacturerId, String performanceModsMpn, String productName, String warehouseMpn, String productMpn, String startDate, String stopDate);
 
     /**
      * Method used to get product list of all products for export to excel
@@ -170,7 +171,7 @@ public interface ProductDao {
     public int addSubCategory(String subCategoryDesc, boolean active);
 
     public int addChildCategory(String childCategoryDesc, boolean active);
-    
+
     public int addSubChildCategory(String subChildCategoryDesc, boolean active);
 
     /**
@@ -223,8 +224,9 @@ public interface ProductDao {
     public List<String> searchWarehouseMpn(String term);
 
     /**
-     * Method is used to get performanceMods MPN by manufacturer MPN and manufacturer id
-     * to display performanceMods MPN while duplicate product exception
+     * Method is used to get performanceMods MPN by manufacturer MPN and
+     * manufacturer id to display performanceMods MPN while duplicate product
+     * exception
      *
      * @param manufacturerMpn manufacturer MPN
      * @param manufacturerId manufacturer id
@@ -265,7 +267,8 @@ public interface ProductDao {
     public int getMissingProductDataListCount();
 
     /**
-     * this method return list of particular performanceModsMpn product to delete
+     * this method return list of particular performanceModsMpn product to
+     * delete
      *
      * @return
      */
@@ -278,8 +281,12 @@ public interface ProductDao {
      * @return
      */
     public int deleteProductByProductID(int productId);
+
+    public int deleteListingBySku(String sku);
+
     /**
      * get list for product download
+     *
      * @param productStatusId
      * @param manufacturerId
      * @param productName
@@ -287,13 +294,13 @@ public interface ProductDao {
      * @param mainCategoryId
      * @param subCategoryId
      * @param childCategoryId
-     * @return 
+     * @return
      */
     public List<Product> getDownloadProductList(int productStatusId, int manufacturerId, String productName, int pageNo, int mainCategoryId, int subCategoryId, int childCategoryId);
-    
-    
+
     /**
      * get count
+     *
      * @param productStatusId
      * @param manufacturerId
      * @param productName
@@ -301,19 +308,18 @@ public interface ProductDao {
      * @param mainCategoryId
      * @param subCategoryId
      * @param childCategoryId
-     * @return 
+     * @return
      */
     public int getCountDownloadProductList(int productStatusId, int manufacturerId, String productName, int pageNo, int mainCategoryId, int subCategoryId, int childCategoryId);
-    
+
     public List<SubCategory> getAllSubCategoryList();
-    
+
     public List<ChildOfSubCategory> getAllChildCategoryList();
-    
-    public void loadWebsiteProductDataLocally(String path,int companyId);
-    
+
+    public void loadWebsiteProductDataLocally(String path, int companyId);
+
     public String uploadImageToS3Bucket(UploadFeed image);
-    
+
     public List<Company> getCompanyList(boolean active);
-    
-    
- }
+
+}

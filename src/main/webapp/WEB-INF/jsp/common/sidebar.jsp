@@ -257,6 +257,11 @@
                             <a href="../listing/uploadMarketplaceListing.htm"><span class="fa fa-upload"></span>Upload MarketPlace Listing</a>
                         </li>
                     </sec:authorize>
+                    <sec:authorize ifAnyGranted="ROLE_BF_EXPORT_MARKETPLACE_FEES">
+                        <li>
+                            <a href="../listing/deleteMarketplaceListing.htm"><span class="fa fa-upload"></span>Delete MarketPlace Listing</a>
+                        </li>
+                    </sec:authorize>
                 </ul>
             </li>
         </sec:authorize>

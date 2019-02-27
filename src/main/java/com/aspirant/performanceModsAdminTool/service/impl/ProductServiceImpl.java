@@ -305,5 +305,10 @@ public class ProductServiceImpl implements ProductService {
         return this.productDao.getCompanyList(active);
     }
 
+    @Override
+    public int deleteListingBySku(String sku) {
+        return this.productDao.deleteListingBySku(sku);
+    }
+
     
 }

@@ -10,15 +10,20 @@ import com.aspirant.performanceModsAdminTool.model.CustomUserDetails;
 import com.aspirant.performanceModsAdminTool.model.DTO.ProductListingDTO;
 import com.aspirant.performanceModsAdminTool.model.DTO.mapper.ProductListingDTORowMapper;
 import com.aspirant.performanceModsAdminTool.model.Listing;
+import com.aspirant.performanceModsAdminTool.model.Marketplace;
 import com.aspirant.performanceModsAdminTool.model.rowmapper.ExportMarketPlaceFeesListingRowMapper;
+import com.aspirant.performanceModsAdminTool.model.rowmapper.MarketplaceOrderDetailsRowMapper;
 import com.aspirant.performanceModsAdminTool.utils.LogUtils;
 import com.aspirant.performanceModsAdminTool.utils.DateUtils;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -194,18 +199,22 @@ public class ListingDaoImpl implements ListingDao {
     public void UpdateListings(int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "UPDATE pm_available_listing tal SET tal.`LAST_LISTED_PRICE`=tal.`CURRENT_PRICE`, tal.`LAST_LISTED_QUANTITY`=tal.`CURRENT_QUANTITY`,tal.`LAST_LISTED_DATE`=NOW(),"
-                + " tal.`CURRENT_LISTED_DATE`=NOW(),tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE"
-                + " tal.ACTIVE AND tal.`MARKETPLACE_ID`=?";
-        this.jdbcTemplate.update(sql, curDate, curUser, marketplaceId);
+        try {
+            String sql = "UPDATE pm_available_listing tal SET tal.`LAST_LISTED_PRICE`=tal.`CURRENT_PRICE`, tal.`LAST_LISTED_QUANTITY`=tal.`CURRENT_QUANTITY`,tal.`LAST_LISTED_DATE`=NOW(),"
+                    + " tal.`CURRENT_LISTED_DATE`=NOW(),tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE"
+                    + " tal.ACTIVE AND tal.`MARKETPLACE_ID`=?";
+            this.jdbcTemplate.update(sql, curDate, curUser, marketplaceId);
 
-        String sqlInsert = "INSERT INTO export_listing_data_trans \n"
-                + " SELECT NULL,tal.`MARKETPLACE_ID`,tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,"
-                + " tal.`CURRENT_PRICE`,tal.`CURRENT_QUANTITY`,tal.`CURRENT_PROFIT_PERCENTAGE`,"
-                + " tal.`CURRENT_PROFIT`,tal.`CURRENT_COMMISSION`,tal.`CURRENT_COMMISSION_PERCENTAGE`,tal.`CURRENT_SHIPPING`,"
-                + " tal.`WAREHOUSE_ID`,NOW() FROM pm_available_listing tal\n"
-                + "WHERE tal.`ACTIVE` AND tal.`MARKETPLACE_ID`=?";
-        this.jdbcTemplate.update(sqlInsert, marketplaceId);
+            String sqlInsert = "INSERT INTO export_listing_data_trans \n"
+                    + " SELECT NULL,tal.`MARKETPLACE_ID`,tal.`MARKETPLACE_LISTING_ID`,tal.`SKU`,"
+                    + " tal.`CURRENT_PRICE`,tal.`CURRENT_QUANTITY`,tal.`CURRENT_PROFIT_PERCENTAGE`,"
+                    + " tal.`CURRENT_PROFIT`,tal.`CURRENT_COMMISSION`,tal.`CURRENT_COMMISSION_PERCENTAGE`,tal.`CURRENT_SHIPPING`,"
+                    + " tal.`WAREHOUSE_ID`,NOW() FROM pm_available_listing tal\n"
+                    + "WHERE tal.`ACTIVE` AND tal.`MARKETPLACE_ID`=?";
+            this.jdbcTemplate.update(sqlInsert, marketplaceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -241,8 +250,8 @@ public class ListingDaoImpl implements ListingDao {
                 + "  SELECT MIN(t.`CALCULATED_PRICE`) FROM pm_current_warehouse_product t GROUP BY t.`PRODUCT_ID`"
                 + "  ) GROUP BY t.`PRODUCT_ID`) tc1 ON tc1.PRODUCT_ID=tp.`PRODUCT_ID`"
                 + "  SET tal.`CURRENT_PRICE`=IF(tal.`ISMAP` AND"
-                + " (COALESCE(ROUND((((COALESCE(tc.`PRICE`,tc1.`PRICE`))+tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0))<tp.`MAP`,tp.`MAP`,"
-                + " COALESCE(ROUND(((((COALESCE(tc.`PRICE`,tc1.`PRICE`)))+tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0)),"
+                + " (COALESCE(ROUND((((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0))<tp.`MAP`,tp.`MAP`,"
+                + " COALESCE(ROUND(((((COALESCE(tc.`PRICE`,tc1.`PRICE`)))*tal.`CURRENT_COMMISSION_PERCENTAGE`)/100)+((COALESCE(tc.`PRICE`,tc1.`PRICE`))*tmsm.`PACK`),2),0)),"
                 + "  tal.`WAREHOUSE_ID`=COALESCE(tc.`WAREHOUSE_ID`,tc1.WAREHOUSE_ID),"
                 + "  tal.`CURRENT_QUANTITY`=(tc.`QUANTITY`/tal.`PACK`),"
                 + "  tal.`CURRENT_LISTED_DATE`=:curDate, "
@@ -325,15 +334,16 @@ public class ListingDaoImpl implements ListingDao {
     public void loadFeesDataLocally1(String path, int marketplaceId) {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
-        String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_available_listing`";
-        String sql1;
-        this.jdbcTemplate.update(sql);
-        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
-
-        sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MANUFACTURER_NAME`,`MPN`); ";
-        this.jdbcTemplate.execute(sql);
-        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
         try {
+            String sql = "TRUNCATE TABLE `performance_mods`.`pm_temp_available_listing`";
+            String sql1;
+            this.jdbcTemplate.update(sql);
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate pm_temp_available_listing done.", GlobalConstants.TAG_SYSTEMLOG));
+
+            sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MANUFACTURER_NAME`,`MPN`); ";
+            this.jdbcTemplate.execute(sql);
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+
 //            sql = "UPDATE pm_available_listing tal\n"
 //                    + " LEFT JOIN pm_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"
 //                    + " SET tal.`LAST_LISTED_PRICE`=ttf.`LAST_LISTED_PRICE`,tal.`LAST_LISTED_QUANTITY`=ttf.`LAST_LISTED_QUANTITY`,tal.`LAST_MODIFIED_BY`=?,tal.`LAST_MODIFIED_DATE`=?\n"
@@ -417,6 +427,37 @@ public class ListingDaoImpl implements ListingDao {
             params.put("marketplaceId", marketplaceId);
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
             return nm.query(sql.toString(), params, new ExportMarketPlaceFeesListingRowMapper());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
+    public Listing getListingForDelete(String sku) {
+        try {
+            String sql = " SELECT pm.`MARKETPLACE_NAME`,pal.`MARKETPLACE_LISTING_ID`,pal.`SKU`,pmsm.`MANUFACTURER_MPN`,pal.`CURRENT_PRICE`,pal.`CURRENT_QUANTITY` \n"
+                    + " FROM pm_available_listing pal\n"
+                    + " LEFT JOIN pm_marketplace pm ON pm.`MARKETPLACE_ID`=pal.`MARKETPLACE_ID`\n"
+                    + " LEFT JOIN pm_mpn_sku_mapping pmsm ON pmsm.`SKU`=pal.`SKU`\n"
+                    + " WHERE pal.`SKU`=?";
+            Object params[] = new Object[]{sku};
+            return this.jdbcTemplate.queryForObject(sql, params, new RowMapper<Listing>() {
+                @Override
+                public Listing mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Listing listing = new Listing();
+                    Marketplace m = new Marketplace();
+                    m.setMarketplaceName(rs.getString("MARKETPLACE_NAME"));
+                    listing.setMarketplace(m);
+                    listing.setMarketplaceListingId(rs.getString("MARKETPLACE_LISTING_ID"));
+                    listing.setSku(rs.getString("SKU"));
+                    listing.setCurrentPrice(rs.getDouble("CURRENT_PRICE"));
+                    listing.setCurrentQunatity(rs.getInt("CURRENT_QUANTITY"));
+                    listing.setProductMpn(rs.getString("MANUFACTURER_MPN"));
+                    return listing;
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             return null;

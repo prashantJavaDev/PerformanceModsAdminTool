@@ -88,7 +88,7 @@ public class ProductDaoImpl implements ProductDao {
         String sql = "SELECT tm.* FROM pm_manufacturer tm"
                 + " where tm.ACTIVE ORDER BY tm.`MANUFACTURER_NAME`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ManufacturerRowMapper());
     }
 
@@ -99,7 +99,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tmc.`LAST_MODIFIED_BY`"
                 + " where tmc.ACTIVE ORDER BY tmc.`MAIN_CATEGORY_DESC`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new MainCategoryRowMapper());
     }
 
@@ -111,7 +111,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN pm_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
                 + " WHERE tsc.ACTIVE GROUP BY tsc.`SUB_CATEGORY_ID`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubCategoryRowMapper());
     }
 
@@ -123,7 +123,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN pm_category_mapping tcm ON tcm.`SUB_CATEGORY_ID`=tsc.`SUB_CATEGORY_ID`"
                 + " WHERE tcm.`MAIN_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`SUB_CATEGORY_DESC`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubCategoryRowMapper(), mainCategoryId);
     }
 
@@ -131,7 +131,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Integer> getSubCategoryIdListByMainCategory(int mainCategoryId) {
         String sql = "SELECT tcm.`SUB_CATEGORY_ID` FROM pm_category_mapping tcm WHERE tcm.`MAIN_CATEGORY_ID`=?";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, mainCategoryId);
     }
 
@@ -157,7 +157,7 @@ public class ProductDaoImpl implements ProductDao {
             params.put("productMpn", product.getManufacturerMpn());
             params.put("manufacturerId", product.getManufacturer().getManufacturerId());
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
             String performanceModsMpn = nm.queryForObject(sql, params, String.class);
             params.clear();
 
@@ -226,7 +226,7 @@ public class ProductDaoImpl implements ProductDao {
             params.put("LAST_MODIFIED_BY", curUser);
             params.put("ACTIVE", product.isActive());
             params.put("PRODUCT_STATUS_ID", product.getProductStatus().getProductStatusId());
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into pm_product :", params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Inser into pm_product :", params, GlobalConstants.TAG_SYSTEMLOG));
             int productId = productInsert.executeAndReturnKey(params).intValue();
             params.clear();
             //upload large images on CDN and insert into pm_product_image one by one for product created
@@ -261,7 +261,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 1);
 
-                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                    // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -287,7 +287,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 2);
 
-                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                    // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -313,7 +313,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 3);
 
-                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                    // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                     params.clear();
                 }
@@ -338,7 +338,7 @@ public class ProductDaoImpl implements ProductDao {
                     params.put("productId", productId);
                     params.put("largeImageUrl", largeImageURL);
                     params.put("orderId", 4);
-                   // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
+                    // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, params, GlobalConstants.TAG_SYSTEMLOG));
                     nm.update(sql, params);
                 }
             }
@@ -363,7 +363,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN `user` u2 ON u2.`USER_ID`=tps.`LAST_MODIFIED_BY`"
                 + " WHERE tps.ACTIVE ORDER BY tps.`PRODUCT_STATUS_DESC`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ProductStatusRowMapper());
     }
 
@@ -441,7 +441,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductListRowMapper());
             return list;
         } catch (Exception e) {
@@ -512,7 +512,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
         Integer i = nm.queryForObject(sql.toString(), params, Integer.class);
 
         if (i == null) {
@@ -574,7 +574,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("warehouseMPN", warehouseMpn);
             }
 
-             if (productMpn != null && !productMpn.isEmpty()) {
+            if (productMpn != null && !productMpn.isEmpty()) {
                 sql.append(" AND SUBSTR(tp.`ADMIN_TOOL_MPN`,9)=:productMpn");
                 params.put("productMpn", productMpn);
             }
@@ -582,7 +582,7 @@ public class ProductDaoImpl implements ProductDao {
             sql.append(" GROUP BY tp.`PRODUCT_ID` ORDER BY tp.`LAST_MODIFIED_DATE` DESC");
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductListRowMapper());
             return list;
         } catch (Exception e) {
@@ -613,7 +613,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "LEFT JOIN pm_product_image tpi4 ON tpi4.`PRODUCT_ID`=tp.`PRODUCT_ID` AND tpi4.`ORDER_ID`=4\n"
                 + "WHERE tp.PRODUCT_ID=? GROUP BY tp.PRODUCT_ID";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForObject(sql, new ProductRowMapper(), productId);
     }
 
@@ -706,7 +706,7 @@ public class ProductDaoImpl implements ProductDao {
             params.put("active", product.isActive());
             params.put("productId", product.getProductId());
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
             nm.update(sqlString, params);
             params.clear();
 
@@ -741,7 +741,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 1);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 params.clear();
@@ -751,7 +751,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl1());
                 params.put("orderId", 1);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -780,7 +780,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 2);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 //if large image2 already exist then update URL of existing image
@@ -789,7 +789,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl2());
                 params.put("orderId", 2);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -818,7 +818,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 3);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
                 //if large image3 already exist then update URL of existing image
@@ -827,7 +827,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl3());
                 params.put("orderId", 3);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -854,7 +854,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("productId", product.getProductId());
                 params.put("largeImageUrl", largeImageURL);
                 params.put("orderId", 4);
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 //if large image4 file is selected then upload image on CDN and update URL
             } else if (!product.getLargeImageUrl4().isEmpty()) {
@@ -862,7 +862,7 @@ public class ProductDaoImpl implements ProductDao {
                 params.put("largeImageUrl", product.getLargeImageUrl4());
                 params.put("orderId", 4);
 
-               // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
+                // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sqlString, params, GlobalConstants.TAG_SYSTEMLOG));
                 nm.update(sqlString, params);
                 params.clear();
             }
@@ -887,7 +887,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_category", params, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subCategoryId = subCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subCategoryId;
@@ -898,7 +898,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<String> searchMpn(String term) {
         String sql = "SELECT ADMIN_TOOL_MPN FROM pm_product WHERE ADMIN_TOOL_MPN LIKE '%" + term + "%'";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -907,7 +907,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<String> searchProductName(String term) {
         String sql = "SELECT PRODUCT_NAME FROM pm_product WHERE PRODUCT_NAME LIKE '%" + term + "%'";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -918,7 +918,7 @@ public class ProductDaoImpl implements ProductDao {
         try {
 
             sql.append("SELECT tw.`WAREHOUSE_ID`,tw.`WAREHOUSE_NAME`,tcwp.`WAREHOUSE_IDENTIFICATION_NO`,DATE(tcwp.`CREATED_DATE`) `CURRENT_DATE`,"
-                    + " tcwp.`PRICE` CURRENT_PRICE,tcwp.`QUANTITY` CURRENT_QUANTITY, tpi.`LARGE_IMAGE_URL`"
+                    + " tcwp.`PRICE` CURRENT_PRICE,tcwp.`QUANTITY` CURRENT_QUANTITY, tpi.`LARGE_IMAGE_URL`,tcwp.`SHIPPING`"
                     + " FROM pm_current_warehouse_product tcwp  "
                     + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tcwp.`WAREHOUSE_ID`"
                     + " LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tcwp.`PRODUCT_ID`"
@@ -933,7 +933,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
             List<ProductDetails> ProductDetail = nm.query(sql.toString(), params, new ProductDetailsRowMapper());
 
             return ProductDetail;
@@ -974,7 +974,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         try {
             return nm.queryForObject(sql.toString(), params, new ProductRowMapper());
         } catch (EmptyResultDataAccessException e) {
@@ -986,7 +986,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<String> searchWarehouseMpn(String term) {
         String sql = "SELECT WAREHOUSE_MPN FROM pm_warehouse_product_mpn WHERE WAREHOUSE_MPN LIKE '%" + term + "%'";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -995,7 +995,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<String> searchProductMpn(String term) {
         String sql = "SELECT p.`MANUFACTURER_MPN` FROM pm_product p WHERE p.`MANUFACTURER_MPN` LIKE '%" + term + "%'";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -1014,7 +1014,7 @@ public class ProductDaoImpl implements ProductDao {
 
         NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         try {
             return nm.queryForObject(sql.toString(), params, String.class);
         } catch (EmptyResultDataAccessException e) {
@@ -1031,7 +1031,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN pm_marketplace tm ON tm.`MARKETPLACE_ID`=tal.`MARKETPLACE_ID`"
                 + " LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=tal.`WAREHOUSE_ID`"
                 + " WHERE tp.`ADMIN_TOOL_MPN`=? AND tal.`SKU` IS NOT NULL";
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new MarketplaceListingSkuDTORowMapper(), performanceModsMpn);
     }
 
@@ -1209,7 +1209,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "LEFT JOIN pm_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
                 + "WHERE tsc.ACTIVE GROUP BY tsc.`CHILD_CATEGORY_ID`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ChildCategoryRowMapper());
     }
 
@@ -1222,7 +1222,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "LEFT JOIN pm_sub_child_category_mapping tcm ON tcm.`SUB_CHILD_CATEGORY_ID`=tsc.`CHILD_CATEGORY_ID`\n"
                 + "WHERE tcm.`SUB_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`CHILD_CATEGORY_DESC`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new ChildCategoryRowMapper(), subCategoryId);
 
     }
@@ -1236,7 +1236,7 @@ public class ProductDaoImpl implements ProductDao {
                 + "LEFT JOIN pm_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`\n"
                 + "WHERE tcm.`CHILD_CATEGORY_ID`=? AND tsc.ACTIVE ORDER BY tsc.`CHILD_SUB_CATEGORY_DESC`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubChildCategoryRowMapper(), childCategoryId);
 
     }
@@ -1255,7 +1255,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_child_category", params, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_sub_child_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subCategoryId = subCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subCategoryId;
@@ -1265,7 +1265,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Integer> getChildCategoryIdListBySubCategory(int subCategoryId) {
         String sql = "SELECT tcm.`SUB_CHILD_CATEGORY_ID` FROM pm_sub_child_category_mapping tcm WHERE tcm.`SUB_CATEGORY_ID`=?";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, subCategoryId);
     }
 
@@ -1321,7 +1321,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             List<Product> list = nm.query(sql.toString(), params, new ProductDownloadListRowMapper());
             return list;
         } catch (Exception e) {
@@ -1371,7 +1371,7 @@ public class ProductDaoImpl implements ProductDao {
 
             NamedParameterJdbcTemplate nm = new NamedParameterJdbcTemplate(jdbcTemplate);
 
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql.toString(), params, GlobalConstants.TAG_SYSTEMLOG));
             Integer i = nm.queryForObject(sql.toString(), params, Integer.class);
 
             if (i == null) {
@@ -1440,7 +1440,7 @@ public class ProductDaoImpl implements ProductDao {
                 + " LEFT JOIN pm_child_childsubset_category_mapping tcm ON tcm.`CHILD_OF_CHILD_CATEGORY_ID`=tsc.`CHILD_SUB_CATEGORY_ID`"
                 + " WHERE tsc.ACTIVE GROUP BY tsc.`CHILD_SUB_CATEGORY_ID`";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new SubChildCategoryRowMapper());
     }
 
@@ -1449,7 +1449,7 @@ public class ProductDaoImpl implements ProductDao {
 
         String sql = "SELECT tcm.`CHILD_OF_CHILD_CATEGORY_ID` FROM pm_child_childsubset_category_mapping tcm WHERE tcm.`CHILD_CATEGORY_ID`=?";
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.queryForList(sql, Integer.class, childCategoryId);
     }
 
@@ -1467,7 +1467,7 @@ public class ProductDaoImpl implements ProductDao {
         params.put("LAST_MODIFIED_BY", curUser);
         params.put("ACTIVE", active);
 
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_child_subset_category", params, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Insert into pm_child_subset_category", params, GlobalConstants.TAG_SYSTEMLOG));
         int subChildCategoryId = subChildCategoryInsert.executeAndReturnKey(params).intValue();
 
         return subChildCategoryId;
@@ -1481,12 +1481,12 @@ public class ProductDaoImpl implements ProductDao {
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         String sql = "TRUNCATE TABLE `performance_mods`.`temp_website_upload`";
         this.jdbcTemplate.update(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_website_upload done.", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Truncate temp_website_upload done.", GlobalConstants.TAG_SYSTEMLOG));
         //query load data from bulk order tracking csv file into pm_temp_bulk_tracking
         //sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
         sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`temp_website_upload` CHARACTER SET 'latin1' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES  (`MANUFACTURER_MPN`,`PRODUCT_NAME`,`MANUFACTURER_NAME`,`MAIN_CATEGORY_DESC`,`SUB_CATEGORY_DESC`,`CHILD_CATEGORY_DESC`,`CHILD_SUB_CATEGORY_DESC`,`SHORT_DESC`,`LONG_DESC`,`IMAGE_URL_1`,`IMAGE_URL_2`,`IMAGE_URL_3`,`IMAGE_URL_4`,`MANUFACTURER_ID`,`MAIN_CATEGORY_ID`,`SUB_CATEGORY_ID`,`CHILD_CATEGORY_ID`,`CHILD_SUB_CATEGORY_ID`) ";
         this.jdbcTemplate.execute(sql);
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
 
         try {
 
@@ -1657,9 +1657,17 @@ public class ProductDaoImpl implements ProductDao {
             sql += " WHERE tc.ACTIVE";
         }
         sql += " ORDER BY tc.`LAST_MODIFIED_DATE` DESC";
-       // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
         return this.jdbcTemplate.query(sql, new CompanyRowMapper());
     }
 
-    
+    @Override
+    public int deleteListingBySku(String sku) {
+        String sql;
+        System.out.println("sku----------------->" + sku);
+        sql = "DELETE FROM pm_available_listing WHERE SKU = ? ";
+        this.jdbcTemplate.update(sql, sku);
+        return 1;
+    }
+
 }
