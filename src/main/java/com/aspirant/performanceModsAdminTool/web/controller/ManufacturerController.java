@@ -19,6 +19,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -79,6 +80,27 @@ public class ManufacturerController {
                 String msg = "Manufacturer mapped successfully.";
                 return "redirect:../admin/mapManufacturer.htm?msg=" + URLEncoder.encode(msg, "UTF-8");
             }
+        }
+    }
+
+    @RequestMapping(value = "admin/deleteManufacturer.htm", method = RequestMethod.GET)
+    public String deleteManufacturer(ModelMap model) {
+        List<Manufacturer> manufacturerList = this.productService.getListOfManufacturer();
+        model.addAttribute("manufacturerList", manufacturerList);
+        return "admin/deleteManufacturer";
+    }
+
+    @RequestMapping(value = "admin/deleteManufacturer.htm", method = RequestMethod.POST)
+    public String deleteManufacturer(@RequestParam(value = "manufacturerId", required = true) int manufacturerId, ModelMap model) throws UnsupportedEncodingException {
+        int deleteManufacturer = this.manufacturerService.deleteManufacturer(manufacturerId);
+        List<Manufacturer> manufacturerList = this.productService.getListOfManufacturer();
+        model.addAttribute("manufacturerList", manufacturerList);
+        if (deleteManufacturer == 1) {
+            String msg = "Manufacturer Deleted Successfully";
+            return "redirect:..admin/deleteManufacturer,htm?msg=" + URLEncoder.encode("Manufa", "UTF-8");
+        } else {
+            String msg = "Manufacturer Deletion Failed";
+            return "redirect:..admin/deleteManufacturer,htm?msg=" + URLEncoder.encode(msg, "UTF-8");
         }
     }
 }
