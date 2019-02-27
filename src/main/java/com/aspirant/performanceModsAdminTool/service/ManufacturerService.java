@@ -48,4 +48,5 @@ public interface ManufacturerService {
      */
     public List<Manufacturer> mapManufacturerList(int manufacturerId);
 
+    public int deleteManufacturer(int manufacturerId);
 }

@@ -81,4 +81,29 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
                 + " WHERE tmm.`MANUFACTURER_ID`=? ORDER BY tmm.`WH_MANUFACTURER_NAME`";
         return this.jdbcTemplate.query(sql, new ManufacturerRowMapper(), manufacturerId);
     }
+
+    @Override
+    @Transactional
+    public int deleteManufacturer(int manufacturerId) {
+        try {
+            String sql1 = "DELETE FROM pm_current_warehouse_product WHERE PRODUCT_ID IN(SELECT tp.`PRODUCT_ID` FROM pm_product tp WHERE MANUFACTURER_ID=?);";
+            this.jdbcTemplate.update(sql1, manufacturerId);
+
+            String sql2 = "DELETE FROM pm_warehouse_product_mpn WHERE PRODUCT_ID IN(SELECT tp.`PRODUCT_ID` FROM pm_product tp WHERE MANUFACTURER_ID=?)";
+            this.jdbcTemplate.update(sql2, manufacturerId);
+
+            String sql3 = "DELETE FROM pm_warehouse_feed_data WHERE PRODUCT_ID IN(SELECT tp.`PRODUCT_ID` FROM pm_product tp WHERE MANUFACTURER_ID=?)";
+            this.jdbcTemplate.update(sql3, manufacturerId);
+
+            String sql4 = "DELETE FROM pm_product_image WHERE PRODUCT_ID IN(SELECT tp.`PRODUCT_ID` FROM pm_product tp WHERE MANUFACTURER_ID=?)";
+            this.jdbcTemplate.update(sql4, manufacturerId);
+
+            String sql5 = "DELETE FROM pm_product WHERE MANUFACTURER_ID=?";
+            this.jdbcTemplate.update(sql5, manufacturerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return 1;
+    }
 }

@@ -46,5 +46,7 @@ public interface ManufacturerDao {
      * @return list of mapped manufacturers
      */
     public List<Manufacturer> mapManufacturerList(int manufacturerId);
+    
 
+    public int deleteManufacturer(int manufacturerId);
 }
