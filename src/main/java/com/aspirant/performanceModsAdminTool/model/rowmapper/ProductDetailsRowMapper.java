@@ -26,6 +26,7 @@ public class ProductDetailsRowMapper implements RowMapper<ProductDetails> {
         pd.setCurrentQuantity(rs.getInt("CURRENT_QUANTITY"));
         pd.setWarehouseMpn(rs.getString("WAREHOUSE_IDENTIFICATION_NO"));
         pd.setImageUrl(rs.getString("LARGE_IMAGE_URL")); 
+        pd.setShipping(rs.getDouble("SHIPPING"));
 
         return pd;
     }

@@ -102,11 +102,13 @@ public class TurnFourteenApiController {
         turnService.addInventoryByFile();
         return "home/home";
     }
+
     @RequestMapping("turn/getShipping.htm")
     public String getShippingOfTurn() {
         turnService.getShipping(1);
         return "home/home";
     }
+
     @RequestMapping("turn/getShippingT2.htm")
     public String getShippingOfTurnT2() {
         turnService.getShipping(8);
@@ -131,36 +133,36 @@ public class TurnFourteenApiController {
         r.setState("MH");
         r.setZip("44000012");
         d.setRecipient(r);
-        LogisticsDTO log=new LogisticsDTO();
+        LogisticsDTO log = new LogisticsDTO();
         log.setDays("5");
         log.setDropship_controller_id(2);
         log.setLocation("01");
-        List<LogisticsDTO> expedited_logistics=new ArrayList<>();
+        List<LogisticsDTO> expedited_logistics = new ArrayList<>();
         expedited_logistics.add(log);
         d.setExpedited_logistics(expedited_logistics);
-       //
-        List<LocationsDTO> locations=new ArrayList<>();
         //
-        LocationsDTO loc=new LocationsDTO();
+        List<LocationsDTO> locations = new ArrayList<>();
+        //
+        LocationsDTO loc = new LocationsDTO();
         loc.setLocation("01");
         //
-        ShippingDTO shipping=new ShippingDTO();
+        ShippingDTO shipping = new ShippingDTO();
         shipping.setShipping_code(0);
         shipping.setSaturday_delivery(false);
         shipping.setSignature_required(false);
         loc.setShipping(shipping);
         //
-        List<OrderItemDTO> items=new ArrayList<>();
-        OrderItemDTO ord=new OrderItemDTO();
+        List<OrderItemDTO> items = new ArrayList<>();
+        OrderItemDTO ord = new OrderItemDTO();
         ord.setItem_identifier("12222");
         ord.setItem_identifier_type("item_no");
         ord.setQuantity(1);
         items.add(ord);
         loc.setItems(items);
-        
+
         locations.add(loc);
         d.setLocations(locations);
-        
+
         System.out.println("=======" + new Gson().toJson(d));
 
         return "home/home";

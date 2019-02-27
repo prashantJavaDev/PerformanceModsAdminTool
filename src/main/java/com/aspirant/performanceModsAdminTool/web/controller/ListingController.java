@@ -65,7 +65,7 @@ public class ListingController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Fees data validation started...", GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Fees data validation started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.listingService.saveMultipartFileData(uploadFeed, marketplaceId);
             String msg;
@@ -290,7 +290,7 @@ public class ListingController {
         try {
             String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMD);
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
- 
+
             List<Listing> marketPlaceFeesList = this.listingService.exportMarketplaceFeesForExcel(marketplaceId);
             OutputStream out = response.getOutputStream();
             response.setHeader("Content-Disposition", "attachment;filename=ExportMarketPlace_FeesList-" + curDate + ".xls");
@@ -320,18 +320,16 @@ public class ListingController {
             LogUtils.systemLogger.error(LogUtils.buildStringForLog(e, GlobalConstants.TAG_SYSTEMLOG));
         }
     }
-    
-    //controller for upload listing, get method 
 
+    //controller for upload listing, get method 
     @RequestMapping(value = "listing/uploadMarketplaceListing.htm", method = RequestMethod.GET)
     public String bulkListingUploadFeed(ModelMap model) {
         List<Marketplace> marketplaceList = ApplicationSession.getCurrent().getMarketplaceListActive();
         model.addAttribute("marketplaceList", marketplaceList);
         return "/listing/uploadMarketplaceListing";
     }
-    
-    //controller for bulk order tracking in bulk, post method
 
+    //controller for bulk order tracking in bulk, post method
     @RequestMapping(value = "listing/uploadMarketplaceListing.htm", method = RequestMethod.POST)
     public String bulkListingUploadFeedSubmit(@ModelAttribute("uploadFeed") UploadFeed uploadFeed, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws IOException {
 
@@ -340,7 +338,7 @@ public class ListingController {
             uploadFeed = null;
             return "redirect:../home/home.htm?msg=Action cancelled";
         } else {
-           // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Listing upload data started...", GlobalConstants.TAG_SYSTEMLOG));
+            // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Listing upload data started...", GlobalConstants.TAG_SYSTEMLOG));
             int marketplaceId = ServletRequestUtils.getIntParameter(request, "marketplaceId", 0);
             int result = this.listingService.saveMultipartFileData1(uploadFeed, marketplaceId);
             String msg;
@@ -352,5 +350,26 @@ public class ListingController {
                 return "redirect:../listing/uploadMarketplaceListing.htm?msg=" + URLEncoder.encode(msg, "UTF-8");
             }
         }
+    }
+
+    @RequestMapping(value = "/listing/deleteMarketplaceListing.htm", method = RequestMethod.GET)
+    public String deleteMarketplaceListingGet(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+
+        return "/listing/deleteMarketplaceListing";
+    }
+
+    @RequestMapping(value = "/listing/deleteMarketplaceListing.htm", method = RequestMethod.POST)
+    public String deleteProductPost(HttpServletRequest request, HttpServletResponse response, ModelMap model) throws UnsupportedEncodingException {
+        String marketplaceSku = ServletRequestUtils.getStringParameter(request, "marketplaceSku", null);
+        Listing productToDelete = this.listingService.getListingForDelete(marketplaceSku);
+        model.addAttribute("productToDelete", productToDelete);
+        if (productToDelete == null) {
+            String error = "Sorry! Listing not found in database.";
+            return "redirect:../listing/deleteMarketplaceListing.htm?error=" + URLEncoder.encode(error, "UTF-8");
+        } else {
+            
+            return "/listing/deleteMarketplaceListing";
+        }
+
     }
 }

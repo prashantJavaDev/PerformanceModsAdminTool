@@ -1,7 +1,7 @@
 <%-- 
     Document   : deleteProduct
     Created on : 29 May, 2018, 4:25:04 PM
-    Author     : Pallavi
+    Author     : Ritesh
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

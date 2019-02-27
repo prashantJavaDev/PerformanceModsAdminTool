@@ -522,6 +522,19 @@ public class AjaxController {
         }
     }
     
+    @RequestMapping(value = "/ajax/deleteListingBySku.htm", method = RequestMethod.GET)
+    public @ResponseBody
+    String deleteListingBySkuPost(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+        String sku = ServletRequestUtils.getStringParameter(request, "sku", null);
+        int result = 0;
+        result = this.productService.deleteListingBySku(sku);
+        if (result > 0) {
+            return new Gson().toJson("Success");
+        } else {
+            return new Gson().toJson("Fail");
+        }
+    }
+    
     
 //    @RequestMapping(value = "/ajax/getAjaxAutoFillPageByOrderId.htm", method = RequestMethod.GET)
 //    public @ResponseBody
