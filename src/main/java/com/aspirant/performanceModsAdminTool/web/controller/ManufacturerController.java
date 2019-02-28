@@ -92,15 +92,16 @@ public class ManufacturerController {
 
     @RequestMapping(value = "admin/deleteManufacturer.htm", method = RequestMethod.POST)
     public String deleteManufacturer(@RequestParam(value = "manufacturerId", required = true) int manufacturerId, ModelMap model) throws UnsupportedEncodingException {
+        System.out.println("manufacturerId--------------->" + manufacturerId);
         int deleteManufacturer = this.manufacturerService.deleteManufacturer(manufacturerId);
         List<Manufacturer> manufacturerList = this.productService.getListOfManufacturer();
         model.addAttribute("manufacturerList", manufacturerList);
         if (deleteManufacturer == 1) {
             String msg = "Manufacturer Deleted Successfully";
-            return "redirect:..admin/deleteManufacturer,htm?msg=" + URLEncoder.encode("Manufa", "UTF-8");
+            return "redirect:../admin/deleteManufacturer.htm?msg=" + URLEncoder.encode(msg, "UTF-8");
         } else {
             String msg = "Manufacturer Deletion Failed";
-            return "redirect:..admin/deleteManufacturer,htm?msg=" + URLEncoder.encode(msg, "UTF-8");
+            return "redirect:../admin/deleteManufacturer.htm?msg=" + URLEncoder.encode(msg, "UTF-8");
         }
     }
 }

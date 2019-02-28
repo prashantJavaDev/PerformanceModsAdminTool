@@ -117,6 +117,11 @@
                                         <a href="../admin/mapManufacturer.htm"><span class="fa fa-link"></span>Map Manufacturer</a>
                                     </li>
                                 </sec:authorize>
+                                <sec:authorize ifAnyGranted="ROLE_BF_MAP_MANUFACTURER">
+                                    <li>
+                                        <a href="../admin/deleteManufacturer.htm"><span class="fa fa-deaf"></span>Delete Manufacturer</a>
+                                    </li>
+                                </sec:authorize>
 
                             </ul>
                         </li>

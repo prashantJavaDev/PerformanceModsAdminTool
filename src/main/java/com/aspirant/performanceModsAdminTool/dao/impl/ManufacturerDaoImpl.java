@@ -100,6 +100,15 @@ public class ManufacturerDaoImpl implements ManufacturerDao {
 
             String sql5 = "DELETE FROM pm_product WHERE MANUFACTURER_ID=?";
             this.jdbcTemplate.update(sql5, manufacturerId);
+            
+            String sql6 = "DELETE FROM pm_manufacturer_mapping WHERE MANUFACTURER_ID=?";
+            this.jdbcTemplate.update(sql6, manufacturerId);
+            
+            String sql7 = "DELETE FROM pm_mpn_sku_mapping WHERE MANUFACTURER_ID=?";
+            this.jdbcTemplate.update(sql7, manufacturerId);
+            
+            String sql8 = "DELETE FROM pm_manufacturer WHERE MANUFACTURER_ID=?";
+            this.jdbcTemplate.update(sql8, manufacturerId);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
