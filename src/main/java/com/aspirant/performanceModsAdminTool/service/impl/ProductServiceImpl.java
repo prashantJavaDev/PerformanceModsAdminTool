@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,13 +168,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductListForDelet(String performanceModsMpn) {
-        return this.productDao.getProductListForDelet(performanceModsMpn);
+    public List<Map<String, Object>> getProductListForDelet(String marketplaceMpn) {
+        return this.productDao.getProductListForDelet(marketplaceMpn);
     }
 
     @Override
-    public int deleteProductByProductID(int productId) {
-        return this.productDao.deleteProductByProductID(productId);
+    public int deleteProductByProductID(String warehouse_part_num) {
+        return this.productDao.deleteProductByProductID(warehouse_part_num);
     }
 
     @Override

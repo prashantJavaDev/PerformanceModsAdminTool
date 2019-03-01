@@ -1,6 +1,6 @@
 <%-- 
-    Document   : deleteProduct
-    Created on : 29 May, 2018, 4:25:04 PM
+    Document   : deleteMarketplaceListing
+    Created on : 15 Feb, 2019, 11:08:25 PM
     Author     : Ritesh
 --%>
 
@@ -27,8 +27,8 @@
                 <!-- START BREADCRUMB -->
                 <ul class="breadcrumb">
                     <li><a href="../home/home.htm">Home</a></li>
-                    <li><a href="../home/home.htm">Product</a></li>
-                    <li><a href="#">Delete Product</a></li>
+                    <li><a href="../home/home.htm">Listing</a></li>
+                    <li><a href="#">Delete Listing</a></li>
                 </ul>
                 <!-- END BREADCRUMB --> 
 
@@ -42,11 +42,11 @@
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Delete Product</h3>
+                                    <h3 class="panel-title">Delete Listing</h3>
                                     <ul class="panel-controls">
                                         <%--<sec:authorize ifAnyGranted="ROLE_BF_EXPORT_EXCEL">--%>
-                                        <c:if test="${fn:length(productToDelete)>0}"><li><a href="#" onclick="$('#excelForm').submit();" title="Export to excel"><span class="fa fa-file-excel-o"></span></a></li></c:if>
-                                                <%--</sec:authorize>--%>   
+                                        <%--<c:if test="${fn:length(productToDelete)>0}"><li><a href="#" onclick="$('#excelForm').submit();" title="Export to excel"><span class="fa fa-file-excel-o"></span></a></li></c:if>--%>
+                                        <%--</sec:authorize>--%>   
                                         <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                                     </ul>
                                 </div>
@@ -57,8 +57,8 @@
                                                 <input type="hidden" name="pageNo" id="pageNo" value="${pageNo}"/>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
-                                                        <label>Select Manufacturer MPN</label>
-                                                        <input type="text" name="marketplaceMpn" id="marketplaceMpn" value="${marketplaceMpn}" Class="form-control"/>
+                                                        <label><spring:message code="marketplaceSku"/></label>
+                                                        <input type="text" name="marketplaceSku" id="marketplaceSku" value="${marketplaceSku}" Class="form-control"/>
                                                     </div>
                                                 </div>
 
@@ -71,42 +71,42 @@
                                         </div>
                                     </div>
 
-                                    <c:if test="${fn:length(productToDelete)>0}">
-                                        <div class="row">
-                                            <div class="col-md-12 scrollable">
-                                                <table class="table datatable table-bordered" >
-                                                    <thead>
-                                                        <tr>
-                                                            <th width="100px"><spring:message code="mpn"/></th>
-                                                            <th width="100px"><spring:message code="manufacturerName"/></th>
-                                                            <th width="100px"><spring:message code="performanceModsMpn"/></th>
-                                                            <th width="100px"><spring:message code="warehouseName"/></th>
-                                                            <th width="100px">Warehouse Part Number</th>
-                                                            <th width="100px"><spring:message code="productStatus"/></th>
-                                                            <th width="100px">Delete</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <sec:authorize ifAnyGranted="ROLE_BF_EDIT_PRODUCT">
-                                                            <c:set var="rowClick" value="clickableRow"/>  
-                                                        </sec:authorize>
-                                                        <c:forEach items="${productToDelete}" var="item">
-                                                            <tr>
-                                                                <td><c:out value="${item.MPN}"/></td>
-                                                                <td><c:out value="${item.MANUFACTURER_NAME}"/></td>
-                                                                <td><c:out value="${item.ADMIN_TOOL_MPN}"/></td>
-                                                                <td><c:out value="${item.WAREHOUSE_NAME}"/></td>
-                                                                <td><c:out value="${item.WAREHOUSE_IDENTIFICATION_NO}"/></td>
-                                                                <td><c:out value="${item.PRODUCT_STATUS_DESC}"/></td>
-                                                                <td><button id="deletebtn" type="button" class="btn btn-primary" onclick="functionchange('${item.WAREHOUSE_IDENTIFICATION_NO}');">Delete</button></td>
-                                                            </tr>
-                                                        </c:forEach>
-                                                    </tbody>
-                                                </table>
-                                                <%--<c:if test="${pageCount>0}"><div class="demo2 pull-right"></div></c:if>--%>
-                                            </div>
+                                    <%--<c:if test="${fn:length(productToDelete)>0}">--%>
+                                    <div class="row">
+                                        <div class="col-md-12 scrollable">
+                                            <table class="table datatable table-bordered" >
+                                                <thead>
+                                                    <tr>
+                                                        <th width="100px"><spring:message code="marketplaceName"/></th>
+                                                        <th width="100px"><spring:message code="marketplaceListingId"/></th>
+                                                        <th width="100px"><spring:message code="marketplaceSku"/></th>
+                                                        <th width="100px"><spring:message code="manufacturerMpn"/></th>
+                                                        <th width="100px"><spring:message code="currentPrice"/></th>
+                                                        <th width="50px"><spring:message code="currentQuantity"/></th>
+                                                        <th width="50px">Delete Listing</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <sec:authorize ifAnyGranted="ROLE_BF_EDIT_PRODUCT">
+                                                        <c:set var="rowClick" value="clickableRow"/>  
+                                                    </sec:authorize>
+                                                    <%--<c:forEach items="${productToDelete}" var="productItem">--%>
+                                                    <tr id="sku" data-sku-id="${productToDelete.sku}" class="${rowClick}">
+                                                        <td><c:out value="${productToDelete.marketplace.marketplaceName}"/></td>
+                                                        <td><c:out value="${productToDelete.marketplaceListingId}"/></td>
+                                                        <td><c:out value="${productToDelete.sku}"/></td>
+                                                        <td><c:out value="${productToDelete.productMpn}"/></td>
+                                                        <td><c:out value="${productToDelete.currentPrice}"/></td>
+                                                        <td><c:out value="${productToDelete.currentQunatity}"/></td>
+                                                        <td><button onclick="functionchange(<c:out value="'${productToDelete.sku}'"/>);" id="deletebtn" type="button" class="btn btn-primary">Delete</button></td>
+                                                    </tr>
+                                                    <%--</c:forEach>--%>
+                                                </tbody>
+                                            </table>
+                                            <%--<c:if test="${pageCount>0}"><div class="demo2 pull-right"></div></c:if>--%>
                                         </div>
-                                    </c:if>
+                                    </div>
+                                    <%--</c:if>--%>
                                 </div>
 
                             </div>
@@ -116,10 +116,9 @@
                     <!--                        <form name="form2" id="form2" action="" method="get">
                                                 <input type="hidden" id="productId" name="productId"/>
                                             </form>-->
-                    <form name="form3" id="form3" action="../product/deleteProductByID.htm" method="get">
-                        <input type="hidden" id="productId" name="productId" />
+                    <form name="form3" id="form3" action="../product/deleteListingBySku.htm" method="get">
+                        <input type="hidden" id="sku" name="sku" />
                     </form>
-                  
                 </div>
             </div>
         </div>
@@ -164,28 +163,23 @@
                 });
             });
 
-            function functionchange(warehouse_part_num) {
-
-                var ans = confirm('Are you sure you want to continue?');
-                if (ans == true) {
-                    $.ajax({
-                        url: "../ajax/deleteProductByID.htm",
-                        data: ({'warehouse_part_num': warehouse_part_num}),
-                        dataType: "json",
-                        success: function(json) {
-                            if (json == "Success") {
-                                alert("Product Deleted Successfully");
-                                window.location.reload();
-                            } else {
-                                alert("Fail");
-                            }
-                        },
-                        error: function(e) {
-                            alert("Error:  method not called ");
+            function functionchange(sku) {
+                $.ajax({
+                    url: "../ajax/deleteListingBySku.htm",
+                    data: ({'sku': sku}),
+                    dataType: "json",
+                    success: function (json) {
+                        if (json == "Success") {
+                            alert("Listing Deleted Successfully");
+                            window.location.reload();
+                        } else {
+                            alert("Fail");
                         }
-                    });
-                }
-
+                    },
+                    error: function (e) {
+                        alert("Error:  method not called ");
+                    }
+                });
             }
 
         </script>

@@ -511,10 +511,11 @@ public class AjaxController {
 
     @RequestMapping(value = "/ajax/deleteProductByID.htm", method = RequestMethod.GET)
     public @ResponseBody
-    String deleteProductByProductIdPost(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
-        int productId = ServletRequestUtils.getIntParameter(request, "productId", 0);
+    String deleteProductByProductIdPost(@RequestParam(value = "warehouse_part_num") String warehouse_part_num) {
+//        System.out.println("----------------------ajax controller"+warehouse_part_num);
         int result = 0;
-        result = this.productService.deleteProductByProductID(productId);
+        result = this.productService.deleteProductByProductID(warehouse_part_num);
+//        System.out.println("====================result"+result);
         if (result > 0) {
             return new Gson().toJson("Success");
         } else {

@@ -1160,21 +1160,19 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProductListForDelet(String performanceModsMpn) {
+    public List<Map<String, Object>> getProductListForDelet(String marketplaceMpn) {
         try {
-            String sql = "SELECT tp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,tp.`ADMIN_TOOL_MPN`,tp.`MANUFACTURER_ID`,tm.`MANUFACTURER_NAME`,tp.`MANUFACTURER_MPN`,tp.`MAP`,\n"
-                    + "tp.`WEIGHT`, tp.`UPC`, tp.`PRODUCT_STATUS_ID`, tps.`PRODUCT_STATUS_DESC`,\n"
-                    + "GROUP_CONCAT(tw.`WAREHOUSE_NAME`) WAREHOUSE_NAME,\n"
-                    + "GROUP_CONCAT(twpm.`WAREHOUSE_MPN`) WAREHOUSE_MPN\n"
-                    + "FROM pm_product tp\n"
-                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID`=tp.`MANUFACTURER_ID`\n"
-                    + "LEFT JOIN pm_warehouse_product_mpn twpm ON twpm.`PRODUCT_ID`=tp.`PRODUCT_ID`\n"
-                    + "LEFT JOIN pm_product_status tps ON tps.`PRODUCT_STATUS_ID`=tp.`PRODUCT_STATUS_ID`\n"
-                    + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`=twpm.`WAREHOUSE_ID`\n"
-                    + "WHERE tp.ADMIN_TOOL_MPN=?";
-            Object[] param = {performanceModsMpn};
+            String sql = " SELECT twp.`PRODUCT_ID`,tp.`PRODUCT_NAME`,twp.`MPN`,tm.`MANUFACTURER_NAME`,\n"
+                    + "tp.`ADMIN_TOOL_MPN`,tw.`WAREHOUSE_NAME`,twp.`WAREHOUSE_IDENTIFICATION_NO`,ts.`PRODUCT_STATUS_DESC`\n"
+                    + "FROM pm_current_warehouse_product twp\n"
+                    + "LEFT JOIN pm_warehouse tw ON tw.`WAREHOUSE_ID`= twp.`WAREHOUSE_ID`\n"
+                    + "LEFT JOIN pm_product tp ON tp.`PRODUCT_ID` = twp.`PRODUCT_ID`\n"
+                    + "LEFT JOIN pm_product_status ts ON ts.`PRODUCT_STATUS_ID`= tp.`PRODUCT_STATUS_ID`\n"
+                    + "LEFT JOIN pm_manufacturer tm ON tm.`MANUFACTURER_ID` =tp.`MANUFACTURER_ID`\n"
+                    + "WHERE twp.`MPN`=?";
+            Object[] param = {marketplaceMpn};
 
-            return this.jdbcTemplate.query(sql, new ProductListRowMapper(), param);
+            return this.jdbcTemplate.queryForList(sql, param);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -1184,19 +1182,21 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     @Transactional
-    public int deleteProductByProductID(int productId) {
+    public int deleteProductByProductID(String warehouse_part_num) {
 
         String sql;
-        sql = "DELETE FROM pm_current_warehouse_product WHERE PRODUCT_ID = ? ";
-        this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM pm_product_image WHERE PRODUCT_ID =? ";
-        this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM pm_warehouse_feed_data  WHERE PRODUCT_ID=?";
-        this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM pm_warehouse_product_mpn  WHERE PRODUCT_ID=?";
-        this.jdbcTemplate.update(sql, productId);
-        sql = "DELETE FROM pm_product WHERE PRODUCT_ID=?";
-        this.jdbcTemplate.update(sql, productId);
+        sql = "DELETE FROM pm_current_warehouse_product WHERE `WAREHOUSE_IDENTIFICATION_NO`=?";
+        this.jdbcTemplate.update(sql, warehouse_part_num);
+//        sql = "DELETE FROM pm_current_warehouse_product WHERE PRODUCT_ID = ? ";
+//        this.jdbcTemplate.update(sql, productId);
+//        sql = "DELETE FROM pm_product_image WHERE PRODUCT_ID =? ";
+//        this.jdbcTemplate.update(sql, productId);
+//        sql = "DELETE FROM pm_warehouse_feed_data  WHERE PRODUCT_ID=?";
+//        this.jdbcTemplate.update(sql, productId);
+        sql = "DELETE FROM pm_warehouse_product_mpn  WHERE `WAREHOUSE_MPN`=?";
+        this.jdbcTemplate.update(sql, warehouse_part_num);
+//        sql = "DELETE FROM pm_product WHERE PRODUCT_ID=?";
+//        this.jdbcTemplate.update(sql, productId);
         return 1;
     }
 
@@ -1664,7 +1664,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public int deleteListingBySku(String sku) {
         String sql;
-        System.out.println("sku----------------->" + sku);
+//        System.out.println("sku----------------->" + sku);
         sql = "DELETE FROM pm_available_listing WHERE SKU = ? ";
         this.jdbcTemplate.update(sql, sku);
         return 1;

@@ -200,6 +200,9 @@ public class ListingDaoImpl implements ListingDao {
         int curUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
         String curDate = DateUtils.getCurrentDateString(DateUtils.IST, DateUtils.YMDHMS);
         try {
+            String sqlupt="UPDATE pm_available_listing tal SET tal.`CURRENT_QUANTITY`=0 WHERE tal.`CURRENT_QUANTITY` IS NULL";
+            this.jdbcTemplate.update(sqlupt);
+            
             String sql = "UPDATE pm_available_listing tal SET tal.`LAST_LISTED_PRICE`=tal.`CURRENT_PRICE`, tal.`LAST_LISTED_QUANTITY`=tal.`CURRENT_QUANTITY`,tal.`LAST_LISTED_DATE`=NOW(),"
                     + " tal.`CURRENT_LISTED_DATE`=NOW(),tal.`LAST_MODIFIED_DATE`=?,tal.`LAST_MODIFIED_BY`=? WHERE"
                     + " tal.ACTIVE AND tal.`MARKETPLACE_ID`=?";
@@ -227,7 +230,7 @@ public class ListingDaoImpl implements ListingDao {
     public List<String> searchSku(String term) {
         String sql = "SELECT t.`SKU` FROM pm_mpn_sku_mapping  t WHERE t.`SKU` LIKE '%" + term + "%'";
 
-        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG));
+        // LogUtils.systemLogger.info(LogUtils.buildStringForLog(sql, GlobalConstants.TAG_SYSTEMLOG)O);
         List<String> list = jdbcTemplate.queryForList(sql, String.class);
         return list;
     }
@@ -343,6 +346,9 @@ public class ListingDaoImpl implements ListingDao {
             sql = "LOAD DATA LOCAL INFILE '" + path + "' INTO TABLE `performance_mods`.`pm_temp_available_listing` CHARACTER SET 'latin1' FIELDS ESCAPED BY '\"' TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES (`MARKETPLACE_LISTING_ID`, `SKU`, `LAST_LISTED_PRICE`, `LAST_LISTED_QUANTITY`,`PACK`,`MANUFACTURER_NAME`,`MPN`); ";
             this.jdbcTemplate.execute(sql);
             // LogUtils.systemLogger.info(LogUtils.buildStringForLog("Load data done..", GlobalConstants.TAG_SYSTEMLOG));
+            
+            sql = "UPDATE pm_temp_available_listing ttp SET ttp.`MPN`=REPLACE(REPLACE(ttp.`MPN`, '\\r', ''), '\\n', '')";
+            this.jdbcTemplate.update(sql);
 
 //            sql = "UPDATE pm_available_listing tal\n"
 //                    + " LEFT JOIN pm_temp_available_listing ttf ON tal.`MARKETPLACE_LISTING_ID`=ttf.`MARKETPLACE_LISTING_ID`\n"

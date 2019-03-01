@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,8 +282,8 @@ public class ProductController {
     @RequestMapping(value = "/product/deleteProduct.htm")
     public String deleteProductPost(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 
-        String performanceModsMpn = ServletRequestUtils.getStringParameter(request, "performanceModsMpn", null);
-        List<Product> productToDelete = this.productService.getProductListForDelet(performanceModsMpn);
+        String marketplaceMpn = ServletRequestUtils.getStringParameter(request, "marketplaceMpn", null);
+        List<Map<String, Object>> productToDelete = this.productService.getProductListForDelet(marketplaceMpn);
         model.addAttribute("productToDelete", productToDelete);
         return "/product/deleteProduct";
 

@@ -18,6 +18,7 @@ import com.aspirant.performanceModsAdminTool.model.ProductStatus;
 import com.aspirant.performanceModsAdminTool.model.SubCategory;
 import com.aspirant.performanceModsAdminTool.model.UploadFeed;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -272,15 +273,15 @@ public interface ProductDao {
      *
      * @return
      */
-    public List<Product> getProductListForDelet(String performanceModsMpn);
+    public List<Map<String, Object>> getProductListForDelet(String marketplaceMpn);
 
     /**
      * this method will delete the product by product ID
      *
-     * @param productId
+     * @param 
      * @return
      */
-    public int deleteProductByProductID(int productId);
+    public int deleteProductByProductID(String warehouse_part_num);
 
     public int deleteListingBySku(String sku);
 
